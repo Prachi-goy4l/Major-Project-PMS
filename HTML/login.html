@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Authentication</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="form-container">
+
+        <div class="buttons">
+            <button id="loginBtn" class="active">Login</button>
+            <button id="signupBtn">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+
+            <h2>Welcome Back</h2>
+
+            <input type="email"
+                   id="loginEmail"
+                   placeholder="Email"
+                   required>
+
+            <div class="password-box">
+                <input type="password"
+                       id="loginPassword"
+                       placeholder="Password"
+                       required>
+
+                <span class="toggle" onclick="togglePassword('loginPassword')">
+                    👁
+                </span>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Login
+            </button>
+
+        </form>
+
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="hidden">
+
+            <h2>Create Account</h2>
+
+            <input type="text"
+                   id="name"
+                   placeholder="Full Name"
+                   required>
+
+            <input type="email"
+                   id="signupEmail"
+                   placeholder="Email"
+                   required>
+
+            <div class="password-box">
+
+                <input type="password"
+                       id="signupPassword"
+                       placeholder="Password"
+                       required>
+
+                <span class="toggle"
+                onclick="togglePassword('signupPassword')">
+                    👁
+                </span>
+
+            </div>
+
+            <div class="password-box">
+
+                <input type="password"
+                       id="confirmPassword"
+                       placeholder="Confirm Password"
+                       required>
+
+                <span class="toggle"
+                onclick="togglePassword('confirmPassword')">
+                    👁
+                </span>
+
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Sign Up
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
