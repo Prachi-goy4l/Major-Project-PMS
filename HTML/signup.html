@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Project Management System - Sign Up</title>
+
+<link rel="stylesheet" href="../CSS/signup.css">
+
+</head>
+<body>
+
+<header>
+    <h1>Project Management System</h1>
+</header>
+
+<div class="signup-container">
+
+    <div class="signup-box">
+
+        <h2>Create Account</h2>
+        <p>Register to continue</p>
+
+        <form id="signupForm">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Full Name"
+                required
+            >
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Email Address"
+                required
+            >
+
+            <div class="password-field">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                >
+
+                <span onclick="togglePassword('password')">👁</span>
+
+            </div>
+
+            <div class="password-field">
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm Password"
+                    required
+                >
+
+                <span onclick="togglePassword('confirmPassword')">👁</span>
+
+            </div>
+
+            <button type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="login-text">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </p>
+
+    </div>
+
+</div>
+
+<script src="../JAVASCRIPT/signup.js"></script>
+
+</body>
+</html>
