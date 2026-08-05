@@ -6,108 +6,158 @@
 }
 
 body{
-    background:linear-gradient(135deg,#4facfe,#00f2fe);
+
+    background:#f4f6f9;
+
+}
+
+/* Header */
+
+header{
+
+    background:#1f2937;
+    color:white;
+    text-align:center;
+    padding:22px;
+
+}
+
+header h1{
+
+    font-size:36px;
+    font-weight:bold;
+
+}
+
+/* Center */
+
+.login-container{
+
+    height:calc(100vh - 90px);
+
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
-}
-
-.container{
-    width:380px;
-}
-
-.form-container{
-
-    background:#fff;
-    padding:35px;
-    border-radius:15px;
-    box-shadow:0 15px 35px rgba(0,0,0,.2);
 
 }
 
-.buttons{
-    display:flex;
-    margin-bottom:25px;
+.login-box{
+
+    width:420px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:10px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+
 }
 
-.buttons button{
+.login-box h2{
 
-    flex:1;
-    padding:12px;
-    border:none;
-    cursor:pointer;
-    background:#eee;
-    font-size:16px;
-    transition:.3s;
-}
-
-.buttons button.active{
-    background:#2196f3;
-    color:#fff;
-}
-
-form{
-    display:flex;
-    flex-direction:column;
-}
-
-.hidden{
-    display:none;
-}
-
-h2{
+    color:#1f2937;
     text-align:center;
-    margin-bottom:20px;
-    color:#333;
+    margin-bottom:8px;
+
+}
+
+.login-box p{
+
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+
 }
 
 input{
 
-    padding:12px;
+    width:100%;
+    padding:14px;
+
     margin-bottom:18px;
-    border:1px solid #ccc;
-    border-radius:8px;
+
+    border:1px solid #d5d5d5;
+
+    border-radius:5px;
+
     outline:none;
+
     font-size:15px;
+
 }
 
 input:focus{
-    border-color:#2196f3;
+
+    border-color:#10b981;
+
 }
 
-.password-box{
+.password-field{
+
     position:relative;
+
 }
 
-.toggle{
+.password-field span{
 
     position:absolute;
+
     right:15px;
-    top:12px;
+
+    top:14px;
+
     cursor:pointer;
+
 }
 
-.submit-btn{
+button{
 
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:#2196f3;
+    width:100%;
+
+    background:#10b981;
+
     color:white;
+
+    border:none;
+
+    padding:14px;
+
+    border-radius:5px;
+
+    font-size:17px;
+
     cursor:pointer;
-    font-size:16px;
+
     transition:.3s;
+
 }
 
-.submit-btn:hover{
-    background:#0d8bf2;
+button:hover{
+
+    background:#059669;
+
 }
 
-@media(max-width:450px){
+.signup-text{
 
-.container{
-    width:90%;
+    margin-top:20px;
+
 }
+
+.signup-text a{
+
+    text-decoration:none;
+
+    color:#10b981;
+
+    font-weight:bold;
+
+}
+
+.signup-text a:hover{
+
+    text-decoration:underline;
 
 }
