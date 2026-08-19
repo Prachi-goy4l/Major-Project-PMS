@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project Management</title>
+
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="../CSS/projects.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Project Management System</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li>
+                <a href="dashboard.html">Dashboard</a>
+            </li>
+
+            <li>
+                <a href="projects.html" class="active">Projects</a>
+            </li>
+
+            <li>
+                <a href="tasks.html">Tasks</a>
+            </li>
+
+            <li>
+                <a href="team.html">Team</a>
+            </li>
+
+            <li>
+                <a href="calendar.html">Calendar</a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Project Heading -->
+        <div class="page-heading">
+            <h2>
+                <i class="fa-solid fa-folder-open"></i>
+                Project Management
+            </h2>
+
+            <!-- ADD NEW PROJECT BUTTON -->
+            <button class="add-project-btn" id="openProjectModal">
+                <i class="fa-solid fa-plus"></i>
+                Add New Project
+            </button>
+        </div>
+
+
+        <!-- Project List -->
+        <div class="table-box">
+
+            <h3>Project List</h3>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Members</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="projectTableBody">
+
+                    <!-- Example Project -->
+                    <tr>
+                        <td>Project Alpha</td>
+                        <td>Website Development</td>
+                        <td>2026-08-10</td>
+                        <td>2026-08-30</td>
+
+                        <td>
+                            <span class="status in-progress">
+                                In Progress
+                            </span>
+                        </td>
+
+                        <td>John, Sarah</td>
+
+                        <td>
+                            <button class="edit-btn">
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+                            </button>
+
+                            <button class="delete-btn">
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================= -->
+    <!-- ADD PROJECT POPUP -->
+    <!-- ========================= -->
+
+    <div class="modal" id="projectModal">
+
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+
+                <h2>
+                    <i class="fa-solid fa-plus"></i>
+                    Add New Project
+                </h2>
+
+                <button class="close-btn" id="closeProjectModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <!-- Project Form -->
+            <form id="projectForm">
+
+                <div class="form-group">
+
+                    <label for="projectName">
+                        Project Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="projectName"
+                        placeholder="Enter project name"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="members">
+                        Assigned Members
+                    </label>
+
+                    <input
+                        type="text"
+                        id="members"
+                        placeholder="Enter member names">
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label for="description">
+                        Project Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Enter project description"
+                        required></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="startDate">
+                            Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="startDate"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="deadline">
+                            Deadline
+                        </label>
+
+                        <input
+                            type="date"
+                            id="deadline"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status" required>
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Not Started">
+                            Not Started
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button type="submit" class="submit-project-btn">
+
+                    <i class="fa-solid fa-plus"></i>
+                    Add Project
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 Project Management System
+        </p>
+
+    </footer>
+
+
+    <script src="../JAVASCRIPT/projects.js"></script>
+
+</body>
+</html>
