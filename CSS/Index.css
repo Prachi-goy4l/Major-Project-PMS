@@ -1,0 +1,687 @@
+/* ==========================================
+   PROJECT MANAGEMENT SYSTEM
+   DASHBOARD / INDEX PAGE
+   Screenshot-style layout
+========================================== */
+
+
+/* ==========================================
+   RESET
+========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ==========================================
+   BODY
+========================================== */
+
+body {
+    min-height: 100vh;
+
+    background: #f5f5f5;
+
+    color: #222;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ==========================================
+   TOP HEADER
+========================================== */
+
+.top-header {
+    width: 100%;
+
+    background: #222222;
+
+    color: white;
+
+    padding-top: 28px;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==========================================
+   MAIN TITLE
+========================================== */
+
+.top-header h1 {
+    text-align: center;
+
+    color: white;
+
+    font-size: 27px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+}
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+.navigation {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.navigation a {
+    color: #dddddd;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    padding: 12px 17px;
+
+    border-radius: 4px 4px 0 0;
+
+    transition: all 0.25s ease;
+}
+
+
+.navigation a:hover {
+    background: #333333;
+
+    color: white;
+}
+
+
+.navigation a.active {
+    background: #2eaa70;
+
+    color: white;
+}
+
+
+/* ==========================================
+   MAIN CONTENT
+========================================== */
+
+.main-content {
+    flex: 1;
+
+    width: 100%;
+
+    background: #f5f5f5;
+}
+
+
+.dashboard-content {
+    width: 100%;
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 28px 30px 40px;
+}
+
+
+/* ==========================================
+   DASHBOARD HEADING
+========================================== */
+
+.dashboard-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+}
+
+
+.dashboard-heading h2 {
+    color: #222222;
+
+    font-size: 21px;
+
+    margin-bottom: 5px;
+}
+
+
+.dashboard-heading p {
+    color: #666666;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   USER INFO
+========================================== */
+
+.user-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #333333;
+
+    font-weight: bold;
+
+    font-size: 13px;
+}
+
+
+.user-info i {
+    color: #2eaa70;
+
+    font-size: 29px;
+}
+
+
+/* ==========================================
+   STATISTICS
+========================================== */
+
+.stats-container {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.stat-card {
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 7px;
+
+    padding: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    min-height: 90px;
+
+    transition: 0.25s;
+}
+
+
+.stat-card:hover {
+    transform: translateY(-2px);
+
+    background: #ffffff;
+}
+
+
+.stat-icon {
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 6px;
+
+    background: #2eaa70;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-right: 12px;
+
+    font-size: 18px;
+}
+
+
+.stat-details h3 {
+    color: #222222;
+
+    font-size: 23px;
+
+    margin-bottom: 2px;
+}
+
+
+.stat-details p {
+    color: #666666;
+
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   DASHBOARD GRID
+========================================== */
+
+.dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr;
+
+    gap: 18px;
+
+    margin-bottom: 18px;
+}
+
+
+/* ==========================================
+   DASHBOARD CARDS
+========================================== */
+
+.dashboard-card {
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 7px;
+
+    padding: 18px;
+}
+
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #dddddd;
+
+    padding-bottom: 12px;
+
+    margin-bottom: 10px;
+}
+
+
+.card-header h2 {
+    color: #222222;
+
+    font-size: 16px;
+}
+
+
+.card-header h2 i {
+    color: #2eaa70;
+
+    margin-right: 6px;
+}
+
+
+.card-header a {
+    color: #2eaa70;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.card-header a:hover {
+    color: #238557;
+}
+
+
+/* ==========================================
+   RECENT PROJECTS
+========================================== */
+
+.project-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 11px 0;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.project-item:last-child {
+    border-bottom: none;
+}
+
+
+.project-name {
+    color: #333333;
+
+    font-weight: bold;
+
+    font-size: 13px;
+}
+
+
+.project-status {
+    padding: 5px 9px;
+
+    border-radius: 12px;
+
+    background: #dff3e8;
+
+    color: #237a4c;
+
+    font-size: 10px;
+}
+
+
+.empty-message {
+    text-align: center;
+
+    color: #777777;
+
+    font-size: 12px;
+
+    padding: 20px 0;
+}
+
+
+/* ==========================================
+   TASK OVERVIEW
+========================================== */
+
+.task-overview {
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.task-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 10px 12px;
+
+    margin-bottom: 8px;
+
+    border-radius: 5px;
+
+    background: #f1f1f1;
+}
+
+
+.task-item span {
+    color: #555555;
+
+    font-size: 12px;
+}
+
+
+.task-item strong {
+    color: #222222;
+
+    background: #ffffff;
+
+    padding: 4px 9px;
+
+    border-radius: 4px;
+
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   QUICK ACTIONS
+========================================== */
+
+.quick-actions {
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 7px;
+
+    padding: 18px;
+}
+
+
+.quick-actions h2 {
+    color: #222222;
+
+    font-size: 17px;
+
+    margin-bottom: 14px;
+}
+
+
+.action-buttons {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+
+.action-btn {
+    display: block;
+
+    background: #2eaa70;
+
+    color: white;
+
+    text-decoration: none;
+
+    text-align: center;
+
+    padding: 11px 8px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    transition: 0.25s;
+}
+
+
+.action-btn i {
+    margin-right: 5px;
+}
+
+
+.action-btn:hover {
+    background: #238557;
+
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.footer {
+    width: 100%;
+
+    background: #222222;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 16px 20px;
+
+    font-size: 12px;
+
+    margin-top: auto;
+}
+
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 950px) {
+
+    .stats-container {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .action-buttons {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+    .top-header {
+        padding-top: 22px;
+    }
+
+
+    .top-header h1 {
+        font-size: 22px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .navigation {
+        gap: 2px;
+
+        flex-wrap: wrap;
+
+        padding: 0 8px;
+    }
+
+
+    .navigation a {
+        font-size: 12px;
+
+        padding: 10px 11px;
+    }
+
+
+    .dashboard-content {
+        padding: 22px 15px 30px;
+    }
+
+
+    .dashboard-heading {
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+
+    .dashboard-heading h2 {
+        font-size: 19px;
+    }
+
+
+    .user-info span {
+        display: none;
+    }
+
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .action-buttons {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 450px) {
+
+    .top-header h1 {
+        font-size: 19px;
+    }
+
+
+    .navigation a {
+        font-size: 11px;
+
+        padding: 9px 7px;
+    }
+
+
+    .dashboard-heading {
+        flex-direction: column;
+    }
+
+
+    .stats-container {
+        gap: 10px;
+    }
+
+
+    .stat-card {
+        padding: 14px;
+    }
+
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+
+
+    .footer {
+        font-size: 11px;
+    }
+
+}

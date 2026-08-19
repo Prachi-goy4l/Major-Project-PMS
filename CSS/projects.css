@@ -1,31 +1,30 @@
-/* =========================================
-   Project Management System
-   File: css/projectfile.css
-========================================= */
+/* project management system */
+  
 
 
-/* ---------- RESET ---------- */
 
-* {
+/* reset */
+
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 
-/* ---------- BODY ---------- */
+/* body */
 
-body {
+/* body {
     font-family: Arial, Helvetica, sans-serif;
     background: #f4f6f9;
     color: #333;
     min-height: 100vh;
-}
+} */
 
 
-/* ---------- HEADER ---------- */
+/* header */
 
-header {
+/* header {
     background: #2f4559;
     color: white;
     padding: 18px 30px;
@@ -38,7 +37,7 @@ header h1 {
 }
 
 
-/* ---------- NAVIGATION ---------- */
+/* navigation */
 
 nav {
     background: #344d63;
@@ -69,9 +68,9 @@ nav ul li a.active {
     background: #20b89a;
     color: white;
 }
+ */ */
 
-
-/* ---------- MAIN CONTAINER ---------- */
+/* main container  */
 
 .container {
     width: 90%;
@@ -80,9 +79,9 @@ nav ul li a.active {
 }
 
 
-/* =================================================
-   PROJECT HEADING + ADD BUTTON
-================================================= */
+
+  /* project heading, add button  */
+
 
 .page-heading {
     display: flex;
@@ -114,7 +113,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- ADD PROJECT BUTTON ---------- */
+/* adding project button */
 
 .add-project-btn {
     border: none;
@@ -143,7 +142,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- TABLE BOX ---------- */
+/* table-box */
 
 .table-box {
     background: #ffffff;
@@ -166,7 +165,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- TABLE ---------- */
+/* table  */
 
 .table-box table {
     width: 100%;
@@ -203,8 +202,7 @@ nav ul li a.active {
     background: #f5f9fc;
 }
 
-
-/* ---------- STATUS ---------- */
+/* status  */
 
 .status {
     display: inline-block;
@@ -236,8 +234,7 @@ nav ul li a.active {
     color: white;
 }
 
-
-/* ---------- ACTION BUTTONS ---------- */
+/* action button */
 
 .edit-btn,
 .delete-btn {
@@ -277,9 +274,8 @@ nav ul li a.active {
 }
 
 
-/* =================================================
-   PROJECT POPUP
-================================================= */
+/* project popup */
+
 
 .modal {
     display: none;
@@ -301,7 +297,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- POPUP BOX ---------- */
+/* popup box/ */
 
 .modal-content {
     background: #ffffff;
@@ -352,7 +348,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- CLOSE BUTTON ---------- */
+/* close  */
 
 .close-btn {
     border: none;
@@ -372,7 +368,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- FORM ---------- */
+/* form */
 
 #projectForm {
     display: flex;
@@ -446,7 +442,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- SUBMIT BUTTON ---------- */
+/* submit button */
 
 .submit-project-btn {
     border: none;
@@ -474,8 +470,7 @@ nav ul li a.active {
 }
 
 
-/* ---------- FOOTER ---------- */
-
+/* footer */
 footer {
     background: #2f4559;
 
@@ -494,9 +489,8 @@ footer p {
 }
 
 
-/* =================================================
-   RESPONSIVE
-================================================= */
+   /* RESPONSIVE */
+
 
 @media (max-width: 768px) {
 

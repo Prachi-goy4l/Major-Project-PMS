@@ -3,9 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Dashboard - Project Management System</title>
+
+    <link rel="stylesheet" href="../css/index.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
-    
+
+    <!-- =========================
+         TOP NAVIGATION
+    ========================== -->
+
+    <header class="top-header">
+
+        <h1>Project Management System</h1>
+
+        <nav class="navigation">
+
+            <a href="index.html" class="active">
+                Dashboard
+            </a>
+
+            <a href="projects.html">
+                Projects
+            </a>
+
+            <a href="tasks.html">
+                Tasks
+            </a>
+
+            <a href="team.html">
+                Team
+            </a>
+
+            <a href="calendar.html">
+                Calendar
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <section class="dashboard-content">
+
+            <!-- Dashboard Heading -->
+
+            <div class="dashboard-heading">
+
+                <div>
+                    <h2>Dashboard</h2>
+
+                    <p>
+                        Welcome to your Project Management System
+                    </p>
+                </div>
+
+                <div class="user-info">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span id="userName">Admin</span>
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 STATISTICS
+            ========================== -->
+
+            <div class="stats-container">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+
+                    <div class="stat-details">
+                        <h3 id="totalProjects">0</h3>
+                        <p>Total Projects</p>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                    <div class="stat-details">
+                        <h3 id="totalTasks">0</h3>
+                        <p>Total Tasks</p>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+
+                    <div class="stat-details">
+                        <h3 id="completedTasks">0</h3>
+                        <p>Completed Tasks</p>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div class="stat-details">
+                        <h3 id="totalMembers">0</h3>
+                        <p>Team Members</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 DASHBOARD GRID
+            ========================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- Recent Projects -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            <i class="fa-solid fa-folder"></i>
+                            Recent Projects
+                        </h2>
+
+                        <a href="projects.html">
+                            View All
+                        </a>
+
+                    </div>
+
+                    <div
+                        class="project-list"
+                        id="recentProjects">
+
+                        <div class="empty-message">
+                            No projects available.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Task Overview -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            <i class="fa-solid fa-list-check"></i>
+                            Task Overview
+                        </h2>
+
+                        <a href="tasks.html">
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div class="task-overview">
+
+                        <div class="task-item">
+                            <span>To Do</span>
+                            <strong id="todoTasks">0</strong>
+                        </div>
+
+                        <div class="task-item">
+                            <span>In Progress</span>
+                            <strong id="progressTasks">0</strong>
+                        </div>
+
+                        <div class="task-item">
+                            <span>Completed</span>
+                            <strong id="doneTasks">0</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 QUICK ACTIONS
+            ========================== -->
+
+            <div class="quick-actions">
+
+                <h2>Quick Actions</h2>
+
+                <div class="action-buttons">
+
+                    <a href="projects.html" class="action-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Project
+                    </a>
+
+                    <a href="tasks.html" class="action-btn">
+                        <i class="fa-solid fa-list-check"></i>
+                        Add Task
+                    </a>
+
+                    <a href="team.html" class="action-btn">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Add Member
+                    </a>
+
+                    <a href="calendar.html" class="action-btn">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        View Calendar
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="footer">
+
+        © 2026 Project Management System
+
+    </footer>
+
+
+    <script src="js/dashboard.js"></script>
+
 </body>
 </html>

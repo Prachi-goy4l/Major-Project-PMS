@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+
+    <link rel="stylesheet" href="../CSS/task.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header>
+
+        <h1>Project Management System</h1>
+
+    </header>
+
+
+    <!-- Navigation -->
+
+    <nav>
+
+        <ul>
+
+            <li><a href="dashboard.html">Dashboard</a></li>
+
+            <li><a href="projects.html">Projects</a></li>
+
+            <li><a href="tasks.html" class="active">Tasks</a></li>
+
+            <li><a href="team.html">Team</a></li>
+
+            <li><a href="calendar.html">Calendar</a></li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- Main Container -->
+
+    <div class="container">
+
+        <h2>
+            <i class="fa-solid fa-list-check"></i>
+            Task Management
+        </h2>
+
+
+        <!-- Search + Add Task -->
+        <div class="search-box">
+            <input type="text" id="searchTask" placeholder="Search Task...">
+
+            <button type="button" id="openTaskModal" style="background: #34495e;">
+                <i class="fa-solid fa-plus"></i>
+                Add Task
+            </button>
+        </div>
+
+
+        <!-- Add Task Modal -->
+        <div id="taskModal" class="modal">
+
+            <div class="modal-content">
+
+                <span class="close">&times;</span>
+
+                <h3>
+                    <i class="fa-solid fa-plus"></i>
+                    Add New Task
+                </h3>
+
+                <form id="taskForm">
+
+                    <input type="text" id="taskName" placeholder="Task Name" required>
+
+                    <textarea id="taskDescription" placeholder="Task Description" rows="4" required></textarea>
+
+                    <input type="text" id="assignedTo" placeholder="Assigned To" required>
+
+                    <select id="priority" required>
+                        <option value="">Select Priority</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+
+                    <input type="date" id="deadline" required>
+
+                    <select id="status" required>
+                        <option value="">Select Status</option>
+                        <option value="To Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+
+                    <button type="submit">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Task
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- Task Table -->
+
+        <div class="table-box">
+            <h3>Task List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Description</th>
+                        <th>Assigned To</th>
+                        <th>Priority</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                    <!-- JavaScript will load tasks here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script src="../JAVASCRIPT/tasks.js"></script>
+
+</body>
+
+</html>
