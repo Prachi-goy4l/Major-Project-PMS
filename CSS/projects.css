@@ -3,42 +3,6 @@
 
 
 
-/* reset */
-
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-
-/* body */
-
-/* body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f9;
-    color: #333;
-    min-height: 100vh;
-} */
-
-
-/* header */
-
-/* header {
-    background: #2f4559;
-    color: white;
-    padding: 18px 30px;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 32px;
-    font-weight: 600;
-}
-
-
-/* navigation */
-
 nav {
     background: #344d63;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
