@@ -1,13 +1,12 @@
-/* =========================================
-   Project Management System
-   File: js/projects.js
-========================================= */
+
+//    Project Management System
+//    File: js/projects.js
+
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ================================
-    // Get Elements
-    // ================================
+    // Get Elements added
+    
 
     const modal = document.getElementById("projectModal");
     const openBtn = document.getElementById("openProjectModal");
@@ -17,9 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const projectTableBody = document.getElementById("projectTableBody");
 
 
-    // ================================
+   
     // Open Add Project Popup
-    // ================================
+
 
     openBtn.addEventListener("click", function () {
 
@@ -30,9 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ================================
+   
     // Close Popup
-    // ================================
+   
 
     closeBtn.addEventListener("click", function () {
 
@@ -43,9 +42,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ================================
-    // Close Popup When Clicking Outside
-    // ================================
+    
+    // Closing Popup When Clicking Outside
+    
 
     window.addEventListener("click", function (event) {
 
@@ -60,9 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ================================
-    // Add New Project
-    // ================================
+    // Added New Project
+   
 
     projectForm.addEventListener("submit", function (event) {
 
@@ -90,9 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("status").value;
 
 
-        // ================================
-        // Validate Dates
-        // ================================
+        
+        // project Dates
+        
 
         if (deadline < startDate) {
 
@@ -103,9 +101,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        // ================================
+       
         // Create Status Class
-        // ================================
+        
 
         let statusClass = "";
 
@@ -124,9 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        // ================================
+        
         // Create New Table Row
-        // ================================
+       
 
         const row = document.createElement("tr");
 
@@ -170,9 +168,8 @@ document.addEventListener("DOMContentLoaded", function () {
         projectTableBody.appendChild(row);
 
 
-        // ================================
-        // Add Delete Functionality
-        // ================================
+        
+        // Add Delete 
 
         const deleteBtn =
             row.querySelector(".delete-btn");
@@ -191,9 +188,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
 
-        // ================================
-        // Add Edit Functionality
-        // ================================
+        
+        // Add Edit Function
+       
 
         const editBtn =
             row.querySelector(".edit-btn");
@@ -235,34 +232,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
 
-        // ================================
         // Reset Form
-        // ================================
+      
 
         projectForm.reset();
 
 
-        // ================================
+       
         // Close Popup
-        // ================================
+       
 
         modal.style.display = "none";
 
         document.body.style.overflow = "auto";
 
 
-        // ================================
+        
         // Success Message
-        // ================================
+       
 
         alert("Project added successfully!");
 
     });
 
 
-    // ================================
+    
     // Delete Existing Projects
-    // ================================
+   
 
     document.querySelectorAll(".delete-btn").forEach(function (button) {
 
@@ -284,9 +280,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    // ================================
+    
     // Edit Existing Projects
-    // ================================
+   
 
     document.querySelectorAll(".edit-btn").forEach(function (button) {
 
