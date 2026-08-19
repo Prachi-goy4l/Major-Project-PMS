@@ -1,12 +1,4 @@
-/* ==========================
-   Team Management JavaScript
-   File: js/team.js
-========================== */
-
-
-/* ==========================
-   DOM ELEMENTS
-========================== */
+//DOM ELEMENTS
 
 const teamForm = document.getElementById("teamForm");
 
@@ -18,9 +10,7 @@ const departmentInput = document.getElementById("department");
 const teamBody = document.getElementById("teamBody");
 
 
-/* ==========================
-   TEAM DATA
-========================== */
+//TEAM DATA
 
 let teamMembers = JSON.parse(
     localStorage.getItem("teamMembers")
@@ -28,10 +18,7 @@ let teamMembers = JSON.parse(
 
 let editIndex = -1;
 
-
-/* ==========================
-   DISPLAY TEAM MEMBERS
-========================== */
+// DISPLAY TEAM MEMBERS
 
 function displayTeamMembers() {
 
@@ -90,10 +77,7 @@ function displayTeamMembers() {
     });
 }
 
-
-/* ==========================
-   ADD / UPDATE MEMBER
-========================== */
+//ADD / UPDATE MEMBER
 
 teamForm.addEventListener("submit", function (event) {
 
@@ -105,7 +89,7 @@ teamForm.addEventListener("submit", function (event) {
     const department = departmentInput.value.trim();
 
 
-    /* Validate fields */
+    // Validate fields
 
     if (
         name === "" ||
@@ -120,7 +104,7 @@ teamForm.addEventListener("submit", function (event) {
     }
 
 
-    /* Validate Email */
+    // Validate Email
 
     const emailPattern =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -133,7 +117,7 @@ teamForm.addEventListener("submit", function (event) {
     }
 
 
-    /* Check duplicate email */
+    // Check duplicate email
 
     const duplicateEmail = teamMembers.some(
         (member, index) =>
@@ -161,7 +145,7 @@ teamForm.addEventListener("submit", function (event) {
     };
 
 
-    /* UPDATE */
+    //UPDATE 
 
     if (editIndex !== -1) {
 
@@ -175,7 +159,7 @@ teamForm.addEventListener("submit", function (event) {
     }
 
 
-    /* ADD */
+    // ADD
 
     else {
 
@@ -185,26 +169,24 @@ teamForm.addEventListener("submit", function (event) {
     }
 
 
-    /* Save */
+    // Save
 
     saveTeamMembers();
 
 
-    /* Refresh Table */
+    // Refresh Table
 
     displayTeamMembers();
 
 
-    /* Clear Form */
+    // Clear Form 
 
     teamForm.reset();
 
 });
 
 
-/* ==========================
-   EDIT MEMBER
-========================== */
+/*EDIT MEMBER*/
 
 function editMember(index) {
 
@@ -237,9 +219,7 @@ function editMember(index) {
 }
 
 
-/* ==========================
-   DELETE MEMBER
-========================== */
+/*DELETE MEMBER*/
 
 function deleteMember(index) {
 
@@ -283,9 +263,7 @@ function deleteMember(index) {
 }
 
 
-/* ==========================
-   SAVE TO LOCAL STORAGE
-========================== */
+/* SAVE TO LOCAL STORAGE*/
 
 function saveTeamMembers() {
 
@@ -296,9 +274,7 @@ function saveTeamMembers() {
 }
 
 
-/* ==========================
-   CHANGE BUTTON TO ADD
-========================== */
+/*CHANGE BUTTON TO ADD*/
 
 function changeButtonToAdd() {
 
@@ -309,9 +285,7 @@ function changeButtonToAdd() {
 }
 
 
-/* ==========================
-   INITIALIZE
-========================== */
+/*INITIALIZE*/
 
 document.addEventListener(
     "DOMContentLoaded",
