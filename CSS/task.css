@@ -116,7 +116,7 @@ button {
 }
 
 button:hover {
-  background: #34495e;
+  background: #1abc9c;
 }
 
 /* Search Box */
@@ -294,13 +294,13 @@ footer {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background: #2563eb;
+  background: #15c3a0;
   color: white;
   font-size: 15px;
 }
 
 .search-box button:hover {
-  background: #1d4ed8;
+  background: #16c3a0;
 }
 
 /* Modal Background */
@@ -388,12 +388,12 @@ footer {
   padding: 12px;
   border: none;
   border-radius: 6px;
-  background: #2563eb;
+  background: #1abc9c;
   color: white;
   cursor: pointer;
   font-size: 15px;
 }
 
 #taskForm button:hover {
-  background: #1d4ed8;
+  background: #1abc9c;
 }
