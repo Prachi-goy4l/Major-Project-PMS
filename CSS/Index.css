@@ -61,7 +61,7 @@ nav ul li a.active {
 }
 
 
-//main content
+/* main content */
 
 .main-content {
     grid-area: main;
