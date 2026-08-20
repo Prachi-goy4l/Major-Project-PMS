@@ -1,4 +1,5 @@
 
+
 /*DOM ELEMENTS*/
 
 const eventForm = document.getElementById("eventForm");
