@@ -1,14 +1,3 @@
-/* ==========================================
-   PROJECT MANAGEMENT SYSTEM
-   DASHBOARD / INDEX PAGE
-   Screenshot-style layout
-========================================== */
-
-
-/* ==========================================
-   RESET
-========================================== */
-
 * {
     margin: 0;
     padding: 0;
@@ -18,10 +7,6 @@
 }
 
 
-/* ==========================================
-   BODY
-========================================== */
-
 body {
     min-height: 100vh;
 
@@ -29,95 +14,57 @@ body {
 
     color: #222;
 
-    display: flex;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header main"
+        "nav main"
+        "footer footer";
+}
+
+
+/* Header */
+
+header {
+    grid-area: header;
+  background: #2c3e50;
+  color: #fff;
+  text-align: center;
+  padding: 18px;
+}
+
+/* Navigation */
+
+nav {
+    grid-area: nav;
+  background: #34495e;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
     flex-direction: column;
 }
 
+nav ul li a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  padding: 15px 20px;
+  transition: 0.3s;
+}
 
-/* ==========================================
-   TOP HEADER
-========================================== */
-
-.top-header {
-    width: 100%;
-
-    background: #222222;
-
-    color: white;
-
-    padding-top: 28px;
-
-    box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.15);
+nav ul li a:hover,
+nav ul li a.active {
+  background: #1abc9c;
 }
 
 
-/* ==========================================
-   MAIN TITLE
-========================================== */
-
-.top-header h1 {
-    text-align: center;
-
-    color: white;
-
-    font-size: 27px;
-
-    font-weight: bold;
-
-    margin-bottom: 20px;
-}
-
-
-/* ==========================================
-   NAVIGATION
-========================================== */
-
-.navigation {
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-.navigation a {
-    color: #dddddd;
-
-    text-decoration: none;
-
-    font-size: 14px;
-
-    padding: 12px 17px;
-
-    border-radius: 4px 4px 0 0;
-
-    transition: all 0.25s ease;
-}
-
-
-.navigation a:hover {
-    background: #333333;
-
-    color: white;
-}
-
-
-.navigation a.active {
-    background: #2eaa70;
-
-    color: white;
-}
-
-
-/* ==========================================
-   MAIN CONTENT
-========================================== */
+//main content
 
 .main-content {
+    grid-area: main;
     flex: 1;
 
     width: 100%;
@@ -136,10 +83,6 @@ body {
     padding: 28px 30px 40px;
 }
 
-
-/* ==========================================
-   DASHBOARD HEADING
-========================================== */
 
 .dashboard-heading {
     display: flex;
@@ -168,9 +111,6 @@ body {
 }
 
 
-/* ==========================================
-   USER INFO
-========================================== */
 
 .user-info {
     display: flex;
@@ -193,10 +133,6 @@ body {
     font-size: 29px;
 }
 
-
-/* ==========================================
-   STATISTICS
-========================================== */
 
 .stats-container {
     display: grid;
@@ -275,10 +211,6 @@ body {
 }
 
 
-/* ==========================================
-   DASHBOARD GRID
-========================================== */
-
 .dashboard-grid {
     display: grid;
 
@@ -291,10 +223,6 @@ body {
 }
 
 
-/* ==========================================
-   DASHBOARD CARDS
-========================================== */
-
 .dashboard-card {
     background: #ffffff;
 
@@ -304,11 +232,6 @@ body {
 
     padding: 18px;
 }
-
-
-/* ==========================================
-   CARD HEADER
-========================================== */
 
 .card-header {
     display: flex;
@@ -354,10 +277,6 @@ body {
     color: #238557;
 }
 
-
-/* ==========================================
-   RECENT PROJECTS
-========================================== */
 
 .project-item {
     display: flex;
@@ -410,9 +329,6 @@ body {
 }
 
 
-/* ==========================================
-   TASK OVERVIEW
-========================================== */
 
 .task-overview {
     display: flex;
@@ -458,9 +374,6 @@ body {
 }
 
 
-/* ==========================================
-   QUICK ACTIONS
-========================================== */
 
 .quick-actions {
     background: #ffffff;
@@ -527,11 +440,9 @@ body {
 }
 
 
-/* ==========================================
-   FOOTER
-========================================== */
 
 .footer {
+    grid-area: footer;
     width: 100%;
 
     background: #222222;
@@ -547,10 +458,17 @@ body {
     margin-top: auto;
 }
 
+main,
+.container,
+.login-container,
+.signup-container {
+    grid-area: main;
+}
 
-/* ==========================================
-   TABLET
-========================================== */
+body > footer {
+    grid-area: footer;
+}
+
 
 @media (max-width: 950px) {
 
@@ -568,9 +486,6 @@ body {
 }
 
 
-/* ==========================================
-   MOBILE
-========================================== */
 
 @media (max-width: 700px) {
 
@@ -642,9 +557,6 @@ body {
 }
 
 
-/* ==========================================
-   SMALL MOBILE
-========================================== */
 
 @media (max-width: 450px) {
 
@@ -684,4 +596,269 @@ body {
         font-size: 11px;
     }
 
+}
+
+/* Shared page theme */
+
+header:not(.top-header) {
+    width: 100%;
+    background: #222222;
+    color: white;
+    text-align: center;
+    padding: 28px 20px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+header:not(.top-header) h1 {
+    color: white;
+    font-size: 27px;
+    font-weight: bold;
+    margin: 0 0 20px;
+}
+
+nav {
+    width: 100%;
+    background: #222222;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-direction: column;
+}
+
+nav a,
+nav ul li a {
+    display: block;
+    color: #dddddd;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 12px 17px;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.25s ease;
+}
+
+nav a:hover,
+nav ul li a:hover,
+nav a.active,
+nav ul li a.active {
+    background: #2eaa70;
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 30px 40px;
+}
+
+.container h2,
+.page-heading h2,
+.form-box h3,
+.table-box h3,
+.calendar-header h3,
+.modal-content h3,
+.modal-header h2 {
+    color: #222222;
+}
+
+.container h2 {
+    text-align: left;
+    font-size: 21px;
+    margin-bottom: 22px;
+}
+
+.container h2 i {
+    color: #2eaa70;
+}
+
+.container h2 i,
+.page-heading h2 i,
+.form-box h3 i,
+.modal-header h2 i {
+    color: #2eaa70;
+}
+
+.page-heading,
+.form-box,
+.table-box,
+.calendar-box,
+.events-box,
+.login-box,
+.signup-box,
+.modal-content {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+    box-shadow: none;
+}
+
+.page-heading,
+.form-box,
+.table-box,
+.calendar-box,
+.events-box {
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button,
+.add-project-btn,
+.submit-project-btn,
+#eventForm button,
+.search-box button {
+    background: #2eaa70;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+button:hover,
+.add-project-btn:hover,
+.submit-project-btn:hover,
+#eventForm button:hover,
+.search-box button:hover {
+    background: #238557;
+}
+
+input,
+textarea,
+select {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #222222;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #2eaa70;
+}
+
+table th,
+.table-box thead,
+.calendar-weekdays {
+    background: #222222;
+    color: white;
+}
+
+table td,
+.table-box td {
+    border-bottom-color: #dddddd;
+}
+
+table tr:hover,
+.table-box tbody tr:hover {
+    background: #f5f5f5;
+}
+
+.status.completed,
+.status-completed,
+.priority-low {
+    background: #2eaa70;
+}
+
+.calendar-btn,
+.calendar-day.today .date-number {
+    background: #2eaa70;
+}
+
+footer,
+.footer {
+    width: 100%;
+    margin-top: auto;
+    background: #222222;
+    color: white;
+    text-align: center;
+    padding: 16px 20px;
+    font-size: 12px;
+}
+
+.login-container,
+.signup-container {
+    flex: 1;
+    min-height: calc(100vh - 90px);
+}
+
+.login-box,
+.signup-box {
+    padding: 28px;
+}
+
+.login-box h2,
+.signup-box h2 {
+    color: #222222;
+}
+
+.login-box button,
+.signup-box button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.login-box a,
+.signup-box a {
+    color: #2eaa70;
+}
+
+@media (max-width: 700px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-areas:
+            "header"
+            "nav"
+            "main"
+            "footer";
+    }
+
+    nav ul {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    header:not(.top-header) {
+        padding-top: 22px;
+    }
+
+    header:not(.top-header) h1 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    nav ul {
+        gap: 2px;
+        padding: 0 8px;
+    }
+
+    nav a,
+    nav ul li a {
+        font-size: 12px;
+        padding: 10px 11px;
+    }
+
+    .container {
+        padding: 22px 15px 30px;
+    }
+
+    .page-heading {
+        align-items: flex-start;
+        gap: 15px;
+    }
 }
