@@ -1,77 +1,5 @@
-/* ==========================
-   Calendar Management CSS
-   File: css/calendar.css
-========================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background: #f4f6f9;
-    color: #333;
-}
-
-
-/* ==========================
-   HEADER
-========================== */
-
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 18px;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-
-/* ==========================
-   NAVIGATION
-========================== */
-
-nav {
-    background: #34495e;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-nav ul li {
-    margin: 0;
-}
-
-nav ul li a {
-    display: block;
-    color: white;
-    padding: 15px 20px;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-nav ul li a i {
-    margin-right: 7px;
-}
-
-nav ul li a:hover,
-nav ul li a.active {
-    background: #1abc9c;
-}
-
-
-/* ==========================
-   MAIN CONTAINER
-========================== */
+/*MAIN CONTAINER*/
 
 .container {
     width: 90%;
@@ -80,9 +8,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   PAGE HEADING
-========================== */
+/*PAGE HEADING*/
 
 .page-heading {
     background: white;
@@ -108,9 +34,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   FORM BOX
-========================== */
+/* FORM BOX*/
 
 .form-box {
     background: white;
@@ -131,9 +55,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   FORM
-========================== */
+/* FORM*/
 
 #eventForm {
     display: grid;
@@ -169,9 +91,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   ADD EVENT BUTTON
-========================== */
+/*  ADD EVENT BUTTON */
 
 #eventForm button {
     padding: 12px;
@@ -194,9 +114,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   CALENDAR BOX
-========================== */
+/*  CALENDAR BOX*/
 
 .calendar-box {
     background: white;
@@ -211,9 +129,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   CALENDAR HEADER
-========================== */
+/* CALENDAR HEADER*/
 
 .calendar-header {
     display: flex;
@@ -258,9 +174,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   WEEKDAYS
-========================== */
+/*WEEKDAYS*/
 
 .calendar-weekdays {
     display: grid;
@@ -286,9 +200,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   CALENDAR DAYS
-========================== */
+/*CALENDAR DAYS*/
 
 .calendar-days {
     display: grid;
@@ -360,9 +272,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   EVENTS INSIDE CALENDAR
-========================== */
+/*EVENTS INSIDE CALENDAR*/
 
 .calendar-event {
     display: block;
@@ -416,9 +326,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   EVENTS BOX
-========================== */
+/*EVENTS BOX*/
 
 .events-box {
     background: white;
@@ -433,9 +341,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   BOX HEADER
-========================== */
+/* BOX HEADER*/
 
 .box-header {
     display: flex;
@@ -464,9 +370,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   EVENT LIST
-========================== */
+/* EVENT LIST*/
 
 .event-item {
     display: flex;
@@ -509,9 +413,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   DELETE EVENT BUTTON
-========================== */
+/*DELETE EVENT BUTTON*/
 
 .delete-event {
     background: #e74c3c;
@@ -534,9 +436,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   EMPTY MESSAGE
-========================== */
+/* EMPTY MESSAGE*/
 
 .empty-message {
     text-align: center;
@@ -547,9 +447,7 @@ nav ul li a.active {
 }
 
 
-/* ==========================
-   FOOTER
-========================== */
+/* FOOTER*/
 
 footer {
     margin-top: 40px;
@@ -564,9 +462,7 @@ footer {
 }
 
 
-/* ==========================
-   RESPONSIVE DESIGN
-========================== */
+/* RESPONSIVE DESIGN */
 
 @media (max-width: 900px) {
 

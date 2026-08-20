@@ -1,15 +1,8 @@
-/* =========================================
-   Task Management JavaScript
-   File: js/tasks.js
-========================================= */
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const taskForm = document.getElementById("taskForm");
     const taskTableBody = document.getElementById("taskTableBody");
     const searchTask = document.getElementById("searchTask");
-
-    /* Modal elements */
     const taskModal = document.getElementById("taskModal");
     const openTaskModal = document.getElementById("openTaskModal");
     const closeTaskModal = document.querySelector(".close");
@@ -19,9 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let editTaskId = null;
 
 
-    /* =========================================
-       OPEN ADD TASK MODAL
-    ========================================= */
+    // open add task
 
     openTaskModal.addEventListener("click", function () {
 
@@ -39,9 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /* =========================================
-       CLOSE MODAL
-    ========================================= */
+    // close add task
 
     closeTaskModal.addEventListener("click", function () {
 
@@ -52,11 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         editTaskId = null;
 
     });
-
-
-    /* =========================================
-       CLOSE MODAL WHEN CLICKING OUTSIDE
-    ========================================= */
+    // close when clicked outside 
 
     window.addEventListener("click", function (event) {
 
@@ -73,9 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /* =========================================
-       DISPLAY TASKS
-    ========================================= */
+    //display tasks
 
     function displayTasks(taskList = tasks) {
 
@@ -100,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const row = document.createElement("tr");
 
 
-            /* Priority Class */
+            // Priority Class 
 
             let priorityClass = "";
 
@@ -121,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            /* Status Class */
+            // Status Class 
 
             let statusClass = "";
 
@@ -203,16 +186,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /* =========================================
-       ADD / UPDATE TASK
-    ========================================= */
+    //add update task
 
     taskForm.addEventListener("submit", function (event) {
 
         event.preventDefault();
 
-
-        /* Get form values */
 
         const taskName =
             document.getElementById("taskName").value.trim();
@@ -251,9 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        /* =========================================
-           UPDATE EXISTING TASK
-        ========================================= */
+        //update existing task
 
         if (editTaskId !== null) {
 
@@ -292,9 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        /* =========================================
-           ADD NEW TASK
-        ========================================= */
+        //add new task
 
         else {
 
@@ -323,16 +298,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        /* Save to LocalStorage */
-
         localStorage.setItem(
             "tasks",
             JSON.stringify(tasks)
         );
 
-
-        /* Clear form */
 
         taskForm.reset();
 
@@ -349,9 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /* =========================================
-       EDIT TASK
-    ========================================= */
+    //edit task
 
     window.editTask = function (id) {
 
@@ -406,9 +374,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 
-    /* =========================================
-       DELETE TASK
-    ========================================= */
+    //delete task
 
     window.deleteTask = function (id) {
 
@@ -445,9 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 
-    /* =========================================
-       SEARCH TASKS
-    ========================================= */
+    //search task
 
     searchTask.addEventListener("input", function () {
 
@@ -497,10 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /* =========================================
-       SECURITY FUNCTION
-       Prevent HTML injection
-    ========================================= */
+    //  Prevent HTML injection
 
     function escapeHTML(value) {
 
@@ -512,10 +473,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-    /* =========================================
-       LOAD TASKS WHEN PAGE OPENS
-    ========================================= */
 
     displayTasks();
 

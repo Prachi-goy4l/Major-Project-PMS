@@ -7,28 +7,20 @@
     <title>Task Management</title>
 
     <link rel="stylesheet" href="../CSS/task.css">
+    <link rel="stylesheet" href="../CSS/Index.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
-
-    <!-- Header -->
-
     <header>
-
         <h1>Project Management System</h1>
-
     </header>
-
-
-    <!-- Navigation -->
-
     <nav>
 
         <ul>
 
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="index.html">Dashboard</a></li>
 
             <li><a href="projects.html">Projects</a></li>
 
@@ -47,10 +39,12 @@
 
     <div class="container">
 
-        <h2>
-            <i class="fa-solid fa-list-check"></i>
-            Task Management
-        </h2>
+        <div class="page-heading">
+            <h2>
+                <i class="fa-solid fa-list-check"></i>
+                Task Management
+            </h2>
+        </div>
 
 
         <!-- Search + Add Task -->
@@ -115,7 +109,7 @@
         <!-- Task Table -->
 
         <div class="table-box">
-            <h3>Task List</h3>
+            <h3 style="margin: 5px;">Task List</h3>
             <table>
                 <thead>
                     <tr>
@@ -129,7 +123,6 @@
                     </tr>
                 </thead>
                 <tbody id="taskTableBody">
-                    <!-- JavaScript will load tasks here -->
                 </tbody>
             </table>
         </div>
