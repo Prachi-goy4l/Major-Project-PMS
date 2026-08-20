@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calendar - Project Management System</title>
+
+    <link rel="stylesheet" href="../CSS/calender.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ==========================
+         HEADER
+    =========================== -->
+
+    <header>
+        <h1>Project Management System</h1>
+    </header>
+
+
+    <!-- ==========================
+         NAVIGATION
+    =========================== -->
+
+    <nav>
+        <ul>
+
+            <li>
+                <a href="index.html">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="projects.html">
+                    <i class="fa-solid fa-folder"></i>
+                    Projects
+                </a>
+            </li>
+
+            <li>
+                <a href="tasks.html">
+                    <i class="fa-solid fa-list-check"></i>
+                    Tasks
+                </a>
+            </li>
+
+            <li>
+                <a href="team.html">
+                    <i class="fa-solid fa-users"></i>
+                    Team
+                </a>
+            </li>
+
+            <li>
+                <a href="calendar.html" class="active">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Calendar
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+
+    <!-- ==========================
+         MAIN CONTAINER
+    =========================== -->
+
+    <div class="container">
+
+
+        <!-- Page Heading -->
+
+        <div class="page-heading">
+
+            <h2>
+                <i class="fa-solid fa-calendar-days"></i>
+                Project Calendar
+            </h2>
+
+            <p>
+                Manage project deadlines, tasks and important events.
+            </p>
+
+        </div>
+
+
+        <!-- ==========================
+             ADD EVENT FORM
+        =========================== -->
+
+        <div class="form-box">
+
+            <h3>
+                <i class="fa-solid fa-plus"></i>
+                Add New Event
+            </h3>
+
+
+            <form id="eventForm">
+
+
+                <!-- Event Title -->
+
+                <input
+                    type="text"
+                    id="eventTitle"
+                    placeholder="Event Title"
+                    required
+                >
+
+
+                <!-- Event Date -->
+
+                <input
+                    type="date"
+                    id="eventDate"
+                    required
+                >
+
+
+                <!-- Event Type -->
+
+                <select id="eventType" required>
+
+                    <option value="">
+                        Select Event Type
+                    </option>
+
+                    <option value="Project Deadline">
+                        Project Deadline
+                    </option>
+
+                    <option value="Task Deadline">
+                        Task Deadline
+                    </option>
+
+                    <option value="Meeting">
+                        Meeting
+                    </option>
+
+                    <option value="Milestone">
+                        Milestone
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <!-- Description -->
+
+                <textarea
+                    id="eventDescription"
+                    placeholder="Event Description"
+                ></textarea>
+
+
+                <!-- Submit -->
+
+                <button type="submit">
+
+                    <i class="fa-solid fa-calendar-plus"></i>
+
+                    Add Event
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ==========================
+             CALENDAR
+        =========================== -->
+
+        <div class="calendar-box">
+
+            <div class="calendar-header">
+
+                <button id="prevMonth" class="calendar-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+
+                <h3 id="monthYear">
+                    August 2026
+                </h3>
+
+
+                <button id="nextMonth" class="calendar-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+            </div>
+
+
+            <!-- Days -->
+
+            <div class="calendar-weekdays">
+
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+
+            </div>
+
+
+            <!-- Calendar Dates -->
+
+            <div
+                class="calendar-days"
+                id="calendarDays">
+            </div>
+
+        </div>
+
+
+        <!-- ==========================
+             UPCOMING EVENTS
+        =========================== -->
+
+        <div class="events-box">
+
+            <div class="box-header">
+
+                <h3>
+                    <i class="fa-solid fa-clock"></i>
+                    Upcoming Events
+                </h3>
+
+            </div>
+
+
+            <div id="eventsList">
+
+                <p class="empty-message">
+                    No upcoming events.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==========================
+         FOOTER
+    =========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Project Management System
+        </p>
+
+    </footer>
+
+
+    <script src="js/calendar.js"></script>
+
+</body>
+
+</html>

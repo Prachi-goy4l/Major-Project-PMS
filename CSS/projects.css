@@ -1,0 +1,549 @@
+/* =========================================
+   Project Management System
+   File: css/projectfile.css
+========================================= */
+
+
+/* ---------- RESET ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ---------- BODY ---------- */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    min-height: 100vh;
+}
+
+
+/* ---------- HEADER ---------- */
+
+header {
+    background: #2f4559;
+    color: white;
+    padding: 18px 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+
+/* ---------- NAVIGATION ---------- */
+
+nav {
+    background: #344d63;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav ul li a {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 15px 22px;
+    transition: 0.3s ease;
+}
+
+nav ul li a:hover {
+    background: #20b89a;
+}
+
+nav ul li a.active {
+    background: #20b89a;
+    color: white;
+}
+
+
+/* ---------- MAIN CONTAINER ---------- */
+
+.container {
+    width: 90%;
+    max-width: 1250px;
+    margin: 30px auto;
+}
+
+
+/* =================================================
+   PROJECT HEADING + ADD BUTTON
+================================================= */
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #ffffff;
+
+    padding: 25px 22px;
+
+    border-radius: 10px;
+
+    margin-bottom: 25px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+.page-heading h2 {
+    color: #263f55;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+
+.page-heading h2 i {
+    color: #14b88a;
+    margin-right: 10px;
+}
+
+
+/* ---------- ADD PROJECT BUTTON ---------- */
+
+.add-project-btn {
+    border: none;
+
+    background: #2f4559;
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+.add-project-btn:hover {
+    background: #20b89a;
+}
+
+.add-project-btn i {
+    margin-right: 6px;
+}
+
+
+/* ---------- TABLE BOX ---------- */
+
+.table-box {
+    background: #ffffff;
+
+    padding: 22px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+    overflow-x: auto;
+}
+
+
+.table-box h3 {
+    color: #263f55;
+    font-size: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+/* ---------- TABLE ---------- */
+
+.table-box table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+
+.table-box thead {
+    background: #2f4559;
+    color: white;
+}
+
+
+.table-box th {
+    padding: 14px 12px;
+
+    text-align: left;
+
+    font-size: 14px;
+}
+
+
+.table-box td {
+    padding: 13px 12px;
+
+    border-bottom: 1px solid #e1e5e8;
+
+    font-size: 14px;
+}
+
+
+.table-box tbody tr:hover {
+    background: #f5f9fc;
+}
+
+
+/* ---------- STATUS ---------- */
+
+.status {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.status.not-started {
+    background: #eeeeee;
+    color: #555;
+}
+
+
+.status.in-progress {
+    background: #fff0cf;
+    color: #9a6500;
+}
+
+
+.status.completed {
+    background: #2fc477;
+    color: white;
+}
+
+
+/* ---------- ACTION BUTTONS ---------- */
+
+.edit-btn,
+.delete-btn {
+    border: none;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    margin-right: 5px;
+}
+
+
+.edit-btn {
+    background: #f2a311;
+}
+
+
+.edit-btn:hover {
+    background: #d98d00;
+}
+
+
+.delete-btn {
+    background: #e74c3c;
+}
+
+
+.delete-btn:hover {
+    background: #c93628;
+}
+
+
+/* =================================================
+   PROJECT POPUP
+================================================= */
+
+.modal {
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+
+/* ---------- POPUP BOX ---------- */
+
+.modal-content {
+    background: #ffffff;
+
+    width: 90%;
+    max-width: 600px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    border-radius: 10px;
+
+    padding: 25px;
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ---------- POPUP HEADER ---------- */
+
+.modal-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #e0e0e0;
+
+    margin-bottom: 20px;
+}
+
+
+.modal-header h2 {
+    color: #263f55;
+
+    font-size: 22px;
+}
+
+
+.modal-header h2 i {
+    color: #14b88a;
+
+    margin-right: 7px;
+}
+
+
+/* ---------- CLOSE BUTTON ---------- */
+
+.close-btn {
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+
+.close-btn:hover {
+    color: #e74c3c;
+}
+
+
+/* ---------- FORM ---------- */
+
+#projectForm {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+
+.form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 16px;
+}
+
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.form-group label {
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #34495e;
+}
+
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: 1px solid #d2d8de;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    outline: none;
+
+    background: white;
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #20b89a;
+
+    box-shadow: 0 0 0 3px rgba(32, 184, 154, 0.12);
+}
+
+
+.form-group textarea {
+    min-height: 100px;
+
+    resize: vertical;
+}
+
+
+/* ---------- SUBMIT BUTTON ---------- */
+
+.submit-project-btn {
+    border: none;
+
+    background: #2864df;
+
+    color: white;
+
+    padding: 13px;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-top: 5px;
+}
+
+
+.submit-project-btn:hover {
+    background: #1f55c4;
+}
+
+
+/* ---------- FOOTER ---------- */
+
+footer {
+    background: #2f4559;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 18px;
+
+    margin-top: 40px;
+}
+
+
+footer p {
+    font-size: 14px;
+}
+
+
+/* =================================================
+   RESPONSIVE
+================================================= */
+
+@media (max-width: 768px) {
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+    }
+
+    nav ul li a {
+        padding: 12px 15px;
+    }
+
+    .page-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .add-project-btn {
+        width: 100%;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 94%;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 21px;
+    }
+
+    .page-heading h2 {
+        font-size: 22px;
+    }
+
+    .modal-content {
+        padding: 18px;
+    }
+
+}
