@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    {
+      "id": "2",
+      "taskName": "Set up database schema",
+      "description": "Define the tables and relationships required by the project management system.",
+      "assignedTo": "Diya Patel",
+      "priority": "High",
+      "deadline": "2026-09-08",
+      "status": "To Do"
+    },
+    {
+      "id": "3",
+      "taskName": "Review authentication flow",
+      "description": "Test login and signup validation and document any issues.",
+      "assignedTo": "Kabir Mehta",
+      "priority": "Low",
+      "deadline": "2026-09-01",
+      "status": "Completed"
+    },
+    {
+      "taskName": "abc",
+      "description": "kjlj",
+      "assignedTo": "kj",
+      "priority": "Low",
+      "deadline": "2026-08-27",
+      "status": "In Progress",
+      "id": "UpBKHO1sebc"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
