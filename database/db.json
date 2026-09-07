@@ -28,5 +28,38 @@
       "id": "UpBKHO1sebc"
     }
   ],
+  "teamMembers": [
+    {
+      "id": "1",
+      "name": "Diya Patel",
+      "email": "diya@example.com",
+      "role": "Frontend Developer",
+      "department": "Development"
+    },
+    {
+      "id": "2",
+      "name": "Kabir Mehta",
+      "email": "kabir@example.com",
+      "role": "Backend Developer",
+      "department": "Development"
+    }
+  ],
+
+  "events": [
+    {
+      "id": "1",
+      "title": "Database Schema Deadline",
+      "date": "2026-09-08",
+      "type": "Task Deadline",
+      "description": "Complete the database schema."
+    },
+    {
+      "id": "2",
+      "title": "Authentication Review",
+      "date": "2026-09-01",
+      "type": "Meeting",
+      "description": "Review the authentication flow."
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
