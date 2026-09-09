@@ -1,72 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const API_URL = "http://localhost:3000/tasks";
 
-    const taskForm = document.getElementById("taskForm");
-    const taskTableBody = document.getElementById("taskTableBody");
-    const searchTask = document.getElementById("searchTask");
-    const taskModal = document.getElementById("taskModal");
-    const openTaskModal = document.getElementById("openTaskModal");
-    const closeTaskModal = document.querySelector(".close");
+  const taskForm = document.getElementById("taskForm");
+  const taskTableBody = document.getElementById("taskTableBody");
+  const searchTask = document.getElementById("searchTask");
+  const taskModal = document.getElementById("taskModal");
+  const openTaskModal = document.getElementById("openTaskModal");
+  const closeTaskModal = document.querySelector(".close");
+  let tasks = [];
+  let editTaskId = null;
 
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  function closeModal() {
+    taskModal.style.display = "none";
+    taskForm.reset();
+    editTaskId = null;
+  }
 
-    let editTaskId = null;
+  function setSubmitButton(icon, label) {
+    taskForm.querySelector("button").innerHTML = `<i class="fa-solid ${icon}"></i> ${label}`;
+  }
 
+  // Open the add-task modal.
+  openTaskModal.addEventListener("click", function () {
+    editTaskId = null;
+    taskForm.reset();
+    setSubmitButton("fa-plus", "Add Task");
+    taskModal.style.display = "flex";
+  });
 
-    // open add task
+  // Close the modal.
+  closeTaskModal.addEventListener("click", closeModal);
 
-    openTaskModal.addEventListener("click", function () {
+  // Close when clicking outside the modal.
+  window.addEventListener("click", function (event) {
+    if (event.target === taskModal) {
+      closeModal();
+    }
+  });
 
-        editTaskId = null;
+  // Render the current task list.
+  function displayTasks(taskList = tasks) {
+    taskTableBody.innerHTML = "";
 
-        taskForm.reset();
-
-        taskForm.querySelector("button").innerHTML = `
-            <i class="fa-solid fa-plus"></i>
-            Add Task
-        `;
-
-        taskModal.style.display = "flex";
-
-    });
-
-
-    // close add task
-
-    closeTaskModal.addEventListener("click", function () {
-
-        taskModal.style.display = "none";
-
-        taskForm.reset();
-
-        editTaskId = null;
-
-    });
-    // close when clicked outside 
-
-    window.addEventListener("click", function (event) {
-
-        if (event.target === taskModal) {
-
-            taskModal.style.display = "none";
-
-            taskForm.reset();
-
-            editTaskId = null;
-
-        }
-
-    });
-
-
-    //display tasks
-
-    function displayTasks(taskList = tasks) {
-
-        taskTableBody.innerHTML = "";
-
-        if (taskList.length === 0) {
-
-            taskTableBody.innerHTML = `
+    if (taskList.length === 0) {
+      taskTableBody.innerHTML = `
                 <tr>
                     <td colspan="7">
                         No tasks available
@@ -74,58 +51,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 </tr>
             `;
 
-            return;
-        }
+      return;
+    }
 
+    taskList.forEach(function (task) {
+      const row = document.createElement("tr");
 
-        taskList.forEach(function (task) {
+      const priorityClass = `priority-${task.priority.toLowerCase()}`;
+      const statusClass = {
+        "To Do": "status-todo",
+        "In Progress": "status-progress",
+        Completed: "status-completed",
+      }[task.status] || "";
 
-            const row = document.createElement("tr");
-
-
-            // Priority Class 
-
-            let priorityClass = "";
-
-            if (task.priority === "High") {
-
-                priorityClass = "priority-high";
-
-            }
-            else if (task.priority === "Medium") {
-
-                priorityClass = "priority-medium";
-
-            }
-            else {
-
-                priorityClass = "priority-low";
-
-            }
-
-
-            // Status Class 
-
-            let statusClass = "";
-
-            if (task.status === "To Do") {
-
-                statusClass = "status-todo";
-
-            }
-            else if (task.status === "In Progress") {
-
-                statusClass = "status-progress";
-
-            }
-            else if (task.status === "Completed") {
-
-                statusClass = "status-completed";
-
-            }
-
-
-            row.innerHTML = `
+      row.innerHTML = `
 
                 <td>
                     ${escapeHTML(task.taskName)}
@@ -159,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     <button
                         class="edit-btn"
-                        onclick="editTask(${task.id})">
+                        onclick='editTask(${JSON.stringify(String(task.id))})'>
 
                         <i class="fa-solid fa-pen"></i>
                         Edit
@@ -168,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     <button
                         class="delete-btn"
-                        onclick="deleteTask(${task.id})">
+                        onclick='deleteTask(${JSON.stringify(String(task.id))})'>
 
                         <i class="fa-solid fa-trash"></i>
                         Delete
@@ -179,301 +118,188 @@ document.addEventListener("DOMContentLoaded", function () {
 
             `;
 
-            taskTableBody.appendChild(row);
+      taskTableBody.appendChild(row);
+    });
+  }
 
-        });
+  // Add or update a task.
+  taskForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
+    const taskData = {
+      taskName: document.getElementById("taskName").value.trim(),
+      description: document.getElementById("taskDescription").value.trim(),
+      assignedTo: document.getElementById("assignedTo").value.trim(),
+      priority: document.getElementById("priority").value,
+      deadline: document.getElementById("deadline").value,
+      status: document.getElementById("status").value,
+    };
+
+    if (Object.values(taskData).some((value) => value === "")) {
+      alert("Please fill all fields.");
+      return;
     }
 
+    try {
+      const response = await fetch(
+        editTaskId === null ? API_URL : `${API_URL}/${editTaskId}`,
+        {
+          method: editTaskId === null ? "POST" : "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            editTaskId === null ? taskData : { id: editTaskId, ...taskData },
+          ),
+        },
+      );
 
-    //add update task
+      if (!response.ok) {
+        throw new Error("Unable to save task");
+      }
 
-    taskForm.addEventListener("submit", function (event) {
+      const savedTask = await response.json();
 
-        event.preventDefault();
-
-
-        const taskName =
-            document.getElementById("taskName").value.trim();
-
-        const description =
-            document.getElementById("taskDescription").value.trim();
-
-        const assignedTo =
-            document.getElementById("assignedTo").value.trim();
-
-        const priority =
-            document.getElementById("priority").value;
-
-        const deadline =
-            document.getElementById("deadline").value;
-
-        const status =
-            document.getElementById("status").value;
-
-
-        /* Validation */
-
-        if (
-            taskName === "" ||
-            description === "" ||
-            assignedTo === "" ||
-            priority === "" ||
-            deadline === "" ||
-            status === ""
-        ) {
-
-            alert("Please fill all fields.");
-
-            return;
-
-        }
-
-
-        //update existing task
-
-        if (editTaskId !== null) {
-
-            const taskIndex = tasks.findIndex(
-                task => task.id === editTaskId
-            );
-
-
-            if (taskIndex !== -1) {
-
-                tasks[taskIndex] = {
-
-                    id: editTaskId,
-
-                    taskName: taskName,
-
-                    description: description,
-
-                    assignedTo: assignedTo,
-
-                    priority: priority,
-
-                    deadline: deadline,
-
-                    status: status
-
-                };
-
-            }
-
-
-            alert("Task updated successfully!");
-
-            editTaskId = null;
-
-        }
-
-
-        //add new task
-
-        else {
-
-            const newTask = {
-
-                id: Date.now(),
-
-                taskName: taskName,
-
-                description: description,
-
-                assignedTo: assignedTo,
-
-                priority: priority,
-
-                deadline: deadline,
-
-                status: status
-
-            };
-
-
-            tasks.push(newTask);
-
-            alert("Task added successfully!");
-
-        }
-
-        localStorage.setItem(
-            "tasks",
-            JSON.stringify(tasks)
+      if (editTaskId === null) {
+        tasks.push(savedTask);
+        alert("Task added successfully!");
+      } else {
+        tasks = tasks.map((task) =>
+          String(task.id) === String(editTaskId) ? savedTask : task,
         );
+        alert("Task updated successfully!");
+        editTaskId = null;
+      }
+    } catch (error) {
+      alert(
+        "Could not connect to the tasks API. Start JSON Server and try again.",
+      );
+      return;
+    }
 
+    taskForm.reset();
 
-        taskForm.reset();
+    /* Close modal */
 
+    taskModal.style.display = "none";
 
-        /* Close modal */
+    /* Display updated tasks */
 
-        taskModal.style.display = "none";
+    displayTasks();
+  });
 
+  //edit task
+  window.editTask = function (id) {
+    const task = tasks.find((task) => String(task.id) === String(id));
 
-        /* Display updated tasks */
+    if (!task) {
+      return;
+    }
 
-        displayTasks();
+    /* Fill form */
 
-    });
+    document.getElementById("taskName").value = task.taskName;
 
+    document.getElementById("taskDescription").value = task.description;
 
-    //edit task
+    document.getElementById("assignedTo").value = task.assignedTo;
 
-    window.editTask = function (id) {
+    document.getElementById("priority").value = task.priority;
 
-        const task = tasks.find(
-            task => task.id === id
-        );
+    document.getElementById("deadline").value = task.deadline;
 
+    document.getElementById("status").value = task.status;
 
-        if (!task) {
-            return;
-        }
+    /* Store ID */
 
+    editTaskId = id;
 
-        /* Fill form */
+    /* Change button */
 
-        document.getElementById("taskName").value =
-            task.taskName;
-
-        document.getElementById("taskDescription").value =
-            task.description;
-
-        document.getElementById("assignedTo").value =
-            task.assignedTo;
-
-        document.getElementById("priority").value =
-            task.priority;
-
-        document.getElementById("deadline").value =
-            task.deadline;
-
-        document.getElementById("status").value =
-            task.status;
-
-
-        /* Store ID */
-
-        editTaskId = id;
-
-
-        /* Change button */
-
-        taskForm.querySelector("button").innerHTML = `
+    taskForm.querySelector("button").innerHTML = `
             <i class="fa-solid fa-pen"></i>
             Update Task
         `;
 
+    /* Open modal */
 
-        /* Open modal */
+    taskModal.style.display = "flex";
+  };
 
-        taskModal.style.display = "flex";
+  //delete task
+  window.deleteTask = async function (id) {
+    const confirmation = confirm("Are you sure you want to delete this task?");
 
-    };
-
-
-    //delete task
-
-    window.deleteTask = function (id) {
-
-        const confirmation = confirm(
-            "Are you sure you want to delete this task?"
-        );
-
-
-        if (!confirmation) {
-            return;
-        }
-
-
-        tasks = tasks.filter(
-            task => task.id !== id
-        );
-
-
-        /* Save updated data */
-
-        localStorage.setItem(
-            "tasks",
-            JSON.stringify(tasks)
-        );
-
-
-        /* Refresh table */
-
-        displayTasks();
-
-
-        alert("Task deleted successfully!");
-
-    };
-
-
-    //search task
-
-    searchTask.addEventListener("input", function () {
-
-        const searchValue =
-            searchTask.value.toLowerCase().trim();
-
-
-        const filteredTasks = tasks.filter(function (task) {
-
-            return (
-
-                task.taskName
-                    .toLowerCase()
-                    .includes(searchValue)
-
-                ||
-
-                task.description
-                    .toLowerCase()
-                    .includes(searchValue)
-
-                ||
-
-                task.assignedTo
-                    .toLowerCase()
-                    .includes(searchValue)
-
-                ||
-
-                task.priority
-                    .toLowerCase()
-                    .includes(searchValue)
-
-                ||
-
-                task.status
-                    .toLowerCase()
-                    .includes(searchValue)
-
-            );
-
-        });
-
-
-        displayTasks(filteredTasks);
-
-    });
-
-
-    //  Prevent HTML injection
-
-    function escapeHTML(value) {
-
-        const div = document.createElement("div");
-
-        div.textContent = value;
-
-        return div.innerHTML;
-
+    if (!confirmation) {
+      return;
     }
 
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to delete task");
+      }
+
+      tasks = tasks.filter((task) => String(task.id) !== String(id));
+    } catch (error) {
+      alert(
+        "Could not connect to the tasks API. Start JSON Server and try again.",
+      );
+      return;
+    }
+
+    /* Refresh table */
 
     displayTasks();
 
+    alert("Task deleted successfully!");
+  };
+
+  //search task
+  searchTask.addEventListener("input", function () {
+    const searchValue = searchTask.value.toLowerCase().trim();
+
+    const filteredTasks = tasks.filter(function (task) {
+      return (
+        task.taskName.toLowerCase().includes(searchValue) ||
+        task.description.toLowerCase().includes(searchValue) ||
+        task.assignedTo.toLowerCase().includes(searchValue) ||
+        task.priority.toLowerCase().includes(searchValue) ||
+        task.status.toLowerCase().includes(searchValue)
+      );
+    });
+
+    displayTasks(filteredTasks);
+  });
+
+  //  Prevent HTML injection
+  function escapeHTML(value) {
+    const div = document.createElement("div");
+
+    div.textContent = value;
+
+    return div.innerHTML;
+  }
+
+  async function loadTasks() {
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error("Unable to load tasks");
+      }
+
+      tasks = await response.json();
+      displayTasks();
+    } catch (error) {
+      taskTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7">Unable to load tasks. Start JSON Server on port 3000.</td>
+                </tr>
+            `;
+    }
+  }
+
+  loadTasks();
 });
