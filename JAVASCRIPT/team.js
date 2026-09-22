@@ -1,22 +1,55 @@
-//DOM ELEMENTS
+
+// DOM ELEMENTS
 
 const teamForm = document.getElementById("teamForm");
 
 const nameInput = document.getElementById("name");
+
 const emailInput = document.getElementById("email");
+
 const roleInput = document.getElementById("role");
+
 const departmentInput = document.getElementById("department");
 
 const teamBody = document.getElementById("teamBody");
 
 
-//TEAM DATA
+// TEAM DATA
 
-let teamMembers = JSON.parse(
-    localStorage.getItem("teamMembers")
-) || [];
+let teamMembers = [];
 
 let editIndex = -1;
+
+
+// LOAD TEAM MEMBERS FROM JSON SERVER
+
+async function loadTeamMembers() {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/teamMembers"
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to load team members");
+        }
+
+        teamMembers = await response.json();
+
+        displayTeamMembers();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load team members. " +
+            "Please make sure JSON Server is running."
+        );
+    }
+}
+
 
 // DISPLAY TEAM MEMBERS
 
@@ -77,15 +110,19 @@ function displayTeamMembers() {
     });
 }
 
-//ADD / UPDATE MEMBER
 
-teamForm.addEventListener("submit", function (event) {
+// ADD / UPDATE MEMBER
+
+teamForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     const name = nameInput.value.trim();
+
     const email = emailInput.value.trim();
+
     const role = roleInput.value.trim();
+
     const department = departmentInput.value.trim();
 
 
@@ -127,66 +164,109 @@ teamForm.addEventListener("submit", function (event) {
 
     if (duplicateEmail) {
 
-        alert("A team member with this email already exists.");
+        alert(
+            "A team member with this email already exists."
+        );
 
         return;
     }
 
 
-    /* Create Member Object */
+    // Create Member Object
 
     const member = {
 
         name: name,
-        email: email,
-        role: role,
-        department: department
 
+        email: email,
+
+        role: role,
+
+        department: department
     };
 
 
-    //UPDATE 
+    try {
 
-    if (editIndex !== -1) {
+        // UPDATE
 
-        teamMembers[editIndex] = member;
+        if (editIndex !== -1) {
 
-        alert("Team member updated successfully.");
+            const memberId = teamMembers[editIndex].id;
 
-        editIndex = -1;
+            const response = await fetch(
+                `http://localhost:3000/teamMembers/${memberId}`,
+                {
+                    method: "PUT",
 
-        changeButtonToAdd();
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(member)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to update member");
+            }
+
+            alert("Team member updated successfully.");
+
+            editIndex = -1;
+
+            changeButtonToAdd();
+        }
+
+
+        // ADD
+
+        else {
+
+            const response = await fetch(
+                "http://localhost:3000/teamMembers",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(member)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to add member");
+            }
+
+            alert("Team member added successfully.");
+        }
+
+
+        // Reload data
+
+        await loadTeamMembers();
+
+
+        // Clear Form
+
+        teamForm.reset();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to save team member. " +
+            "Please make sure JSON Server is running."
+        );
     }
-
-
-    // ADD
-
-    else {
-
-        teamMembers.push(member);
-
-        alert("Team member added successfully.");
-    }
-
-
-    // Save
-
-    saveTeamMembers();
-
-
-    // Refresh Table
-
-    displayTeamMembers();
-
-
-    // Clear Form 
-
-    teamForm.reset();
 
 });
 
 
-/*EDIT MEMBER*/
+// EDIT MEMBER
 
 function editMember(index) {
 
@@ -203,7 +283,7 @@ function editMember(index) {
     editIndex = index;
 
 
-    /* Change Button */
+    // Change Button
 
     teamForm.querySelector("button").innerHTML = `
         <i class="fa-solid fa-pen"></i>
@@ -211,17 +291,18 @@ function editMember(index) {
     `;
 
 
-    /* Scroll to form */
+    // Scroll to form
 
     document.querySelector(".form-box").scrollIntoView({
         behavior: "smooth"
     });
+
 }
 
 
-/*DELETE MEMBER*/
+// DELETE MEMBER
 
-function deleteMember(index) {
+async function deleteMember(index) {
 
     const member = teamMembers[index];
 
@@ -230,51 +311,56 @@ function deleteMember(index) {
     );
 
     if (!confirmDelete) {
+
         return;
     }
 
 
-    /* Delete */
+    try {
 
-    teamMembers.splice(index, 1);
+        // Delete from JSON Server
+
+        const response = await fetch(
+            `http://localhost:3000/teamMembers/${member.id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to delete member");
+        }
 
 
-    /* Save */
+        // Refresh data
 
-    saveTeamMembers();
-
-
-    /* Refresh */
-
-    displayTeamMembers();
+        await loadTeamMembers();
 
 
-    /* Reset edit mode if necessary */
+        // Reset edit mode if necessary
 
-    if (editIndex === index) {
+        if (editIndex === index) {
 
-        editIndex = -1;
+            editIndex = -1;
 
-        teamForm.reset();
+            teamForm.reset();
 
-        changeButtonToAdd();
+            changeButtonToAdd();
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to delete team member."
+        );
     }
 
 }
 
 
-/* SAVE TO LOCAL STORAGE*/
-
-function saveTeamMembers() {
-
-    localStorage.setItem(
-        "teamMembers",
-        JSON.stringify(teamMembers)
-    );
-}
-
-
-/*CHANGE BUTTON TO ADD*/
+// CHANGE BUTTON TO ADD
 
 function changeButtonToAdd() {
 
@@ -282,16 +368,17 @@ function changeButtonToAdd() {
         <i class="fa-solid fa-user-plus"></i>
         Add Member
     `;
+
 }
 
 
-/*INITIALIZE*/
+// INITIALIZE
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        displayTeamMembers();
+        loadTeamMembers();
 
     }
 );
