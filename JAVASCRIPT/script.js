@@ -1,4 +1,3 @@
-// Dashboard JavaScript
 
 // Get dashboard elements
 const totalProjects = document.getElementById("totalProjects");
