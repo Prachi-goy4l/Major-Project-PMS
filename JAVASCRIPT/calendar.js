@@ -1,6 +1,4 @@
-
-
-/*DOM ELEMENTS*/
+/* DOM ELEMENTS */
 
 const eventForm = document.getElementById("eventForm");
 
@@ -18,11 +16,9 @@ const nextMonth = document.getElementById("nextMonth");
 const eventsList = document.getElementById("eventsList");
 
 
-/*CALENDAR DATA*/
+/* CALENDAR DATA */
 
-let events = JSON.parse(
-    localStorage.getItem("calendarEvents")
-) || [];
+let events = [];
 
 
 /* Current calendar date */
@@ -30,23 +26,50 @@ let events = JSON.parse(
 let currentDate = new Date();
 
 
-/*SAVE EVENTS*/
+/* LOAD EVENTS FROM JSON SERVER */
 
-function saveEvents() {
+async function loadEvents() {
 
-    localStorage.setItem(
-        "calendarEvents",
-        JSON.stringify(events)
-    );
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/events"
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to load events");
+        }
+
+        events = await response.json();
+
+        renderCalendar();
+        displayEvents();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load events. Please make sure JSON Server is running."
+        );
+    }
 }
 
 
-/*RENDER CALENDAR*/
+/* SAVE EVENTS */
+
+async function saveEvents() {
+
+    // Events are saved directly to JSON Server
+    // through POST and DELETE requests.
+}
+
+
+/* RENDER CALENDAR */
 
 function renderCalendar() {
 
     calendarDays.innerHTML = "";
-
 
     const year = currentDate.getFullYear();
 
@@ -61,7 +84,6 @@ function renderCalendar() {
             month: "long"
         }
     );
-
 
     monthYear.textContent =
         `${monthName} ${year}`;
@@ -108,7 +130,11 @@ function renderCalendar() {
 
     /* Create calendar dates */
 
-    for (let day = 1; day <= daysInMonth; day++) {
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
 
         const dayCell =
             document.createElement("div");
@@ -252,7 +278,7 @@ function renderCalendar() {
 }
 
 
-/* FORMAT DATE*/
+/* FORMAT DATE */
 
 function formatDate(dateString) {
 
@@ -270,7 +296,7 @@ function formatDate(dateString) {
 }
 
 
-/* DISPLAY EVENTS*/
+/* DISPLAY EVENTS */
 
 function displayEvents() {
 
@@ -337,7 +363,7 @@ function displayEvents() {
 
                     <button
                         class="delete-event"
-                        onclick="deleteEvent(${event.id})">
+                        onclick="deleteEvent('${event.id}')">
 
                         <i class="fa-solid fa-trash"></i>
 
@@ -356,11 +382,11 @@ function displayEvents() {
 }
 
 
-/* ADD EVENT*/
+/* ADD EVENT */
 
 eventForm.addEventListener(
     "submit",
-    function (e) {
+    async function (e) {
 
         e.preventDefault();
 
@@ -398,8 +424,6 @@ eventForm.addEventListener(
 
         const newEvent = {
 
-            id: Date.now(),
-
             title: title,
 
             date: date,
@@ -411,42 +435,65 @@ eventForm.addEventListener(
         };
 
 
-        /* Add to array */
+        try {
 
-        events.push(newEvent);
+            /* Add event to JSON Server */
 
+            const response = await fetch(
+                "http://localhost:3000/events",
+                {
+                    method: "POST",
 
-        /* Save */
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-        saveEvents();
-
-
-        /* Refresh */
-
-        displayEvents();
-
-        renderCalendar();
-
-
-        /* Reset form */
-
-        eventForm.reset();
+                    body: JSON.stringify(newEvent)
+                }
+            );
 
 
-        alert(
-            "Event added successfully!"
-        );
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to add event"
+                );
+            }
+
+
+            /* Get updated events */
+
+            await loadEvents();
+
+
+            /* Reset form */
+
+            eventForm.reset();
+
+
+            alert(
+                "Event added successfully!"
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to add event. Please make sure JSON Server is running."
+            );
+        }
     }
 );
 
 
-/*  DELETE EVENT */
+/* DELETE EVENT */
 
-function deleteEvent(id) {
+async function deleteEvent(id) {
 
     const event =
         events.find(
-            item => item.id === id
+            item => String(item.id) === String(id)
         );
 
 
@@ -466,29 +513,42 @@ function deleteEvent(id) {
     }
 
 
-    /* Remove event */
+    try {
 
-    events =
-        events.filter(
-            item => item.id !== id
+        /* Delete event from JSON Server */
+
+        const response = await fetch(
+            `http://localhost:3000/events/${id}`,
+            {
+                method: "DELETE"
+            }
         );
 
 
-    /* Save */
+        if (!response.ok) {
 
-    saveEvents();
+            throw new Error(
+                "Unable to delete event"
+            );
+        }
 
 
-    /* Refresh */
+        /* Get updated events */
 
-    displayEvents();
+        await loadEvents();
 
-    renderCalendar();
+    } catch (error) {
 
+        console.error(error);
+
+        alert(
+            "Unable to delete event. Please make sure JSON Server is running."
+        );
+    }
 }
 
 
-/* PREVIOUS MONTH*/
+/* PREVIOUS MONTH */
 
 prevMonth.addEventListener(
     "click",
@@ -520,15 +580,13 @@ nextMonth.addEventListener(
 );
 
 
-/*INITIALIZE CALENDAR*/
+/* INITIALIZE CALENDAR */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        renderCalendar();
-
-        displayEvents();
+        loadEvents();
 
     }
 );
