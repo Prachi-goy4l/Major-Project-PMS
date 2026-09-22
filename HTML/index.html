@@ -6,103 +6,66 @@
 
     <title>Dashboard - Project Management System</title>
 
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="../CSS/style.css">
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>.
 
 <body>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
+<!-- TOP NAVIGATION -->
+    <header class="top-header">
 
-        <div class="logo">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Project Manager</span>
-        </div>
+        <h1>Project Management System</h1>
+    </header>
+    <nav>
 
-        <ul class="sidebar-menu">
+        <ul>
 
-            <li>
-                <a href="index.html" class="active">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+            <li><a href="index.html" class="active">Dashboard</a></li>
 
-            <li>
-                <a href="projects.html">
-                    <i class="fa-solid fa-folder"></i>
-                    <span>Projects</span>
-                </a>
-            </li>
+            <li><a href="projects.html">Projects</a></li>
 
-            <li>
-                <a href="tasks.html">
-                    <i class="fa-solid fa-list-check"></i>
-                    <span>Tasks</span>
-                </a>
-            </li>
+            <li><a href="tasks.html" >Tasks</a></li>
 
-            <li>
-                <a href="team.html">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Team</span>
-                </a>
-            </li>
+            <li><a href="team.html">Team</a></li>
 
-            <li>
-                <a href="calendar.html">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Calendar</span>
-                </a>
-            </li>
+            <li><a href="calendar.html">Calendar</a></li>
 
         </ul>
 
-        <div class="sidebar-bottom">
-
-            <a href="profile.html">
-                <i class="fa-solid fa-user"></i>
-                <span>Profile</span>
-            </a>
-
-            <a href="index.html" id="logoutBtn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-
-        </div>
-
-    </aside>
+    </nav>
 
 
-    <!-- Main Content -->
+
+<!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- Top Header -->
-        <header class="top-header">
-
-            <div>
-                <h1>Dashboard</h1>
-                <p>Welcome to your Project Management System</p>
-            </div>
-
-            <div class="user-info">
-                <i class="fa-solid fa-circle-user"></i>
-                <span id="userName">Admin</span>
-            </div>
-
-        </header>
-
-
-        <!-- Dashboard Content -->
         <section class="dashboard-content">
 
+            <!-- Dashboard Heading -->
 
-            <!-- Statistics Cards -->
+            <div class="dashboard-heading">
 
+                <div class="dashboard-box">
+                    <h2>Dashboard</h2>
+
+                    <p>
+                        Welcome to your Project Management System
+                    </p>
+                </div>
+
+                <div class="user-info">
+                    <i class="fa-solid fa-circle-user"></i>
+                    <span id="userName">Admin</span>
+                </div>
+
+            </div>
+
+
+
+<!-- STATISTICS  -->
             <div class="stats-container">
 
                 <div class="stat-card">
@@ -163,8 +126,7 @@
             </div>
 
 
-            <!-- Dashboard Grid -->
-
+<!-- DASHBOARD GRID -->
             <div class="dashboard-grid">
 
 
@@ -185,7 +147,9 @@
 
                     </div>
 
-                    <div class="project-list" id="recentProjects">
+                    <div
+                        class="project-list"
+                        id="recentProjects">
 
                         <div class="empty-message">
                             No projects available.
@@ -194,7 +158,6 @@
                     </div>
 
                 </div>
-
 
 
                 <!-- Task Overview -->
@@ -239,8 +202,7 @@
             </div>
 
 
-            <!-- Quick Actions -->
-
+<!-- QUICK ACTIONS -->
             <div class="quick-actions">
 
                 <h2>Quick Actions</h2>
@@ -271,13 +233,20 @@
 
             </div>
 
-
         </section>
 
     </main>
 
+<!-- FOOTER -->
+    <footer class="footer">
 
-    <script src="../JAVASCRIPT/script.js"></script>
+        © 2026 Project Management System
+
+    </footer>
+
+
+    <script src="js/dashboard.js"></script>
+    
 
 </body>
 </html>
