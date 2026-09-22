@@ -5,10 +5,14 @@
       "name": "Admin User",
       "email": "admin@example.com",
       "password": "admin123"
+    },
+    {
+      "name": "Saumya Singla",
+      "email": "saumya.singla26@gmail.com",
+      "password": "Saumya123",
+      "id": "wVeeDDODQfA"
     }
-    
   ],
-
   "projects": [
     {
       "id": "1",
@@ -72,7 +76,6 @@
       "department": "Development"
     }
   ],
-
   "events": [
     {
       "id": "1",
@@ -88,5 +91,6 @@
       "type": "Meeting",
       "description": "Review the authentication flow."
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
