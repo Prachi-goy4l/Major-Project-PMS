@@ -1,12 +1,7 @@
-
 //    Project Management System
-//    File: js/projects.js
-
-
 document.addEventListener("DOMContentLoaded", function () {
 
     // Get Elements added
-    
 
     const modal = document.getElementById("projectModal");
     const openBtn = document.getElementById("openProjectModal");
@@ -16,135 +11,94 @@ document.addEventListener("DOMContentLoaded", function () {
     const projectTableBody = document.getElementById("projectTableBody");
 
 
-   
-    // Open Add Project Popup
+    // Store projects
+
+    let projects = [];
+
+    // Store project being edited
+
+    let editIndex = -1;
 
 
-    openBtn.addEventListener("click", function () {
+    // Load Projects from JSON Server
 
-        modal.style.display = "flex";
+    async function loadProjects() {
 
-        document.body.style.overflow = "hidden";
+        try {
 
-    });
+            const response = await fetch(
+                "http://localhost:3000/projects"
+            );
 
+            if (!response.ok) {
+                throw new Error("Unable to load projects");
+            }
 
-   
-    // Close Popup
-   
+            projects = await response.json();
 
-    closeBtn.addEventListener("click", function () {
+            projectTableBody.innerHTML = "";
 
-        modal.style.display = "none";
+            projects.forEach(function (project, index) {
 
-        document.body.style.overflow = "auto";
+                createProjectRow(project, index);
 
-    });
+            });
 
+        } catch (error) {
 
-    
-    // Closing Popup When Clicking Outside
-    
+            console.error(error);
 
-    window.addEventListener("click", function (event) {
-
-        if (event.target === modal) {
-
-            modal.style.display = "none";
-
-            document.body.style.overflow = "auto";
-
+            alert(
+                "Unable to load projects. Please make sure JSON Server is running."
+            );
         }
-
-    });
-
-
-    // Added New Project
-   
-
-    projectForm.addEventListener("submit", function (event) {
-
-        event.preventDefault();
+    }
 
 
-        // Get form values
+    // Create Project Row
 
-        const projectName =
-            document.getElementById("projectName").value.trim();
+    function createProjectRow(project, index) {
 
-        const members =
-            document.getElementById("members").value.trim();
-
-        const description =
-            document.getElementById("description").value.trim();
-
-        const startDate =
-            document.getElementById("startDate").value;
-
-        const deadline =
-            document.getElementById("deadline").value;
-
-        const status =
-            document.getElementById("status").value;
-
-
-        
-        // project Dates
-        
-
-        if (deadline < startDate) {
-
-            alert("Deadline cannot be before the start date.");
-
-            return;
-
-        }
-
-
-       
         // Create Status Class
-        
 
         let statusClass = "";
 
-        if (status === "Not Started") {
+        if (project.status === "Not Started") {
 
             statusClass = "not-started";
 
-        } else if (status === "In Progress") {
+        } else if (project.status === "In Progress") {
 
             statusClass = "in-progress";
 
-        } else if (status === "Completed") {
+        } else if (project.status === "Completed") {
 
             statusClass = "completed";
 
         }
 
 
-        
         // Create New Table Row
-       
 
         const row = document.createElement("tr");
 
         row.innerHTML = `
 
-            <td>${projectName}</td>
+            <td>${project.projectName}</td>
 
-            <td>${description}</td>
+            <td>${project.description}</td>
 
-            <td>${startDate}</td>
+            <td>${project.startDate}</td>
 
-            <td>${deadline}</td>
+            <td>${project.deadline}</td>
 
             <td>
                 <span class="status ${statusClass}">
-                    ${status}
+                    ${project.status}
                 </span>
             </td>
 
-            <td>${members || "Not Assigned"}</td>
+            <td>${project.members || "Not Assigned"}</td>
 
             <td>
 
@@ -168,59 +122,108 @@ document.addEventListener("DOMContentLoaded", function () {
         projectTableBody.appendChild(row);
 
 
-        
-        // Add Delete 
+        // Add Delete
 
         const deleteBtn =
             row.querySelector(".delete-btn");
 
-        deleteBtn.addEventListener("click", function () {
+        deleteBtn.addEventListener("click", async function () {
 
             const confirmDelete =
-                confirm("Are you sure you want to delete this project?");
+                confirm(
+                    "Are you sure you want to delete this project?"
+                );
 
-            if (confirmDelete) {
+            if (!confirmDelete) {
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:3000/projects/${project.id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to delete project"
+                    );
+                }
+
+
+                // Remove row
 
                 row.remove();
 
+
+                // Update projects array
+
+                projects =
+                    projects.filter(function (item) {
+
+                        return item.id !== project.id;
+
+                    });
+
+
+                alert("Project deleted successfully!");
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to delete project."
+                );
             }
 
         });
 
 
-        
         // Add Edit Function
-       
 
         const editBtn =
             row.querySelector(".edit-btn");
 
         editBtn.addEventListener("click", function () {
 
+            // Find project index
+
+            editIndex = projects.findIndex(
+                function (item) {
+
+                    return item.id === project.id;
+
+                }
+            );
+
+
             // Put existing values back into form
 
             document.getElementById("projectName").value =
-                projectName;
+                project.projectName;
 
             document.getElementById("members").value =
-                members;
+                project.members || "";
 
             document.getElementById("description").value =
-                description;
+                project.description;
 
             document.getElementById("startDate").value =
-                startDate;
+                project.startDate;
 
             document.getElementById("deadline").value =
-                deadline;
+                project.deadline;
 
             document.getElementById("status").value =
-                status;
-
-
-            // Remove old row
-
-            row.remove();
+                project.status;
 
 
             // Open popup
@@ -231,102 +234,397 @@ document.addEventListener("DOMContentLoaded", function () {
 
         });
 
+    }
 
-        // Reset Form
-      
+
+    // Open Add Project Popup
+
+    openBtn.addEventListener("click", function () {
+
+        // Reset edit mode
+
+        editIndex = -1;
 
         projectForm.reset();
 
+        modal.style.display = "flex";
 
-       
-        // Close Popup
-       
+        document.body.style.overflow = "hidden";
+
+    });
+
+
+    // Close Popup
+
+    closeBtn.addEventListener("click", function () {
 
         modal.style.display = "none";
 
         document.body.style.overflow = "auto";
 
+    });
 
-        
-        // Success Message
-       
 
-        alert("Project added successfully!");
+    // Closing Popup When Clicking Outside
+
+    window.addEventListener("click", function (event) {
+
+        if (event.target === modal) {
+
+            modal.style.display = "none";
+
+            document.body.style.overflow = "auto";
+
+        }
 
     });
 
 
-    
-    // Delete Existing Projects
-   
+    // Added New Project
 
-    document.querySelectorAll(".delete-btn").forEach(function (button) {
+    projectForm.addEventListener(
+        "submit",
+        async function (event) {
 
-        button.addEventListener("click", function () {
+            event.preventDefault();
 
-            const row = button.closest("tr");
 
-            const confirmDelete =
-                confirm("Are you sure you want to delete this project?");
+            // Get form values
 
-            if (confirmDelete) {
+            const projectName =
+                document.getElementById("projectName").value.trim();
 
-                row.remove();
+            const members =
+                document.getElementById("members").value.trim();
 
+            const description =
+                document.getElementById("description").value.trim();
+
+            const startDate =
+                document.getElementById("startDate").value;
+
+            const deadline =
+                document.getElementById("deadline").value;
+
+            const status =
+                document.getElementById("status").value;
+
+
+            // Project Dates
+
+            if (deadline < startDate) {
+
+                alert(
+                    "Deadline cannot be before the start date."
+                );
+
+                return;
             }
 
-        });
 
-    });
+            // Create Project Object
+
+            const project = {
+
+                projectName: projectName,
+
+                members: members,
+
+                description: description,
+
+                startDate: startDate,
+
+                deadline: deadline,
+
+                status: status
+
+            };
 
 
-    
+            try {
+
+                // UPDATE PROJECT
+
+                if (editIndex !== -1) {
+
+                    const projectId =
+                        projects[editIndex].id;
+
+
+                    const response = await fetch(
+                        `http://localhost:3000/projects/${projectId}`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify(project)
+                        }
+                    );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to update project"
+                        );
+                    }
+
+
+                    // Update local array
+
+                    projects[editIndex] = {
+                        id: projectId,
+                        ...project
+                    };
+
+
+                    alert(
+                        "Project updated successfully!"
+                    );
+
+
+                    // Reset edit mode
+
+                    editIndex = -1;
+
+                }
+
+
+                // ADD NEW PROJECT
+
+                else {
+
+                    const response = await fetch(
+                        "http://localhost:3000/projects",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify(project)
+                        }
+                    );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to add project"
+                        );
+                    }
+
+
+                    const newProject =
+                        await response.json();
+
+
+                    // Add to array
+
+                    projects.push(newProject);
+
+
+                    alert(
+                        "Project added successfully!"
+                    );
+
+                }
+
+
+                // Refresh table
+
+                projectTableBody.innerHTML = "";
+
+
+                projects.forEach(
+                    function (project, index) {
+
+                        createProjectRow(
+                            project,
+                            index
+                        );
+
+                    }
+                );
+
+
+                // Reset Form
+
+                projectForm.reset();
+
+
+                // Close Popup
+
+                modal.style.display = "none";
+
+                document.body.style.overflow = "auto";
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to save project. Please make sure JSON Server is running."
+                );
+            }
+
+        }
+    );
+
+
+    // Delete Existing Projects
+
+    document.querySelectorAll(".delete-btn").forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                async function () {
+
+                    const row =
+                        button.closest("tr");
+
+                    const confirmDelete =
+                        confirm(
+                            "Are you sure you want to delete this project?"
+                        );
+
+
+                    if (!confirmDelete) {
+                        return;
+                    }
+
+
+                    // Get project name from row
+
+                    const projectName =
+                        row.cells[0].textContent.trim();
+
+
+                    const project =
+                        projects.find(
+                            function (item) {
+
+                                return item.projectName === projectName;
+
+                            }
+                        );
+
+
+                    if (!project) {
+                        return;
+                    }
+
+
+                    try {
+
+                        const response = await fetch(
+                            `http://localhost:3000/projects/${project.id}`,
+                            {
+                                method: "DELETE"
+                            }
+                        );
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                "Unable to delete project"
+                            );
+                        }
+
+
+                        row.remove();
+
+
+                        projects =
+                            projects.filter(
+                                function (item) {
+
+                                    return item.id !== project.id;
+
+                                }
+                            );
+
+
+                        alert(
+                            "Project deleted successfully!"
+                        );
+
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        alert(
+                            "Unable to delete project."
+                        );
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
     // Edit Existing Projects
-   
 
-    document.querySelectorAll(".edit-btn").forEach(function (button) {
+    document.querySelectorAll(".edit-btn").forEach(
+        function (button) {
 
-        button.addEventListener("click", function () {
+            button.addEventListener(
+                "click",
+                function () {
 
-            const row = button.closest("tr");
+                    const row =
+                        button.closest("tr");
 
-            const cells = row.querySelectorAll("td");
-
-
-            // Get existing values
-
-            document.getElementById("projectName").value =
-                cells[0].textContent.trim();
-
-            document.getElementById("description").value =
-                cells[1].textContent.trim();
-
-            document.getElementById("startDate").value =
-                cells[2].textContent.trim();
-
-            document.getElementById("deadline").value =
-                cells[3].textContent.trim();
-
-            document.getElementById("status").value =
-                cells[4].textContent.trim();
-
-            document.getElementById("members").value =
-                cells[5].textContent.trim();
+                    const cells =
+                        row.querySelectorAll("td");
 
 
-            // Remove old row
+                    // Get existing values
 
-            row.remove();
+                    document.getElementById("projectName").value =
+                        cells[0].textContent.trim();
+
+                    document.getElementById("description").value =
+                        cells[1].textContent.trim();
+
+                    document.getElementById("startDate").value =
+                        cells[2].textContent.trim();
+
+                    document.getElementById("deadline").value =
+                        cells[3].textContent.trim();
+
+                    document.getElementById("status").value =
+                        cells[4].textContent.trim();
+
+                    document.getElementById("members").value =
+                        cells[5].textContent.trim();
 
 
-            // Open popup
+                    // Open popup
 
-            modal.style.display = "flex";
+                    modal.style.display = "flex";
 
-            document.body.style.overflow = "hidden";
+                    document.body.style.overflow = "hidden";
 
-        });
+                }
+            );
 
-    });
+        }
+    );
+
+
+    // Initialize Projects
+
+    loadProjects();
 
 });
