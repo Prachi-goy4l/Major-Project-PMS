@@ -88,6 +88,5 @@
       "type": "Meeting",
       "description": "Review the authentication flow."
     }
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
+  ]
 }

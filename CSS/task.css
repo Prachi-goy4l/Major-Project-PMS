@@ -71,7 +71,7 @@ table td {
 .edit-btn,
 .delete-btn {
   padding: 8px 12px;
-  margin-right: 5px;
+  margin: 5px;
 }
 
 .modal {
