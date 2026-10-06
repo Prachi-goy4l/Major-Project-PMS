@@ -10,164 +10,15 @@
     <title>Team Members - Project Management System</title>
 
     <link rel="stylesheet" href="../CSS/team.css">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/layout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-    <div class="app-container">
-
-        <!-- ================= SIDEBAR ================= -->
-
-        <aside class="sidebar">
-
-            <div class="logo-area">
-
-                <div class="logo">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
-
-                <div class="logo-text">
-                    <span>Project</span>
-                    <span>Management</span>
-                    <span>System</span>
-                </div>
-
-            </div>
-
-
-            <nav class="sidebar-nav">
-
-                <a href="index.html">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Dashboard</span>
-                </a>
-
-                <a href="projects.html">
-                    <i class="fa-solid fa-folder"></i>
-                    <span>Projects</span>
-                </a>
-
-                <a href="tasks.html">
-                    <i class="fa-solid fa-square-check"></i>
-                    <span>Tasks</span>
-                </a>
-
-                <a href="team.html" class="active">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Team</span>
-                </a>
-
-                <a href="calendar.html">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Calendar</span>
-                </a>
-
-            </nav>
-
-
-            <div class="sidebar-bottom">
-
-                <a href="#">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Settings</span>
-                </a>
-
-                <a href="#">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-
-            </div>
-
-
-            <div class="sidebar-footer">
-
-                <div class="plant">
-                    <i class="fa-solid fa-seedling"></i>
-                </div>
-
-                <div class="footer-links">
-                    <span>Plan</span>
-                    <span>|</span>
-                    <span>Organize</span>
-                    <span>|</span>
-                    <span>Achieve</span>
-                </div>
-
-            </div>
-
-        </aside>
-
-
-        <!-- ================= MAIN ================= -->
-
-        <main class="main-content">
-
-
-            <!-- TOP BAR -->
-
-            <header class="topbar">
-
-                <div class="search-box">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Search projects, tasks, or team members...">
-
-                </div>
-
-
-                <div class="topbar-right">
-
-                    <div class="notification">
-
-                        <i class="fa-regular fa-bell"></i>
-
-                        <span>3</span>
-
-                    </div>
-
-
-                    <div class="profile">
-
-                        <div class="profile-avatar">
-                            A
-                        </div>
-
-                        <span>Admin</span>
-
-                        <i class="fa-solid fa-chevron-down"></i>
-
-                    </div>
-
-                </div>
-
-            </header>
-
-
-            <!-- ================= PAGE ================= -->
-
-            <section class="page-content">
-
-
-                <!-- PAGE HEADING -->
-
-                <div class="page-heading">
-
-                    <div class="heading-left">
-
-                        <div class="heading-icon">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-
-                        <div>
+    <!-- Main Container -->
+     <div class="container">
 
                             <h1>Team Members</h1>
 
@@ -383,7 +234,8 @@
 
     </div>
 
-
+    <script src="../JAVASCRIPT/layout.js"></script>
+    <script>initLayout("team");</script>
     <script src="../JAVASCRIPT/team.js"></script>
 
 </body>
