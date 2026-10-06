@@ -5,7 +5,7 @@ const signupForm = document.getElementById("signupForm");
 signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    // Get form value
+    // get form value
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;

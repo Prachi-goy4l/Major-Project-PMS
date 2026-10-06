@@ -1,74 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project Management System - Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="../CSS/loginc.css">
+    <title>Project Management System - Login</title>
+
+    <link rel="stylesheet" href="../CSS/loginc.css">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
 </head>
+
 <body>
 
-<header>
+    <div class="login-page">
 
-    <h1>Project Management System</h1>
+        <!-- ================= LEFT SIDE ================= -->
 
-</header>
+        <div class="left-section">
 
+            <div class="brand">
 
-<div class="login-container">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
 
-    <div class="login-box">
-
-        <h2>Welcome Back</h2>
-
-        <p>Login to continue</p>
-
-        <form id="loginForm">
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Email Address"
-                required
-            >
-
-            <div class="password-field">
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                    required
-                >
-
-                <span onclick="togglePassword()">👁</span>
+                <div class="brand-name">
+                    <span>Project Management</span>
+                    <span>System</span>
+                </div>
 
             </div>
 
-            <button type="submit">
-                Login
-            </button>
 
-        </form>
-  <!-- signup -->
-        <p class="signup-text">
+            <div class="welcome-section">
 
-            Don't have an account?
+                <h1>
+                    Welcome
+                    <span>Back</span>
+                </h1>
 
-            <a href="signup.html">
-                Sign Up
-            </a>
+                <p>
+                    Login to your account and continue
+                    managing your projects with ease.
+                </p>
 
-        </p>
+            </div>
+
+
+            <!-- Dashboard Illustration -->
+
+            <div class="illustration">
+
+                <div class="illustration-glow"></div>
+
+                <div class="dashboard-window">
+
+                    <div class="window-top">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <div class="dashboard-content">
+
+                        <div class="dashboard-sidebar">
+
+                            <div class="mini-user blue">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div class="mini-user purple">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div class="mini-user light">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-lines">
+
+                            <div class="line long"></div>
+                            <div class="line medium"></div>
+
+                            <div class="line long"></div>
+                            <div class="line short"></div>
+
+                            <div class="line medium"></div>
+                            <div class="line long"></div>
+
+                        </div>
+
+
+                        <div class="add-circle">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Decorative plants -->
+
+                <div class="plant plant-left">
+
+                    <div class="leaf leaf-one"></div>
+                    <div class="leaf leaf-two"></div>
+                    <div class="stem"></div>
+
+                </div>
+
+
+                <div class="plant plant-right">
+
+                    <div class="leaf leaf-one"></div>
+                    <div class="leaf leaf-two"></div>
+                    <div class="stem"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SIDE ================= -->
+
+        <div class="right-section">
+
+            <div class="login-box">
+
+                <div class="form-heading">
+
+                    <h2>Welcome Back</h2>
+
+                    <p>
+                        Login to continue your journey
+                    </p>
+
+                </div>
+
+
+                <form id="loginForm">
+
+
+                    <!-- Email -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter your email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                        </div>
+
+                        <span
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button type="submit">
+
+                        <span>Login</span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Signup -->
+
+                <p class="signup-text">
+
+                    Don't have an account?
+
+                    <a href="signup.html">
+                        Sign Up
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
-<script src="../JAVASCRIPT/login.js"></script>
+    <script src="../JAVASCRIPT/login.js"></script>
 
 </body>
+
 </html>

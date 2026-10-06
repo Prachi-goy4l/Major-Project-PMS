@@ -1,85 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project Management System - Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="../CSS/signup.css">
+    <title>Project Management System - Sign Up</title>
+
+    <link rel="stylesheet" href="../CSS/signup.css">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
 </head>
+
 <body>
 
-<header>
-    <h1>Project Management System</h1>
-</header>
+    <div class="signup-page">
 
-<div class="signup-container">
+        <!-- ================= LEFT SIDE ================= -->
 
-    <div class="signup-box">
+        <div class="left-section">
 
-        <h2>Create Account</h2>
-        <p>Register to continue</p>
+            <div class="brand">
 
-        <form id="signupForm">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
 
-            <input
-                type="text"
-                id="name"
-                placeholder="Full Name"
-                required
-            >
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Email Address"
-                required
-            >
-
-            <div class="password-field">
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                    required
-                >
-
-                <span onclick="togglePassword('password')">👁</span>
+                <div class="brand-name">
+                    <span>Project Management</span>
+                    <span>System</span>
+                </div>
 
             </div>
 
-            <div class="password-field">
 
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm Password"
-                    required
-                >
+            <div class="welcome-section">
 
-                <span onclick="togglePassword('confirmPassword')">👁</span>
+                <h1>
+                    Build Your
+                    <span>Workspace</span>
+                </h1>
+
+                <p>
+                    Create your account and start managing
+                    your projects today.
+                </p>
 
             </div>
 
-            <button type="submit">
-                Create Account
-            </button>
 
-        </form>
+            <!-- Dashboard Illustration -->
 
-        <p class="login-text">
-            Already have an account?
-            <a href="login.html">Login</a>
-        </p>
+            <div class="illustration">
+
+                <div class="illustration-glow"></div>
+
+                <div class="dashboard-window">
+
+                    <div class="window-top">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <div class="dashboard-content">
+
+                        <div class="dashboard-sidebar">
+
+                            <div class="mini-user blue">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div class="mini-user purple">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                            <div class="mini-user light">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-lines">
+
+                            <div class="line long"></div>
+                            <div class="line medium"></div>
+
+                            <div class="line long"></div>
+                            <div class="line short"></div>
+
+                            <div class="line medium"></div>
+                            <div class="line long"></div>
+
+                        </div>
+
+
+                        <div class="add-circle">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Decorative plants -->
+
+                <div class="plant plant-left">
+
+                    <div class="leaf leaf-one"></div>
+                    <div class="leaf leaf-two"></div>
+                    <div class="stem"></div>
+
+                </div>
+
+
+                <div class="plant plant-right">
+
+                    <div class="leaf leaf-one"></div>
+                    <div class="leaf leaf-two"></div>
+                    <div class="stem"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SIDE ================= -->
+
+        <div class="right-section">
+
+            <div class="signup-box">
+
+                <div class="form-heading">
+
+                    <h2>Create Account</h2>
+
+                    <p>
+                        Join and start your journey
+                    </p>
+
+                </div>
+
+
+                <form id="signupForm">
+
+
+                    <!-- Full Name -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="name">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                placeholder="Enter your full name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter your email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Create a password"
+                                required
+                            >
+
+                        </div>
+
+                        <span
+                            class="password-toggle"
+                            onclick="togglePassword('password')"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+
+                    </div>
+
+
+                    <!-- Confirm Password -->
+
+                    <div class="input-group">
+
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+
+                        <div class="input-content">
+
+                            <label for="confirmPassword">
+                                Confirm Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Confirm your password"
+                                required
+                            >
+
+                        </div>
+
+                        <span
+                            class="password-toggle"
+                            onclick="togglePassword('confirmPassword')"
+                        >
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+
+                    </div>
+
+
+                    <!-- Submit -->
+
+                    <button type="submit">
+
+                        <span>Sign Up</span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Login -->
+
+                <p class="login-text">
+
+                    Already have an account?
+
+                    <a href="login.html">
+                        Login
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
-<script src="../JAVASCRIPT/signup.js"></script>
+    <script src="../JAVASCRIPT/signup.js"></script>
 
 </body>
+
 </html>

@@ -1,4 +1,5 @@
 
+
 // Get dashboard elements
 const totalProjects = document.getElementById("totalProjects");
 const totalTasks = document.getElementById("totalTasks");
