@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start JSON Server",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"json-server@0.17.4",
+				"--watch",
+				"database/db.json",
+				"--host",
+				"127.0.0.1",
+				"--port",
+				"3000"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
