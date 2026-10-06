@@ -11,6 +11,12 @@
       "email": "saumya.singla26@gmail.com",
       "password": "Saumya123",
       "id": "wVeeDDODQfA"
+    },
+    {
+      "name": "prachi",
+      "email": "prachii@gmail.com",
+      "password": "prachi123",
+      "id": "oMD41z9_mjM"
     }
   ],
   "projects": [
@@ -66,14 +72,42 @@
       "name": "Diya Patel",
       "email": "diya@example.com",
       "role": "Frontend Developer",
-      "department": "Development"
+      "department": "Development",
+      "project": "Project Management System"
     },
     {
       "id": "2",
       "name": "Kabir Mehta",
       "email": "kabir@example.com",
       "role": "Backend Developer",
-      "department": "Development"
+      "department": "Development",
+      "project": "Project Management System"
+    },
+    {
+      "name": "Prachi",
+      "email": "prachi123@gmail.com",
+      "role": "Data Analyst",
+      "department": "Analysis",
+      "id": "3hiK1qU81Qo",
+      "project": "Website Development"
+    },
+    {
+      "name": "prachi",
+      "email": "prachii@gmail.com",
+      "role": "developer",
+      "department": "ca",
+      "id": "7wqy0izaD8M",
+      "project": "Website Development"
+    },
+    {
+      "name": "Saumya",
+      "email": "saumya123@gmail.com",
+      "role": "Front End Developer",
+      "department": "CA",
+      "project": "Website Development",
+      "projectId": "2",
+      "projectName": "Website Development",
+      "id": "5kvAMFaeV2c"
     }
   ],
   "events": [
