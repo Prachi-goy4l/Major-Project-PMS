@@ -1,3 +1,59 @@
+const SEARCH_API = "http://localhost:3000";
+let searchableRecordsPromise;
+
+async function searchEverything(query) {
+    const searchTerm = query.trim().toLocaleLowerCase();
+
+    if (!searchTerm) {
+        return [];
+    }
+
+    if (!searchableRecordsPromise) {
+        const collections = [
+            { type: "Project", endpoint: "projects", href: "projects.html", icon: "fa-folder" },
+            { type: "Task", endpoint: "tasks", href: "tasks.html", icon: "fa-square-check" },
+            { type: "Team Member", endpoint: "teamMembers", href: "team.html", icon: "fa-users" },
+            { type: "Event", endpoint: "events", href: "calendar.html", icon: "fa-calendar-days" }
+        ];
+
+        searchableRecordsPromise = Promise.all(collections.map(async function (collection) {
+            const response = await fetch(`${SEARCH_API}/${collection.endpoint}`);
+
+            if (!response.ok) {
+                throw new Error(`Unable to search ${collection.endpoint}`);
+            }
+
+            const records = await response.json();
+            return records.map(function (record) {
+                const fields = Object.values(record)
+                    .filter(function (value) {
+                        return typeof value === "string" || typeof value === "number";
+                    })
+                    .map(String);
+
+                return {
+                    type: collection.type,
+                    href: collection.href,
+                    icon: collection.icon,
+                    title: record.projectName || record.taskName || record.name || record.title || "Untitled",
+                    detail: record.description || record.email || record.status || record.role || "",
+                    searchText: fields.join(" ").toLocaleLowerCase()
+                };
+            });
+        })).then(function (results) {
+            return results.flat();
+        }).catch(function (error) {
+            searchableRecordsPromise = null;
+            throw error;
+        });
+    }
+
+    const records = await searchableRecordsPromise;
+    return records.filter(function (record) {
+        return record.searchText.includes(searchTerm);
+    });
+}
+
 function initLayout(activePage) {
     const links = [
         { page: "dashboard", label: "Dashboard", href: "index.html", icon: "fa-house" },
@@ -42,20 +98,44 @@ function initLayout(activePage) {
         <button class="layout-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
             <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
-        <label class="layout-search">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            <input type="search" placeholder="Search projects, tasks, or team members..." aria-label="Search">
-        </label>
+        <div class="layout-search-wrapper">
+            <label class="layout-search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" placeholder="Search projects, tasks, or team members..." aria-label="Search" autocomplete="off">
+            </label>
+            <div class="layout-search-results" role="listbox" aria-label="Search results" hidden></div>
+        </div>
         <div class="layout-user">
             <button class="layout-notifications" type="button" aria-label="Notifications">
                 <i class="fa-regular fa-bell" aria-hidden="true"></i>
                 <span class="layout-notification-count" aria-label="3 unread notifications">3</span>
             </button>
-            <span class="layout-avatar" aria-hidden="true">A</span>
-            <span class="layout-user-name">Admin</span>
-            <i class="fa-solid fa-chevron-down layout-user-chevron" aria-hidden="true"></i>
+            <div class="layout-account">
+                <button class="layout-account-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                    <span class="layout-avatar" aria-hidden="true"></span>
+                    <span class="layout-user-name"></span>
+                    <i class="fa-solid fa-chevron-down layout-user-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="layout-account-menu" role="menu" hidden>
+                    <button class="layout-signout" type="button" role="menuitem">
+                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                        Sign out
+                    </button>
+                </div>
+            </div>
         </div>
     `;
+
+    let signedInUser = null;
+    try {
+        signedInUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+    } catch (error) {
+        console.error("Unable to read signed-in user:", error);
+    }
+
+    const displayName = signedInUser && signedInUser.name ? signedInUser.name : "Admin";
+    topbar.querySelector(".layout-avatar").textContent = displayName.charAt(0).toUpperCase();
+    topbar.querySelector(".layout-user-name").textContent = displayName;
 
     const pageContent = document.createElement("div");
     pageContent.className = "layout-main";
@@ -88,5 +168,109 @@ function initLayout(activePage) {
             menuToggle.setAttribute("aria-expanded", "false");
             menuToggle.setAttribute("aria-label", "Open navigation menu");
         });
+    });
+
+    const searchInput = topbar.querySelector(".layout-search input");
+    const searchResults = topbar.querySelector(".layout-search-results");
+    let searchRequest = 0;
+    const accountToggle = topbar.querySelector(".layout-account-toggle");
+    const accountMenu = topbar.querySelector(".layout-account-menu");
+
+    accountToggle.addEventListener("click", function () {
+        const isOpen = accountMenu.hidden;
+        accountMenu.hidden = !isOpen;
+        accountToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    topbar.querySelector(".layout-signout").addEventListener("click", function () {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+    });
+
+    function renderSearchResults(results, message) {
+        searchResults.replaceChildren();
+
+        if (message) {
+            const status = document.createElement("p");
+            status.className = "layout-search-message";
+            status.textContent = message;
+            searchResults.appendChild(status);
+            searchResults.hidden = false;
+            return;
+        }
+
+        results.forEach(function (result) {
+            const link = document.createElement("a");
+            link.className = "layout-search-result";
+            link.href = result.href;
+            link.setAttribute("role", "option");
+
+            const icon = document.createElement("i");
+            icon.className = `fa-solid ${result.icon}`;
+            icon.setAttribute("aria-hidden", "true");
+
+            const text = document.createElement("span");
+            text.className = "layout-search-result-text";
+
+            const title = document.createElement("strong");
+            title.textContent = result.title;
+
+            const detail = document.createElement("small");
+            detail.textContent = `${result.type}${result.detail ? ` · ${result.detail}` : ""}`;
+
+            text.append(title, detail);
+            link.append(icon, text);
+            searchResults.appendChild(link);
+        });
+
+        searchResults.hidden = results.length === 0;
+    }
+
+    searchInput.addEventListener("input", async function () {
+        const query = searchInput.value.trim();
+        const requestId = ++searchRequest;
+
+        if (!query) {
+            renderSearchResults([]);
+            return;
+        }
+
+        renderSearchResults([], "Searching...");
+
+        try {
+            const results = await searchEverything(query);
+
+            if (requestId !== searchRequest) {
+                return;
+            }
+
+            renderSearchResults(results, results.length ? "" : "No matching results.");
+        } catch (error) {
+            if (requestId !== searchRequest) {
+                return;
+            }
+
+            console.error("Search error:", error);
+            renderSearchResults([], "Search is unavailable. Make sure JSON Server is running.");
+        }
+    });
+
+    searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            renderSearchResults([]);
+            searchInput.blur();
+            accountMenu.hidden = true;
+            accountToggle.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!topbar.querySelector(".layout-search-wrapper").contains(event.target)) {
+            renderSearchResults([]);
+        }
+        if (!topbar.querySelector(".layout-account").contains(event.target)) {
+            accountMenu.hidden = true;
+            accountToggle.setAttribute("aria-expanded", "false");
+        }
     });
 }
