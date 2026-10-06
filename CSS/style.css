@@ -29,7 +29,7 @@ body {
 
 header {
     grid-area: header;
-    background: #2c3e50;
+    background: black;
     color: #fff;
     text-align: center;
     padding: 18px;
@@ -111,7 +111,23 @@ nav ul li a.active {
     font-size: 13px;
 }
 
+.dashboard-box {
+    background: white;
+    padding: 25px;
+    margin: 5px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-sizing : border-box;
+    flex:1;
+}
 
+.dashboard-box h2 {
+    margin-top: 0;
+}
+
+.dashboard-box p {
+    margin-bottom: 0;
+}
 
 .user-info {
     display: flex;

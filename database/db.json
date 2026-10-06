@@ -5,10 +5,26 @@
       "name": "Admin User",
       "email": "admin@example.com",
       "password": "admin123"
+    },
+    {
+      "name": "Saumya Singla",
+      "email": "saumya.singla26@gmail.com",
+      "password": "Saumya123",
+      "id": "wVeeDDODQfA"
+    },
+    {
+      "name": "Prachi",
+      "email": "prachi12@gmail.com",
+      "password": "password12",
+      "id": "BfuaW-YwWqA"
+    },
+    {
+      "name": "Prachi Bhardwaj",
+      "email": "prachi@gmail.com",
+      "password": "prachi123",
+      "id": "Ov8NM3_1Alw"
     }
-    
   ],
-
   "projects": [
     {
       "id": "1",
@@ -72,7 +88,6 @@
       "department": "Development"
     }
   ],
-
   "events": [
     {
       "id": "1",
@@ -88,5 +103,6 @@
       "type": "Meeting",
       "description": "Review the authentication flow."
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
