@@ -1,105 +1,194 @@
 // DOM ELEMENTS
-const teamForm = document.getElementById("teamForm");
-const nameInput = document.getElementById("name");
-const emailInput = document.getElementById("email");
-const roleInput = document.getElementById("role");
-const departmentInput =document.getElementById("department");
-const projectNameInput =document.getElementById("projectName");
-const projectsList =document.getElementById("projectsList");
-const projectDetails =document.getElementById("projectDetails");
-const projectList =document.getElementById("projectList");
-const memberFormBox =document.getElementById("memberFormBox");
-const addTeamMemberBtn =document.getElementById("addTeamMemberBtn");
-const closeFormBtn =document.getElementById("closeFormBtn");
-const cancelBtn =document.getElementById("cancelBtn");
-const searchInput =document.getElementById("searchInput");
+
+const teamForm =
+    document.getElementById("teamForm");
+
+const nameInput =
+    document.getElementById("name");
+
+const emailInput =
+    document.getElementById("email");
+
+const roleInput =
+    document.getElementById("role");
+
+const departmentInput =
+    document.getElementById("department");
+
+const projectNameInput =
+    document.getElementById("projectName");
+
+const projectsList =
+    document.getElementById("projectsList");
+
+const projectDetails =
+    document.getElementById("projectDetails");
+
+const projectList =
+    document.getElementById("projectList");
+
+const memberFormBox =
+    document.getElementById("memberFormBox");
+
+const addTeamMemberBtn =
+    document.getElementById("addTeamMemberBtn");
+
+const closeFormBtn =
+    document.getElementById("closeFormBtn");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
+
+const searchInput =
+    document.getElementById("searchInput");
+
 
 // JSON SERVER URLS
+
 const PROJECTS_API =
     "http://localhost:3000/projects";
 
 const TEAM_MEMBERS_API =
     "http://localhost:3000/teamMembers";
 
+
 // TEAM DATA
+
 let teamMembers = [];
 let editMemberId = null;
 let projects = [];
 let selectedProjectId = null;
 
+
 // OPEN ADD FORM
-addTeamMemberBtn.addEventListener(
-    "click",
-    function () {
-        memberFormBox.classList.add("show");
-        teamForm.reset();
-        editMemberId = null;
-        changeButtonToAdd();
-        nameInput.focus();
-    }
-);
 
-// CLOSE FORM
-closeFormBtn.addEventListener(
-    "click",
-    function () {
-        closeForm();
-    }
-);
+if (addTeamMemberBtn) {
 
-cancelBtn.addEventListener(
-    "click",
-    function () {
-        closeForm();
-    }
-);
+    addTeamMemberBtn.addEventListener(
+        "click",
+        function () {
 
-function closeForm() {
-    memberFormBox.classList.remove("show");
-    teamForm.reset();
-    editMemberId = null;
-    changeButtonToAdd();
+            memberFormBox.classList.add("show");
+
+            teamForm.reset();
+
+            editMemberId = null;
+
+            changeButtonToAdd();
+
+            nameInput.focus();
+
+        }
+    );
+
 }
 
+
+// CLOSE FORM
+
+if (closeFormBtn) {
+
+    closeFormBtn.addEventListener(
+        "click",
+        function () {
+
+            closeForm();
+
+        }
+    );
+
+}
+
+
+if (cancelBtn) {
+
+    cancelBtn.addEventListener(
+        "click",
+        function () {
+
+            closeForm();
+
+        }
+    );
+
+}
+
+
+function closeForm() {
+
+    memberFormBox.classList.remove("show");
+
+    teamForm.reset();
+
+    editMemberId = null;
+
+    changeButtonToAdd();
+
+}
+
+
+// =====================================================
 // LOAD PROJECTS AND TEAM MEMBERS
+// =====================================================
+
 async function loadTeamMembers() {
+
     try {
+
         // LOAD PROJECTS
+
         const projectsResponse =
             await fetch(PROJECTS_API);
 
         if (!projectsResponse.ok) {
+
             throw new Error(
                 "Unable to load projects"
             );
+
         }
 
         projects =
             await projectsResponse.json();
+
+
         // LOAD TEAM MEMBERS
+
         const membersResponse =
             await fetch(TEAM_MEMBERS_API);
 
         if (!membersResponse.ok) {
+
             throw new Error(
                 "Unable to load team members"
             );
+
         }
 
         teamMembers =
             await membersResponse.json();
+
+
         console.log("Projects:", projects);
-        console.log("Team Members:", teamMembers);
+
+        console.log(
+            "Team Members:",
+            teamMembers
+        );
+
 
         // SELECT FIRST PROJECT
+
         if (
             selectedProjectId === null &&
             projects.length > 0
         ) {
+
             selectedProjectId =
                 projects[0].id;
 
         }
+
 
         // DISPLAY
 
@@ -118,20 +207,27 @@ async function loadTeamMembers() {
             error
         );
 
-        projectsList.innerHTML = `
 
-            <div class="no-members">
+        if (projectsList) {
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            projectsList.innerHTML = `
 
-                <p>
-                    Unable to load projects or team members.
-                </p>
+                <div class="no-members">
 
-            </div>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
-        `;
+                    <p>
+                        Unable to load projects or team members.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
     }
+
 }
 
 
@@ -167,6 +263,7 @@ function getMemberProjectName(member) {
 
 // =====================================================
 // GET MEMBERS FOR PROJECT
+// SUPPORTS MULTIPLE PROJECTS
 // =====================================================
 
 function getMembersForProject(project) {
@@ -176,31 +273,79 @@ function getMembersForProject(project) {
             .trim()
             .toLowerCase();
 
+
     return teamMembers.filter(
         function (member) {
+
+
+            // -----------------------------------------
+            // MULTIPLE PROJECTS
+            // -----------------------------------------
+
+            if (
+                Array.isArray(
+                    member.projectIds
+                )
+            ) {
+
+                const projectIdMatch =
+                    member.projectIds.some(
+                        function (id) {
+
+                            return (
+                                String(id) ===
+                                String(project.id)
+                            );
+
+                        }
+                    );
+
+
+                if (projectIdMatch) {
+
+                    return true;
+
+                }
+
+            }
+
+
+            // -----------------------------------------
+            // SINGLE PROJECT ID
+            // -----------------------------------------
+
+            if (
+                member.projectId !== undefined &&
+                String(member.projectId) ===
+                String(project.id)
+            ) {
+
+                return true;
+
+            }
+
+
+            // -----------------------------------------
+            // PROJECT NAME
+            // -----------------------------------------
 
             const memberProjectName =
                 getMemberProjectName(member)
                     .trim()
                     .toLowerCase();
 
-            // Support both formats:
-            // projectId
-            // project
 
-            const projectIdMatch =
-                member.projectId !== undefined &&
-                String(member.projectId) ===
-                String(project.id);
-
-            const projectNameMatch =
+            if (
                 memberProjectName ===
-                projectName;
+                projectName
+            ) {
 
-            return (
-                projectIdMatch ||
-                projectNameMatch
-            );
+                return true;
+
+            }
+
+
+            return false;
 
         }
     );
@@ -214,27 +359,59 @@ function getMembersForProject(project) {
 
 function displayProjects() {
 
+    if (!projectsList) {
+        return;
+    }
+
+
     projectsList.innerHTML = "";
+
+
+    if (projects.length === 0) {
+
+        projectsList.innerHTML = `
+
+            <div class="no-project">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                <h3>
+                    No Projects
+                </h3>
+
+                <p>
+                    No projects are available.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
 
     projects.forEach(
         function (project) {
+
 
             const projectName =
                 getProjectName(project) ||
                 "Unnamed Project";
 
+
             const description =
                 project.description ||
                 "Project description";
+
 
             const status =
                 project.status ||
                 "Not Started";
 
 
-            // -----------------------------------------
             // COUNT MEMBERS
-            // -----------------------------------------
 
             const members =
                 getMembersForProject(project);
@@ -242,6 +419,7 @@ function displayProjects() {
 
             const card =
                 document.createElement("div");
+
 
             card.className =
                 "project-card";
@@ -255,6 +433,7 @@ function displayProjects() {
                 card.classList.add("active");
 
             }
+
 
             card.innerHTML = `
 
@@ -323,6 +502,7 @@ function displayProjects() {
                     selectedProjectId =
                         project.id;
 
+
                     displayProjects();
 
                     displayTeamMembers();
@@ -345,13 +525,20 @@ function displayProjects() {
 
 function populateProjectList() {
 
+    if (!projectList) {
+        return;
+    }
+
+
     projectList.innerHTML = "";
+
 
     projects.forEach(
         function (project) {
 
             const projectName =
                 getProjectName(project);
+
 
             if (!projectName) {
 
@@ -363,8 +550,10 @@ function populateProjectList() {
             const option =
                 document.createElement("option");
 
+
             option.value =
                 projectName;
+
 
             projectList.appendChild(option);
 
@@ -379,6 +568,11 @@ function populateProjectList() {
 // =====================================================
 
 function displayTeamMembers() {
+
+    if (!projectDetails) {
+        return;
+    }
+
 
     const project =
         projects.find(
@@ -428,9 +622,7 @@ function displayTeamMembers() {
         "Project description";
 
 
-    // ---------------------------------------------
     // GET MEMBERS
-    // ---------------------------------------------
 
     const members =
         getMembersForProject(project);
@@ -480,9 +672,7 @@ function displayTeamMembers() {
         );
 
 
-    // ---------------------------------------------
     // NO MEMBERS
-    // ---------------------------------------------
 
     if (members.length === 0) {
 
@@ -505,15 +695,15 @@ function displayTeamMembers() {
     }
 
 
-    // ---------------------------------------------
     // DISPLAY MEMBERS
-    // ---------------------------------------------
 
     members.forEach(
         function (member) {
 
+
             const card =
                 document.createElement("div");
+
 
             card.className =
                 "member-card";
@@ -602,9 +792,7 @@ function displayTeamMembers() {
             `;
 
 
-            // -----------------------------------------
             // EDIT
-            // -----------------------------------------
 
             const editButton =
                 card.querySelector(
@@ -624,9 +812,7 @@ function displayTeamMembers() {
             );
 
 
-            // -----------------------------------------
             // DELETE
-            // -----------------------------------------
 
             const deleteButton =
                 card.querySelector(
@@ -668,22 +854,24 @@ teamForm.addEventListener(
         const name =
             nameInput.value.trim();
 
+
         const email =
             emailInput.value.trim();
+
 
         const role =
             roleInput.value.trim();
 
+
         const department =
             departmentInput.value.trim();
+
 
         const projectName =
             projectNameInput.value.trim();
 
 
-        // ---------------------------------------------
         // VALIDATION
-        // ---------------------------------------------
 
         if (
             name === "" ||
@@ -706,7 +894,9 @@ teamForm.addEventListener(
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
-        if (!emailPattern.test(email)) {
+        if (
+            !emailPattern.test(email)
+        ) {
 
             alert(
                 "Please enter a valid email address."
@@ -717,9 +907,7 @@ teamForm.addEventListener(
         }
 
 
-        // ---------------------------------------------
         // FIND PROJECT
-        // ---------------------------------------------
 
         const project =
             projects.find(
@@ -728,9 +916,12 @@ teamForm.addEventListener(
                     const currentName =
                         getProjectName(item);
 
+
                     return (
-                        currentName.toLowerCase() ===
-                        projectName.toLowerCase()
+                        currentName
+                            .toLowerCase() ===
+                        projectName
+                            .toLowerCase()
                     );
 
                 }
@@ -778,6 +969,57 @@ teamForm.addEventListener(
             }
 
 
+            // KEEP EXISTING PROJECTS
+
+            let projectIds = [];
+
+
+            if (
+                Array.isArray(
+                    existingMember.projectIds
+                )
+            ) {
+
+                projectIds =
+                    [...existingMember.projectIds];
+
+            }
+            else if (
+                existingMember.projectId !==
+                undefined
+            ) {
+
+                projectIds = [
+                    existingMember.projectId
+                ];
+
+            }
+
+
+            // ADD CURRENT PROJECT IF NOT ALREADY ASSIGNED
+
+            const alreadyAssigned =
+                projectIds.some(
+                    function (id) {
+
+                        return (
+                            String(id) ===
+                            String(project.id)
+                        );
+
+                    }
+                );
+
+
+            if (!alreadyAssigned) {
+
+                projectIds.push(
+                    project.id
+                );
+
+            }
+
+
             const updatedMember = {
 
                 ...existingMember,
@@ -797,7 +1039,10 @@ teamForm.addEventListener(
                     project.id,
 
                 projectName:
-                    getProjectName(project)
+                    getProjectName(project),
+
+                projectIds:
+                    projectIds
 
             };
 
@@ -878,7 +1123,8 @@ teamForm.addEventListener(
 
                     return (
                         member.email &&
-                        member.email.toLowerCase() ===
+                        member.email
+                            .toLowerCase() ===
                         email.toLowerCase()
                     );
 
@@ -918,7 +1164,11 @@ teamForm.addEventListener(
                 project.id,
 
             projectName:
-                getProjectName(project)
+                getProjectName(project),
+
+            projectIds: [
+                project.id
+            ]
 
         };
 
@@ -1035,11 +1285,36 @@ function editMember(memberId) {
         member.id;
 
 
-    selectedProjectId =
-        member.projectId ||
-        findProjectIdByName(
-            getMemberProjectName(member)
-        );
+    // FIND CURRENT PROJECT
+
+    if (
+        member.projectId !==
+        undefined
+    ) {
+
+        selectedProjectId =
+            member.projectId;
+
+    }
+    else if (
+        Array.isArray(
+            member.projectIds
+        ) &&
+        member.projectIds.length > 0
+    ) {
+
+        selectedProjectId =
+            member.projectIds[0];
+
+    }
+    else {
+
+        selectedProjectId =
+            findProjectIdByName(
+                getMemberProjectName(member)
+            );
+
+    }
 
 
     memberFormBox.classList.add(
@@ -1069,7 +1344,16 @@ function editMember(memberId) {
 // FIND PROJECT ID BY NAME
 // =====================================================
 
-function findProjectIdByName(projectName) {
+function findProjectIdByName(
+    projectName
+) {
+
+    if (!projectName) {
+
+        return null;
+
+    }
+
 
     const project =
         projects.find(
@@ -1213,51 +1497,54 @@ function changeButtonToAdd() {
 // SEARCH
 // =====================================================
 
-searchInput.addEventListener(
-    "input",
-    function () {
+if (searchInput) {
 
-        const search =
-            searchInput.value
-                .toLowerCase()
-                .trim();
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+            const search =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
 
 
-        const cards =
-            document.querySelectorAll(
-                ".project-card"
+            const cards =
+                document.querySelectorAll(
+                    ".project-card"
+                );
+
+
+            cards.forEach(
+                function (card) {
+
+                    const text =
+                        card.innerText
+                            .toLowerCase();
+
+
+                    if (
+                        text.includes(search)
+                    ) {
+
+                        card.style.display =
+                            "flex";
+
+                    }
+                    else {
+
+                        card.style.display =
+                            "none";
+
+                    }
+
+                }
             );
 
+        }
+    );
 
-        cards.forEach(
-            function (card) {
-
-                const text =
-                    card.innerText
-                        .toLowerCase();
-
-
-                if (
-                    text.includes(search)
-                ) {
-
-                    card.style.display =
-                        "flex";
-
-                }
-
-                else {
-
-                    card.style.display =
-                        "none";
-
-                }
-
-            }
-        );
-
-    }
-);
+}
 
 
 // =====================================================
