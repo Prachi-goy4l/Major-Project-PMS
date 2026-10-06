@@ -1,105 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Management</title>
+
+    <title>Team Members - Project Management System</title>
+
     <link rel="stylesheet" href="../CSS/team.css">
     <link rel="stylesheet" href="../CSS/style.css">
     <link rel="stylesheet" href="../CSS/layout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
     <!-- Main Container -->
      <div class="container">
 
+                            <h1>Team Members</h1>
 
-        <!-- Page Heading -->
-        <div class="page-heading">
+                            <p>
+                                Manage team members and view their project assignments.
+                            </p>
 
-            <h2>
-                <i class="fa-solid fa-users"></i>
-                Team Management
-            </h2>
+                        </div>
 
-            <p>
-                Manage your team members and their details.
-            </p>
-
-        </div>
+                    </div>
 
 
-        <!-- Add Member Form -->
-        <div class="form-box">
-            <h3>Add Team Member</h3>
+                    <button
+                        type="button"
+                        id="addTeamMemberBtn"
+                        class="add-team-btn">
 
-            <form id="teamForm">
+                        <i class="fa-solid fa-plus"></i>
 
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Enter Member Name"
-                    required
-                >
+                        Add Team Member
 
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Enter Email"
-                    required
-                >
+                    </button>
 
-                <input
-                    type="text"
-                    id="role"
-                    placeholder="Enter Role"
-                    required
-                >
+                </div>
 
-                <input
-                    type="text"
-                    id="department"
-                    placeholder="Enter Department"
-                    required
-                >
 
-                <button type="submit">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Add Member
-                </button>
+                <!-- ================= ADD MEMBER FORM ================= -->
 
-            </form>
-        </div>
+                <div
+                    class="form-box"
+                    id="memberFormBox">
 
-        <!-- Team Members Table -->
-        <div class="table-box">
+                    <div class="form-title">
 
-            <h3>Team Members</h3>
+                        <div>
 
-            <table id="teamTable">
+                            <h3>Add Team Member</h3>
 
-                <thead>
+                            <p>
+                                Add a member to an existing project.
+                            </p>
 
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Department</th>
-                        <th>Actions</th>
-                    </tr>
+                        </div>
 
-                </thead>
+                        <button
+                            type="button"
+                            id="closeFormBtn"
+                            class="close-form">
 
-                <tbody id="teamBody">
+                            <i class="fa-solid fa-xmark"></i>
 
-                    <!-- Data from JavaScript -->
+                        </button>
 
-                </tbody>
+                    </div>
 
-            </table>
 
-        </div>
+                    <form id="teamForm">
+
+                        <div class="form-field">
+
+                            <label for="name">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                placeholder="Enter full name"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter email address"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="department">
+                                Department
+                            </label>
+
+                            <input
+                                type="text"
+                                id="department"
+                                placeholder="Enter department"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="projectName">
+                                Project Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="projectName"
+                                list="projectList"
+                                placeholder="Select or enter project name"
+                                required>
+
+                            <datalist id="projectList"></datalist>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="role">
+                                Role in Project
+                            </label>
+
+                            <input
+                                type="text"
+                                id="role"
+                                placeholder="e.g. Developer"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-buttons">
+
+                            <button
+                                type="button"
+                                id="cancelBtn"
+                                class="cancel-btn">
+
+                                Cancel
+
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="save-member-btn">
+
+                                <i class="fa-solid fa-user-plus"></i>
+
+                                Add Member
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ================= MAIN TEAM AREA ================= -->
+
+                <div class="team-layout">
+
+
+                    <!-- ================= PROJECTS ================= -->
+
+                    <div class="projects-panel">
+
+                        <div class="panel-heading">
+
+                            <h2>Projects</h2>
+
+                            <p>
+                                Click on a project to view its team members.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            id="projectsList"
+                            class="projects-list">
+
+                            <!-- Projects generated dynamically -->
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= MEMBERS ================= -->
+
+                    <div class="members-panel">
+
+                        <div id="projectDetails">
+
+                            <!-- Project details generated dynamically -->
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
 
     </div>
 
@@ -108,4 +239,5 @@
     <script src="../JAVASCRIPT/team.js"></script>
 
 </body>
+
 </html>
