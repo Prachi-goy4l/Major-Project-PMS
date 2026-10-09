@@ -116,21 +116,5 @@
       "id": "5kvAMFaeV2c"
     }
   ],
-  "events": [
-    {
-      "id": "1",
-      "title": "Database Schema Deadline",
-      "date": "2026-09-08",
-      "type": "Task Deadline",
-      "description": "Complete the database schema."
-    },
-    {
-      "id": "2",
-      "title": "Authentication Review",
-      "date": "2026-09-01",
-      "type": "Meeting",
-      "description": "Review the authentication flow."
-    }
-  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
