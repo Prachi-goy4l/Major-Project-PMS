@@ -1,229 +1,182 @@
 
+document.addEventListener("DOMContentLoaded", function () {
 
-// Get dashboard elements
-const totalProjects = document.getElementById("totalProjects");
-const totalTasks = document.getElementById("totalTasks");
-const completedTasks = document.getElementById("completedTasks");
-const totalMembers = document.getElementById("totalMembers");
+    // Get Started buttons
+    const getStartedButtons = document.querySelectorAll(
+        '.nav-button, .primary-btn'
+    );
 
-const todoTasks = document.getElementById("todoTasks");
-const progressTasks = document.getElementById("progressTasks");
-const doneTasks = document.getElementById("doneTasks");
+    getStartedButtons.forEach(function (button) {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
 
-const recentProjects = document.getElementById("recentProjects");
-
-// Dashboard data
-let projects = [];
-let tasks = [];
-let teamMembers = [];
+            // Open signup page
+            window.location.href = "../HTML/signup.html";
+        });
+    });
 
 
-// Load data from JSON Server
-async function refreshDashboard() {
+    // Login button
+    const loginButton = document.querySelector(
+        '.nav-links a[href="login.html"]'
+    );
 
-    try {
+    if (loginButton) {
+        loginButton.addEventListener("click", function (event) {
+            event.preventDefault();
 
-        const projectsResponse = await fetch(
-            "http://localhost:3000/projects"
-        );
-
-        const tasksResponse = await fetch(
-            "http://localhost:3000/tasks"
-        );
-
-        const teamMembersResponse = await fetch(
-            "http://localhost:3000/teamMembers"
-        );
-
-
-        // Check server responses
-        if (
-            !projectsResponse.ok ||
-            !tasksResponse.ok ||
-            !teamMembersResponse.ok
-        ) {
-            throw new Error("Unable to load dashboard data");
-        }
-
-
-        // Convert response to JSON
-        projects = await projectsResponse.json();
-
-        tasks = await tasksResponse.json();
-
-        teamMembers = await teamMembersResponse.json();
-
-
-        // Update dashboard
-        updateStatistics();
-
-        displayRecentProjects();
-
-
-    } catch (error) {
-
-        console.error("Dashboard error:", error);
-
-        alert(
-            "Unable to load dashboard data. " +
-            "Please make sure JSON Server is running."
-        );
-    }
-}
-
-
-// Update dashboard statistics
-function updateStatistics() {
-
-    // Total projects
-    if (totalProjects) {
-
-        totalProjects.textContent =
-            projects.length;
+            window.location.href = "../HTML/login.html";
+        });
     }
 
 
-    // Total tasks
-    if (totalTasks) {
+    // Explore Features button
+    const exploreButton = document.querySelector(".secondary-btn");
 
-        totalTasks.textContent =
-            tasks.length;
+    if (exploreButton) {
+        exploreButton.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const featuresSection = document.getElementById("features");
+
+            if (featuresSection) {
+                featuresSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
     }
 
 
-    // Total team members
-    if (totalMembers) {
+    // Start Managing button
+    const startManagingButton = document.querySelector(".cta-button");
 
-        totalMembers.textContent =
-            teamMembers.length;
+    if (startManagingButton) {
+        startManagingButton.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            window.location.href = "signup.html";
+        });
     }
 
 
-    // Count completed tasks
-    const completed =
-        tasks.filter(function(task) {
+    // Smooth scrolling for internal navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
 
-            return task.status === "Completed";
+        link.addEventListener("click", function (event) {
 
-        }).length;
+            const targetId = link.getAttribute("href");
 
+            if (!targetId || targetId === "#") {
+                return;
+            }
 
-    if (completedTasks) {
+            const targetElement = document.querySelector(targetId);
 
-        completedTasks.textContent =
-            completed;
-    }
+            if (targetElement) {
+                event.preventDefault();
 
-
-    // Count To Do tasks
-    const todo =
-        tasks.filter(function(task) {
-
-            return task.status === "To Do" ||
-                   task.status === "Pending";
-
-        }).length;
-
-
-    if (todoTasks) {
-
-        todoTasks.textContent =
-            todo;
-    }
-
-
-    // Count In Progress tasks
-    const inProgress =
-        tasks.filter(function(task) {
-
-            return task.status === "In Progress";
-
-        }).length;
-
-
-    if (progressTasks) {
-
-        progressTasks.textContent =
-            inProgress;
-    }
-
-
-    // Display completed task count
-    if (doneTasks) {
-
-        doneTasks.textContent =
-            completed;
-    }
-}
-
-
-// Display recent projects
-function displayRecentProjects() {
-
-    if (!recentProjects) {
-        return;
-    }
-
-
-    recentProjects.innerHTML = "";
-
-
-    // Show message when there are no projects
-    if (projects.length === 0) {
-
-        recentProjects.innerHTML = `
-            <p class="empty-message">
-                No projects available.
-            </p>
-        `;
-
-        return;
-    }
-
-
-    // Get latest five projects
-    const latestProjects =
-        projects.slice(-5).reverse();
-
-
-    latestProjects.forEach(function(project) {
-
-        const projectItem =
-            document.createElement("div");
-
-
-        projectItem.classList.add(
-            "project-item"
-        );
-
-
-        projectItem.innerHTML = `
-            <div>
-                <span class="project-name">
-                    ${project.projectName}
-                </span>
-            </div>
-
-            <span class="project-status">
-                ${project.status || "Not Started"}
-            </span>
-        `;
-
-
-        recentProjects.appendChild(
-            projectItem
-        );
+                targetElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
 
     });
-}
 
 
-// Load dashboard
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+    // Dashboard preview tab interaction
+    const previewTabs = document.querySelectorAll(".preview-tabs span");
+    const projectItems = document.querySelectorAll(".project-item");
 
-        refreshDashboard();
+    const previewData = {
+        Projects: [
+            ["Website Development", "In Progress"],
+            ["Mobile App Design", "In Progress"],
+            ["PMS Development", "Completed"]
+        ],
+        Tasks: [
+            ["Design Dashboard", "In Progress"],
+            ["Database Schema", "In Progress"],
+            ["Test Authentication", "Completed"]
+        ],
+        Team: [
+            ["Development Team", "Active"],
+            ["Design Team", "Active"],
+            ["Project Management", "Active"]
+        ]
+    };
 
+    previewTabs.forEach(function (tab) {
+
+        tab.style.cursor = "pointer";
+
+        tab.addEventListener("click", function () {
+
+            // Update active tab styling
+            previewTabs.forEach(function (item) {
+                item.classList.remove("active");
+            });
+
+            tab.classList.add("active");
+
+            const selectedTab = tab.textContent.trim();
+            const selectedData = previewData[selectedTab];
+
+            if (!selectedData) {
+                return;
+            }
+
+            projectItems.forEach(function (item, index) {
+
+                const nameElement = item.children[1];
+                const statusElement = item.querySelector(".project-status");
+
+                if (selectedData[index]) {
+                    nameElement.textContent = selectedData[index][0];
+                    statusElement.textContent = selectedData[index][1];
+                    item.style.display = "flex";
+                } else {
+                    item.style.display = "none";
+                }
+
+            });
+
+        });
+
+    });
+
+
+    // Reveal feature cards when they enter the viewport
+    const featureCards = document.querySelectorAll(".feature-card");
+
+    if ("IntersectionObserver" in window) {
+
+        const observer = new IntersectionObserver(function (entries) {
+
+            entries.forEach(function (entry) {
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+
+            });
+
+        }, {
+            threshold: 0.15
+        });
+
+        featureCards.forEach(function (card) {
+            observer.observe(card);
+        });
+
+    } else {
+        featureCards.forEach(function (card) {
+            card.classList.add("visible");
+        });
     }
-);
+
+});
