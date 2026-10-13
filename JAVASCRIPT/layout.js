@@ -56,11 +56,10 @@ async function searchEverything(query) {
 
 function initLayout(activePage) {
     const links = [
-        { page: "dashboard", label: "Dashboard", href: "index.html", icon: "fa-house" },
+        { page: "dashboard", label: "Dashboard", href: "dashboard.html", icon: "fa-house" },
         { page: "projects", label: "Projects", href: "projects.html", icon: "fa-folder" },
         { page: "tasks", label: "Tasks", href: "tasks.html", icon: "fa-square-check" },
-        { page: "team", label: "Team", href: "team.html", icon: "fa-users" },
-        { page: "calendar", label: "Calendar", href: "calendar.html", icon: "fa-calendar-days" }
+        { page: "team", label: "Team", href: "team.html", icon: "fa-users" }
     ];
 
     const sidebar = document.createElement("aside");
