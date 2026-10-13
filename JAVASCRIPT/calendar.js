@@ -128,7 +128,7 @@ function renderCalendar() {
     }
 
 
-    /* Create calendar dates */
+    /* Creating calendar dates */
 
     for (
         let day = 1;
@@ -487,7 +487,7 @@ eventForm.addEventListener(
 );
 
 
-/* DELETE EVENT */
+/* DELETE AN EVENT */
 
 async function deleteEvent(id) {
 
