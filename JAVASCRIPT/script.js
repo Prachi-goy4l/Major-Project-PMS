@@ -1,94 +1,83 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    // ================= NAVIGATION =================
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const navLinks = document.querySelector(".nav-links");
 
-    // Get Started buttons
-    const getStartedButtons = document.querySelectorAll(
-        '.nav-button, .primary-btn'
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener("click", function () {
+            const isOpen = navLinks.classList.toggle("open");
+
+            mobileMenuBtn.setAttribute("aria-expanded", String(isOpen));
+            mobileMenuBtn.innerHTML = isOpen
+                ? '<i class="fa-solid fa-xmark"></i>'
+                : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        navLinks.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("open");
+                mobileMenuBtn.setAttribute("aria-expanded", "false");
+                mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            });
+        });
+    }
+
+    // ================= ACTIVE NAV LINK =================
+    const sectionLinks = document.querySelectorAll(
+        '.nav-links a[href^="#"]'
     );
 
-    getStartedButtons.forEach(function (button) {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
+    const sections = Array.from(sectionLinks)
+        .map(link => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
 
-            // Open signup page
-            window.location.href = "../HTML/signup.html";
+    function updateActiveNavigation() {
+        let currentSection = "";
+
+        sections.forEach(function (section) {
+            if (section.getBoundingClientRect().top <= 150) {
+                currentSection = section.id;
+            }
         });
+
+        sectionLinks.forEach(function (link) {
+            link.classList.toggle(
+                "active",
+                link.getAttribute("href") === "#" + currentSection
+            );
+        });
+    }
+
+    window.addEventListener("scroll", updateActiveNavigation, {
+        passive: true
     });
+    updateActiveNavigation();
 
-
-    // Login button
-    const loginButton = document.querySelector(
-        '.nav-links a[href="login.html"]'
-    );
-
-    if (loginButton) {
-        loginButton.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            window.location.href = "../HTML/login.html";
-        });
-    }
-
-
-    // Explore Features button
-    const exploreButton = document.querySelector(".secondary-btn");
-
-    if (exploreButton) {
-        exploreButton.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            const featuresSection = document.getElementById("features");
-
-            if (featuresSection) {
-                featuresSection.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
-        });
-    }
-
-
-    // Start Managing button
-    const startManagingButton = document.querySelector(".cta-button");
-
-    if (startManagingButton) {
-        startManagingButton.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            window.location.href = "signup.html";
-        });
-    }
-
-
-    // Smooth scrolling for internal navigation links
+    // ================= SMOOTH SCROLL =================
     document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-
         link.addEventListener("click", function (event) {
-
             const targetId = link.getAttribute("href");
-
-            if (!targetId || targetId === "#") {
-                return;
-            }
-
             const targetElement = document.querySelector(targetId);
 
-            if (targetElement) {
-                event.preventDefault();
+            if (!targetElement) return;
 
-                targetElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
+            event.preventDefault();
+
+            targetElement.scrollIntoView({
+                behavior: window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                ).matches ? "auto" : "smooth",
+                block: "start"
+            });
+
+            // Update the URL fragment without reloading the page.
+            history.replaceState(null, "", targetId);
         });
-
     });
 
-
-    // Dashboard preview tab interaction
-    const previewTabs = document.querySelectorAll(".preview-tabs span");
+    // ================= DASHBOARD PREVIEW TABS =================
+    const previewTabs = document.querySelectorAll(".preview-tabs button");
     const projectItems = document.querySelectorAll(".project-item");
 
     const previewData = {
@@ -110,12 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     previewTabs.forEach(function (tab) {
-
-        tab.style.cursor = "pointer";
-
         tab.addEventListener("click", function () {
-
-            // Update active tab styling
             previewTabs.forEach(function (item) {
                 item.classList.remove("active");
             });
@@ -125,13 +109,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const selectedTab = tab.textContent.trim();
             const selectedData = previewData[selectedTab];
 
-            if (!selectedData) {
-                return;
-            }
+            if (!selectedData) return;
 
             projectItems.forEach(function (item, index) {
-
-                const nameElement = item.children[1];
+                const nameElement = item.querySelector(".preview-item-name");
                 const statusElement = item.querySelector(".project-status");
 
                 if (selectedData[index]) {
@@ -141,42 +122,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     item.style.display = "none";
                 }
-
             });
-
         });
-
     });
 
-
-    // Reveal feature cards when they enter the viewport
+    // ================= FEATURE CARD REVEAL =================
     const featureCards = document.querySelectorAll(".feature-card");
 
     if ("IntersectionObserver" in window) {
-
         const observer = new IntersectionObserver(function (entries) {
-
             entries.forEach(function (entry) {
-
                 if (entry.isIntersecting) {
                     entry.target.classList.add("visible");
                     observer.unobserve(entry.target);
                 }
-
             });
-
         }, {
-            threshold: 0.15
+            threshold: 0.12
         });
 
         featureCards.forEach(function (card) {
             observer.observe(card);
         });
-
     } else {
         featureCards.forEach(function (card) {
             card.classList.add("visible");
         });
     }
-
 });
