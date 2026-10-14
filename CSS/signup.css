@@ -6,7 +6,7 @@
 }
 
 
-/* ================= BODY ================= */
+/* body  */
 
 body {
 
@@ -17,7 +17,7 @@ body {
 }
 
 
-/* ================= MAIN PAGE ================= */
+/* main page  */
 
 .signup-page {
 
@@ -30,7 +30,7 @@ body {
 }
 
 
-/* ================= LEFT SECTION ================= */
+/* left section  */
 
 .left-section {
 
@@ -101,7 +101,7 @@ body {
 }
 
 
-/* ================= BRAND ================= */
+/* brand  */
 
 .brand {
 
@@ -165,7 +165,7 @@ body {
 }
 
 
-/* ================= WELCOME ================= */
+/* welcome  */
 
 .welcome-section {
 
@@ -211,7 +211,7 @@ body {
 }
 
 
-/* ================= ILLUSTRATION ================= */
+/* illustration  */
 
 .illustration {
 
@@ -255,7 +255,7 @@ body {
 }
 
 
-/* ================= DASHBOARD WINDOW ================= */
+/* dashboard window  */
 
 .dashboard-window {
 
@@ -476,7 +476,7 @@ body {
 }
 
 
-/* ================= PLANTS ================= */
+/* plants  */
 
 .plant {
 
@@ -583,7 +583,7 @@ body {
 }
 
 
-/* ================= RIGHT SECTION ================= */
+/* rightsection  */
 
 .right-section {
 
@@ -603,8 +603,7 @@ body {
 
 }
 
-
-/* ================= SIGNUP BOX ================= */
+/* signup box  */
 
 .signup-box {
 
@@ -646,7 +645,7 @@ body {
 }
 
 
-/* ================= INPUT GROUP ================= */
+/* input group  */
 
 .input-group {
 
@@ -683,7 +682,7 @@ body {
 }
 
 
-/* ================= INPUT ICON ================= */
+/* input icon */
 
 .input-icon {
 
@@ -702,7 +701,7 @@ body {
 }
 
 
-/* ================= INPUT CONTENT ================= */
+/* input content */
 
 .input-content {
 
@@ -756,7 +755,7 @@ body {
 }
 
 
-/* ================= PASSWORD EYE ================= */
+/* password eye */
 
 .password-toggle {
 
@@ -784,7 +783,7 @@ body {
 }
 
 
-/* ================= BUTTON ================= */
+/* button */
 
 button {
 
@@ -840,7 +839,7 @@ button i {
 }
 
 
-/* ================= LOGIN TEXT ================= */
+/* login text  */
 
 .login-text {
 
@@ -875,7 +874,7 @@ button i {
 }
 
 
-/* ================= RESPONSIVE ================= */
+/* responsive */
 
 @media (max-width: 900px) {
 

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,21 +8,17 @@
     <title>WorkSphere - Project Management</title>
 
     <link rel="stylesheet" href="../CSS/style.css">
-
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
-
-    <!-- ================= NAVBAR ================= -->
-
+    <!-- NAVBAR -->
     <header class="navbar">
-
-        <div class="logo">
-            <span class="logo-icon">◈</span>
+        <a href="landing.html" class="logo">
+            <i class="fa-solid fa-layer-group"></i>
             <span>WorkSphere</span>
-        </div>
+        </a>
 
         <nav class="nav-links">
             <a href="#features">Features</a>
@@ -29,26 +26,20 @@
             <a href="#resources">Resources</a>
             <a href="#about">About Us</a>
             <a href="login.html">Login</a>
-
-            <a href="signup.html" class="nav-button">
-                Get Started
-            </a>
+            <a href="signup.html" class="nav-button">Get Started</a>
         </nav>
 
+        <button class="mobile-menu-btn" id="mobileMenuBtn"
+                aria-label="Toggle navigation" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </header>
 
-
-    <!-- ================= HERO SECTION ================= -->
-
     <main>
-
-        <section class="hero">
-
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
             <div class="hero-content">
-
-                <span class="hero-label">
-                    PROJECT MANAGEMENT
-                </span>
+                <span class="hero-label">PROJECT MANAGEMENT</span>
 
                 <h1>
                     Plan. Collaborate. Track.<br>
@@ -61,283 +52,177 @@
                 </p>
 
                 <div class="hero-buttons">
-
-                    <a href="signup.html" class="primary-btn">
-                        Get Started
-                    </a>
-
-                    <a href="#features" class="secondary-btn">
-                        Explore Features
-                    </a>
-
+                    <a href="signup.html" class="primary-btn">Get Started</a>
+                    <a href="#features" class="secondary-btn">Explore Features</a>
                 </div>
-
             </div>
 
-
             <!-- Dashboard Preview -->
-
             <div class="dashboard-preview">
-
                 <div class="preview-header">
                     <span class="preview-title">Dashboard Preview</span>
-
-                    <div class="preview-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                    <div class="preview-dots"><span></span><span></span><span></span></div>
                 </div>
 
                 <div class="preview-tabs">
-                    <span class="active">Projects</span>
-                    <span>Tasks</span>
-                    <span>Team</span>
+                    <button class="active" type="button">Projects</button>
+                    <button type="button">Tasks</button>
+                    <button type="button">Team</button>
                 </div>
 
                 <div class="preview-line"></div>
 
                 <div class="project-item">
                     <span class="project-icon">▰</span>
-                    <span>Website Development</span>
+                    <span class="preview-item-name">Website Development</span>
                     <span class="project-status">In Progress</span>
                 </div>
 
                 <div class="project-item">
                     <span class="project-icon">▰</span>
-                    <span>Mobile App Design</span>
+                    <span class="preview-item-name">Mobile App Design</span>
                     <span class="project-status">In Progress</span>
                 </div>
 
                 <div class="project-item">
                     <span class="project-icon">▰</span>
-                    <span>PMS Development</span>
+                    <span class="preview-item-name">PMS Development</span>
                     <span class="project-status">Completed</span>
                 </div>
-
             </div>
-
         </section>
 
-
-        <!-- ================= FEATURES ================= -->
-
+        <!-- FEATURES -->
         <section class="features-section" id="features">
-
             <div class="section-heading">
-
                 <span>POWERFUL FEATURES</span>
-
-                <h2>
-                    EVERYTHING YOUR TEAM NEEDS
-                </h2>
-
+                <h2>EVERYTHING YOUR TEAM NEEDS</h2>
+                <p>Everything you need to organize work and deliver projects together.</p>
             </div>
-
 
             <div class="features-grid">
-
-                <!-- Projects -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
                     <h3>Projects</h3>
+                    <p>Manage projects, deadlines and progress from one organized workspace.</p>
+                </article>
 
-                    <p>
-                        Manage projects, deadlines and progress
-                        from one organized workspace.
-                    </p>
-
-                </div>
-
-
-                <!-- Tasks -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-check"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-check"></i></div>
                     <h3>Tasks</h3>
+                    <p>Track work, assign tasks and monitor task completion easily.</p>
+                </article>
 
-                    <p>
-                        Track work, assign tasks and monitor
-                        task completion easily.
-                    </p>
-
-                </div>
-
-
-                <!-- Teams -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-users"></i></div>
                     <h3>Teams</h3>
+                    <p>Organize team members and keep everyone connected.</p>
+                </article>
 
-                    <p>
-                        Organize team members and keep
-                        everyone connected.
-                    </p>
-
-                </div>
-
-
-                <!-- Communication -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-regular fa-comments"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-regular fa-comments"></i></div>
                     <h3>Communication</h3>
+                    <p>Stay connected with your team through project-based communication.</p>
+                </article>
 
-                    <p>
-                        Stay connected with your team through
-                        project-based communication.
-                    </p>
-
-                </div>
-
-
-                <!-- Calendar -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-regular fa-calendar"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-regular fa-calendar"></i></div>
                     <h3>Calendar</h3>
+                    <p>Never miss deadlines, meetings or important project events.</p>
+                </article>
 
-                    <p>
-                        Never miss deadlines, meetings or
-                        important project events.
-                    </p>
-
-                </div>
-
-
-                <!-- Reports -->
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-chart-column"></i>
-                    </div>
-
+                <article class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-chart-column"></i></div>
                     <h3>Reports</h3>
-
-                    <p>
-                        Understand project progress with
-                        clear and useful reports.
-                    </p>
-
-                </div>
-
+                    <p>Understand project progress with clear and useful reports.</p>
+                </article>
             </div>
-
         </section>
 
-
-        <!-- ================= CTA ================= -->
-
+        <!-- SOLUTIONS -->
         <section class="cta-section" id="solutions">
-
             <div class="cta-content">
-
                 <span>COLLABORATE WITH CONFIDENCE</span>
-
-                <h2>
-                    WORK BETTER. TOGETHER.
-                </h2>
-
-                <p>
-                    Projects → Tasks → Teams → Communication → Reports
-                </p>
-
-                <a href="signup.html" class="cta-button">
-                    Start Managing
-                </a>
-
+                <h2>WORK BETTER. TOGETHER.</h2>
+                <p>Projects → Tasks → Teams → Communication → Reports</p>
+                <a href="signup.html" class="cta-button">Start Managing</a>
             </div>
-
         </section>
 
+        <!-- RESOURCES -->
+        <section class="resources-section" id="resources">
+            <div class="resources-content">
+                <span class="section-eyebrow">RESOURCES</span>
+                <h2>Everything you need to get started</h2>
+                <p>Explore WorkSphere's features and learn how to organize projects, coordinate tasks, and keep your team connected.</p>
+
+                <div class="resource-links">
+                    <a href="#features">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span><strong>Documentation</strong><small>Explore the tools available in WorkSphere.</small></span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#about">
+                        <i class="fa-regular fa-circle-question"></i>
+                        <span><strong>Help & Information</strong><small>Learn more about the WorkSphere workspace.</small></span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT US -->
+        <section class="about-section" id="about">
+            <div class="about-content">
+                <div class="about-icon"><i class="fa-solid fa-people-group"></i></div>
+                <span class="section-eyebrow">ABOUT WORKSPHERE</span>
+                <h2>Better teamwork starts with a better workspace.</h2>
+                <p>
+                    WorkSphere brings projects, tasks, team collaboration and
+                    progress tracking together in one organized place, helping
+                    teams stay aligned and work toward shared goals.
+                </p>
+                <a href="signup.html" class="primary-btn">Get Started</a>
+            </div>
+        </section>
     </main>
 
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer class="footer" id="about">
-
+    <!-- FOOTER -->
+    <footer class="footer">
         <div class="footer-top">
-
             <div class="footer-brand">
-
-                <div class="logo">
+                <a href="#home" class="logo">
                     <span class="logo-icon">◈</span>
                     <span>WorkSphere</span>
-                </div>
-
+                </a>
+                <p>Plan, collaborate, and deliver better projects together.</p>
             </div>
 
-
             <div class="footer-column">
-
                 <h4>Product</h4>
-
                 <a href="#features">Features</a>
-                <a href="#solutions">Projects</a>
-                <a href="#features">Tasks</a>
-                <a href="#features">Teams</a>
-
+                <a href="#solutions">Solutions</a>
+                <a href="#features">Tasks & Teams</a>
             </div>
-
 
             <div class="footer-column">
-
                 <h4>Company</h4>
-
-                <a href="#about">About</a>
-                <a href="#about">Contact</a>
-
+                <a href="#about">About Us</a>
+                <a href="#about">Contact Information</a>
             </div>
 
-
-            <div class="footer-column" id="resources">
-
+            <div class="footer-column">
                 <h4>Resources</h4>
-
-                <a href="#features">Documentation</a>
-                <a href="#features">Help</a>
-
+                <a href="#resources">Documentation</a>
+                <a href="#resources">Help & Information</a>
             </div>
-
         </div>
-
 
         <div class="footer-bottom">
-
-            <p>
-                © 2026 WorkSphere
-            </p>
-
+            <p>© 2026 WorkSphere. All rights reserved.</p>
         </div>
-
     </footer>
 
-
     <script src="../JAVASCRIPT/script.js"></script>
-
 </body>
 </html>
