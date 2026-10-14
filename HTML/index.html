@@ -4,205 +4,243 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard - Project Management System</title>
+    <title>WorkSphere - Project Management</title>
 
     <link rel="stylesheet" href="../CSS/style.css">
-    <link rel="stylesheet" href="../CSS/layout.css">
 
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
-<!-- MAIN CONTENT -->
-    <main class="main-content">
 
-        <section class="dashboard-content">
+    <!-- ================= NAVBAR ================= -->
 
-            <!-- Dashboard Heading -->
+    <header class="navbar">
 
-            <div class="dashboard-heading">
+        <div class="logo">
+            <span class="logo-icon">◈</span>
+            <span>WorkSphere</span>
+        </div>
 
-                <div class="dashboard-box">
-                    <h2>Dashboard</h2>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#solutions">Solutions</a>
+            <a href="#resources">Resources</a>
+            <a href="#about">About Us</a>
+            <a href="login.html">Login</a>
 
-                    <p>
-                        Welcome to your Project Management System
-                    </p>
-                </div>
+            <a href="signup.html" class="nav-button">
+                Get Started
+            </a>
+        </nav>
 
-                <div class="user-info">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span id="userName">Admin</span>
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-label">
+                    PROJECT MANAGEMENT
+                </span>
+
+                <h1>
+                    Plan. Collaborate. Track.<br>
+                    Deliver better projects together.
+                </h1>
+
+                <p>
+                    Manage projects, tasks, teams and communication from
+                    one simple and powerful workspace.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="signup.html" class="primary-btn">
+                        Get Started
+                    </a>
+
+                    <a href="#features" class="secondary-btn">
+                        Explore Features
+                    </a>
+
                 </div>
 
             </div>
 
 
+            <!-- Dashboard Preview -->
 
-<!-- STATISTICS  -->
-            <div class="stats-container">
+            <div class="dashboard-preview">
 
-                <div class="stat-card">
+                <div class="preview-header">
+                    <span class="preview-title">Dashboard Preview</span>
 
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-folder-open"></i>
+                    <div class="preview-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="preview-tabs">
+                    <span class="active">Projects</span>
+                    <span>Tasks</span>
+                    <span>Team</span>
+                </div>
+
+                <div class="preview-line"></div>
+
+                <div class="project-item">
+                    <span class="project-icon">▰</span>
+                    <span>Website Development</span>
+                    <span class="project-status">In Progress</span>
+                </div>
+
+                <div class="project-item">
+                    <span class="project-icon">▰</span>
+                    <span>Mobile App Design</span>
+                    <span class="project-status">In Progress</span>
+                </div>
+
+                <div class="project-item">
+                    <span class="project-icon">▰</span>
+                    <span>PMS Development</span>
+                    <span class="project-status">Completed</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURES ================= -->
+
+        <section class="features-section" id="features">
+
+            <div class="section-heading">
+
+                <span>POWERFUL FEATURES</span>
+
+                <h2>
+                    EVERYTHING YOUR TEAM NEEDS
+                </h2>
+
+            </div>
+
+
+            <div class="features-grid">
+
+                <!-- Projects -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
 
-                    <div class="stat-details">
-                        <h3 id="totalProjects">0</h3>
-                        <p>Total Projects</p>
-                    </div>
+                    <h3>Projects</h3>
+
+                    <p>
+                        Manage projects, deadlines and progress
+                        from one organized workspace.
+                    </p>
 
                 </div>
 
 
-                <div class="stat-card">
+                <!-- Tasks -->
 
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-list-check"></i>
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-check"></i>
                     </div>
 
-                    <div class="stat-details">
-                        <h3 id="totalTasks">0</h3>
-                        <p>Total Tasks</p>
-                    </div>
+                    <h3>Tasks</h3>
+
+                    <p>
+                        Track work, assign tasks and monitor
+                        task completion easily.
+                    </p>
 
                 </div>
 
 
-                <div class="stat-card">
+                <!-- Teams -->
 
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
+                <div class="feature-card">
 
-                    <div class="stat-details">
-                        <h3 id="completedTasks">0</h3>
-                        <p>Completed Tasks</p>
-                    </div>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <div class="stat-icon">
+                    <div class="feature-icon">
                         <i class="fa-solid fa-users"></i>
                     </div>
 
-                    <div class="stat-details">
-                        <h3 id="totalMembers">0</h3>
-                        <p>Team Members</p>
-                    </div>
+                    <h3>Teams</h3>
 
-                </div>
-
-            </div>
-
-
-<!-- DASHBOARD GRID -->
-            <div class="dashboard-grid">
-
-
-                <!-- Recent Projects -->
-
-                <div class="dashboard-card">
-
-                    <div class="card-header">
-
-                        <h2>
-                            <i class="fa-solid fa-folder"></i>
-                            Recent Projects
-                        </h2>
-
-                        <a href="projects.html">
-                            View All
-                        </a>
-
-                    </div>
-
-                    <div
-                        class="project-list"
-                        id="recentProjects">
-
-                        <div class="empty-message">
-                            No projects available.
-                        </div>
-
-                    </div>
+                    <p>
+                        Organize team members and keep
+                        everyone connected.
+                    </p>
 
                 </div>
 
 
-                <!-- Task Overview -->
+                <!-- Communication -->
 
-                <div class="dashboard-card">
+                <div class="feature-card">
 
-                    <div class="card-header">
-
-                        <h2>
-                            <i class="fa-solid fa-list-check"></i>
-                            Task Overview
-                        </h2>
-
-                        <a href="tasks.html">
-                            View All
-                        </a>
-
+                    <div class="feature-icon">
+                        <i class="fa-regular fa-comments"></i>
                     </div>
 
+                    <h3>Communication</h3>
 
-                    <div class="task-overview">
-
-                        <div class="task-item">
-                            <span>To Do</span>
-                            <strong id="todoTasks">0</strong>
-                        </div>
-
-                        <div class="task-item">
-                            <span>In Progress</span>
-                            <strong id="progressTasks">0</strong>
-                        </div>
-
-                        <div class="task-item">
-                            <span>Completed</span>
-                            <strong id="doneTasks">0</strong>
-                        </div>
-
-                    </div>
+                    <p>
+                        Stay connected with your team through
+                        project-based communication.
+                    </p>
 
                 </div>
 
-            </div>
+
+                <!-- Calendar -->
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
+
+                    <h3>Calendar</h3>
+
+                    <p>
+                        Never miss deadlines, meetings or
+                        important project events.
+                    </p>
+
+                </div>
 
 
-<!-- QUICK ACTIONS -->
-            <div class="quick-actions">
+                <!-- Reports -->
 
-                <h2>Quick Actions</h2>
+                <div class="feature-card">
 
-                <div class="action-buttons">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
 
-                    <a href="projects.html" class="action-btn">
-                        <i class="fa-solid fa-plus"></i>
-                        Add Project
-                    </a>
+                    <h3>Reports</h3>
 
-                    <a href="tasks.html" class="action-btn">
-                        <i class="fa-solid fa-list-check"></i>
-                        Add Task
-                    </a>
-
-                    <a href="team.html" class="action-btn">
-                        <i class="fa-solid fa-user-plus"></i>
-                        Add Member
-                    </a>
-
-                    <a href="calendar.html" class="action-btn">
-                        <i class="fa-solid fa-calendar-plus"></i>
-                        View Calendar
-                    </a>
+                    <p>
+                        Understand project progress with
+                        clear and useful reports.
+                    </p>
 
                 </div>
 
@@ -210,18 +248,96 @@
 
         </section>
 
+
+        <!-- ================= CTA ================= -->
+
+        <section class="cta-section" id="solutions">
+
+            <div class="cta-content">
+
+                <span>COLLABORATE WITH CONFIDENCE</span>
+
+                <h2>
+                    WORK BETTER. TOGETHER.
+                </h2>
+
+                <p>
+                    Projects → Tasks → Teams → Communication → Reports
+                </p>
+
+                <a href="signup.html" class="cta-button">
+                    Start Managing
+                </a>
+
+            </div>
+
+        </section>
+
     </main>
 
-<!-- FOOTER -->
-    <footer class="footer">
 
-        © 2026 Project Management System
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer" id="about">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <span class="logo-icon">◈</span>
+                    <span>WorkSphere</span>
+                </div>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Product</h4>
+
+                <a href="#features">Features</a>
+                <a href="#solutions">Projects</a>
+                <a href="#features">Tasks</a>
+                <a href="#features">Teams</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>Company</h4>
+
+                <a href="#about">About</a>
+                <a href="#about">Contact</a>
+
+            </div>
+
+
+            <div class="footer-column" id="resources">
+
+                <h4>Resources</h4>
+
+                <a href="#features">Documentation</a>
+                <a href="#features">Help</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 WorkSphere
+            </p>
+
+        </div>
 
     </footer>
-    <script src="../JAVASCRIPT/layout.js"></script>
-    <script>initLayout("dashboard");</script>
+
+
     <script src="../JAVASCRIPT/script.js"></script>
-    
 
 </body>
 </html>

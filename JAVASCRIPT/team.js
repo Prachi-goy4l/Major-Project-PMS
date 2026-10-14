@@ -1,7 +1,5 @@
 // DOM ELEMENTS
-
-const teamForm =
-    document.getElementById("teamForm");
+const teamForm =document.getElementById("teamForm");
 
 const nameInput =
     document.getElementById("name");
