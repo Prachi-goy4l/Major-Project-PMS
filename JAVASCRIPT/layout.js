@@ -13,7 +13,7 @@ async function searchEverything(query) {
             { type: "Project", endpoint: "projects", href: "projects.html", icon: "fa-folder" },
             { type: "Task", endpoint: "tasks", href: "tasks.html", icon: "fa-square-check" },
             { type: "Team Member", endpoint: "teamMembers", href: "team.html", icon: "fa-users" },
-            { type: "Event", endpoint: "events", href: "calendar.html", icon: "fa-calendar-days" }
+            { type: "Dashboard", endpoint: "dashboard", href: "dashbooard.html", icon: "fa-house" }
         ];
 
         searchableRecordsPromise = Promise.all(collections.map(async function (collection) {
@@ -70,7 +70,7 @@ function initLayout(activePage) {
             <span class="layout-brand-icon" aria-hidden="true">
                 <i class="fa-solid fa-layer-group"></i>
             </span>
-            <span>Project<br>Management<br>System</span>
+            <span>WorkSphere</span>
         </a>
         <nav class="layout-navigation" aria-label="Main navigation">
             <ul>
