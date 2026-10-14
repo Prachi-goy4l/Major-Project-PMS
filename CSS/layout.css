@@ -1,4 +1,13 @@
 :root {
+    --navy: #292929;
+    --navy-dark: #202020;
+    --green: #b9573f;
+    --green-dark: #a34833;
+    --background: #f7f7f6;
+    --text: #343434;
+    --muted: #777777;
+    --border: #e5e3e1;
+    --white: #ffffff;
     --layout-canvas: #ffffff;
     --layout-surface: #ffffff;
     --layout-sidebar: rgba(255, 255, 255, 0.2);
@@ -12,6 +21,17 @@
     --layout-danger: #b94c4c;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 95px;
+}
+
 body {
     display: grid;
     grid-template-areas:
@@ -20,8 +40,29 @@ body {
     grid-template-columns: 240px minmax(0, 1fr);
     grid-template-rows: 64px minmax(0, 1fr);
     min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
     background: var(--layout-canvas);
     color: var(--layout-ink);
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+section {
+    scroll-margin-top: 90px;
 }
 
 .layout-sidebar {
@@ -52,7 +93,6 @@ body {
     margin: 0 0 30px;
     padding: 0 4px;
     color: var(--layout-ink);
-    font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.15;
     text-decoration: none;
     font-size: 23px;
