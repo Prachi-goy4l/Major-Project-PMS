@@ -9,109 +9,141 @@
     <link rel="stylesheet" href="../CSS/task.css">
     <link rel="stylesheet" href="../CSS/style.css">
     <link rel="stylesheet" href="../CSS/layout.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
-    <!-- Main Container -->
-
-    <div class="container">
-
-        <div class="page-heading">
-            <h2>
-                <i class="fa-solid fa-list-check"></i>
-                Task Management
-            </h2>
-        </div>
-
-
-        <!-- Search + Add Task -->
-        <div class="search-box">
-            <input type="text" id="searchTask" placeholder="Search Task...">
-
-            <button type="button" id="openTaskModal" >
-                <i class="fa-solid fa-plus"></i>
-                Add Task
+    <main class="tasks-page">
+        <header class="tasks-page-heading">
+            <div>
+                <span class="tasks-eyebrow">WORKSPACE</span>
+                <h1>Tasks</h1>
+                <p>Keep track of your work, deadlines, and completed tasks.</p>
+            </div>
+            <button type="button" id="openTaskModal" class="tasks-add-button">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Add task
             </button>
-        </div>
+        </header>
 
-
-        <!-- Add Task Modal -->
-        <div id="taskModal" class="modal">
-
-            <div class="modal-content">
-
-                <span class="close">&times;</span>
-
-                <h3>
-                    <i class="fa-solid fa-plus"></i>
-                    Add New Task
-                </h3>
-
-                <form id="taskForm">
-
-                    <input type="text" id="taskName" placeholder="Task Name" required>
-
-                    <textarea id="taskDescription" placeholder="Task Description" rows="4" required></textarea>
-
-                    <input type="text" id="assignedTo" placeholder="Assigned To" required>
-
-                    <select id="priority" required>
-                        <option value="">Select Priority</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
-
-                    <input type="date" id="deadline" required>
-
-                    <select id="status" required>
-                        <option value="">Select Status</option>
-                        <option value="To Do">To Do</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
-
-                    <button type="submit">
-                        <i class="fa-solid fa-plus"></i>
-                        Add Task
-                    </button>
-
-                </form>
-
+        <section class="tasks-panel" aria-labelledby="allTasksHeading">
+            <div class="tasks-panel-heading">
+                <div>
+                    <span class="tasks-section-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="allTasksHeading">All Tasks</h2>
+                        <p>Every task, with its current status and deadline.</p>
+                    </div>
+                </div>
+                <label class="tasks-search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="searchTask" placeholder="Search tasks..." aria-label="Search tasks">
+                </label>
             </div>
 
-        </div>
+            <div class="tasks-table-wrap">
+                <table class="tasks-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Task</th>
+                            <th scope="col">Assigned to</th>
+                            <th scope="col">Due date</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody"></tbody>
+                </table>
+            </div>
+            <p class="tasks-panel-footnote"><span id="taskCount">0</span> tasks</p>
+        </section>
 
+        <section class="tasks-panel calendar-panel" aria-labelledby="calendarHeading">
+            <div class="tasks-panel-heading calendar-panel-heading">
+                <div>
+                    <span class="tasks-section-icon"><i class="fa-regular fa-calendar" aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="calendarHeading">Calendar</h2>
+                        <p>See every deadline at a glance.</p>
+                    </div>
+                </div>
+                <div class="calendar-controls" aria-label="Calendar navigation">
+                    <button type="button" id="previousMonth" aria-label="Previous month">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="todayMonth">Today</button>
+                    <button type="button" id="nextMonth" aria-label="Next month">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <h3 id="calendarMonth" class="calendar-month" aria-live="polite"></h3>
+            <div id="taskCalendar" class="task-calendar" role="grid" aria-labelledby="calendarMonth"></div>
+        </section>
 
-        <!-- Task Table -->
+        <section class="tasks-panel completed-panel" aria-labelledby="completedTasksHeading">
+            <div class="tasks-panel-heading">
+                <div>
+                    <span class="tasks-section-icon completed-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+                    <div>
+                        <h2 id="completedTasksHeading">Completed Tasks</h2>
+                        <p>Tasks marked complete, grouped by their due month.</p>
+                    </div>
+                </div>
+                <span class="completed-count"><span id="completedTaskCount">0</span> completed</span>
+            </div>
+            <div id="completedTaskGroups" class="completed-task-groups"></div>
+        </section>
+    </main>
 
-        <div class="table-box">
-            <h3 style="margin: 5px;">Task List</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Task</th>
-                        <th>Description</th>
-                        <th>Assigned To</th>
-                        <th>Priority</th>
-                        <th>Deadline</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="taskTableBody">
-                </tbody>
-            </table>
+    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalHeading">
+        <div class="modal-content">
+            <button type="button" class="close" aria-label="Close task form">&times;</button>
+            <h2 id="taskModalHeading">Add New Task</h2>
+            <form id="taskForm">
+                <label for="taskName">Task name</label>
+                <input type="text" id="taskName" placeholder="Task name" required>
+
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" placeholder="Task description" rows="4" required></textarea>
+
+                <label for="assignedTo">Assigned to</label>
+                <select id="assignedTo" required disabled>
+                    <option value="">Loading team members...</option>
+                </select>
+                <small id="assignedToHelp" class="assignee-help" aria-live="polite">Loading team members...</small>
+
+                <label for="priority">Priority</label>
+                <select id="priority" required>
+                    <option value="">Select priority</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+
+                <label for="deadline">Due date</label>
+                <input type="date" id="deadline" required>
+
+                <label for="status">Status</label>
+                <select id="status" required>
+                    <option value="">Select status</option>
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+
+                <button type="submit" class="tasks-add-button">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Add Task
+                </button>
+            </form>
         </div>
     </div>
-
 
     <script src="../JAVASCRIPT/layout.js"></script>
     <script>initLayout("tasks");</script>
     <script src="../JAVASCRIPT/tasks.js"></script>
-
 </body>
 
 </html>
