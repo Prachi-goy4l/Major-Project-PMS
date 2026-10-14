@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Workspace</title>
+    <link rel="stylesheet" href="../CSS/workspace.css">
+    <link rel="stylesheet" href="../CSS/layout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <main class="workspace-page">
+        <header class="workspace-heading">
+            <div class="workspace-heading-icon"><i class="fa-solid fa-folder-open" aria-hidden="true"></i></div>
+            <div>
+                <span class="workspace-eyebrow">PROJECT WORKSPACE</span>
+                <h1 id="projectName">Loading project...</h1>
+                <p id="projectDescription"></p>
+            </div>
+            <span id="projectStatus" class="workspace-status"></span>
+        </header>
+
+        <section class="workspace-stats" aria-label="Project statistics">
+            <article class="workspace-stat">
+                <span class="workspace-stat-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></span>
+                <div><strong id="projectTaskCount">0</strong><span>Total tasks</span></div>
+            </article>
+            <article class="workspace-stat">
+                <span class="workspace-stat-icon workspace-stat-green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+                <div><strong id="projectCompletedCount">0</strong><span>Completed</span></div>
+            </article>
+            <article class="workspace-stat">
+                <span class="workspace-stat-icon workspace-stat-blue"><i class="fa-solid fa-spinner" aria-hidden="true"></i></span>
+                <div><strong id="projectActiveCount">0</strong><span>In progress</span></div>
+            </article>
+            <article class="workspace-stat">
+                <span class="workspace-stat-icon workspace-stat-purple"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+                <div><strong id="projectMemberCount">0</strong><span>Team members</span></div>
+            </article>
+        </section>
+
+        <section class="workspace-panel">
+            <div class="workspace-panel-heading">
+                <div>
+                    <h2>Project progress</h2>
+                    <p>Completion across this project's tasks.</p>
+                </div>
+                <strong id="projectProgressLabel">0%</strong>
+            </div>
+            <div class="workspace-progress-track" role="progressbar" aria-label="Project task completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span id="projectProgressBar"></span>
+            </div>
+        </section>
+
+        <div class="workspace-columns">
+            <section class="workspace-panel">
+                <div class="workspace-panel-heading">
+                    <div><h2>Recent tasks</h2><p>Latest work in this project.</p></div>
+                    <a id="workspaceTasksLink" href="tasks.html">View tasks <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+                <div id="workspaceRecentTasks" class="workspace-list"></div>
+            </section>
+            <section class="workspace-panel">
+                <div class="workspace-panel-heading">
+                    <div><h2>Project team</h2><p>People assigned to this project.</p></div>
+                    <a id="workspaceTeamLink" href="team.html">View team <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+                <div id="workspaceMembers" class="workspace-members"></div>
+            </section>
+        </div>
+    </main>
+    <script src="../JAVASCRIPT/app-access.js"></script>
+    <script src="../JAVASCRIPT/layout.js"></script>
+    <script>initLayout("project-dashboard");</script>
+    <script src="../JAVASCRIPT/project-dashboard.js"></script>
+</body>
+</html>

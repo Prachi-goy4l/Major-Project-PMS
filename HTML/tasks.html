@@ -17,7 +17,7 @@
             <div>
                 <span class="tasks-eyebrow">WORKSPACE</span>
                 <h1>Tasks</h1>
-                <p>Keep track of your work, deadlines, and completed tasks.</p>
+                <p id="taskScopeDescription">Keep track of your work, deadlines, and completed tasks.</p>
             </div>
             <button type="button" id="openTaskModal" class="tasks-add-button">
                 <i class="fa-solid fa-plus" aria-hidden="true"></i>
@@ -45,6 +45,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Task</th>
+                            <th scope="col">Project</th>
                             <th scope="col">Assigned to</th>
                             <th scope="col">Due date</th>
                             <th scope="col">Priority</th>
@@ -107,6 +108,14 @@
                 <label for="taskDescription">Description</label>
                 <textarea id="taskDescription" placeholder="Task description" rows="4" required></textarea>
 
+                <div id="taskProjectField">
+                    <label for="taskProject">Project</label>
+                    <select id="taskProject" required>
+                        <option value="">Select a project</option>
+                    </select>
+                </div>
+                <p id="lockedTaskProject" hidden></p>
+
                 <label for="assignedTo">Assigned to</label>
                 <select id="assignedTo" required disabled>
                     <option value="">Loading team members...</option>
@@ -140,6 +149,7 @@
         </div>
     </div>
 
+    <script src="../JAVASCRIPT/app-access.js"></script>
     <script src="../JAVASCRIPT/layout.js"></script>
     <script>initLayout("tasks");</script>
     <script src="../JAVASCRIPT/tasks.js"></script>

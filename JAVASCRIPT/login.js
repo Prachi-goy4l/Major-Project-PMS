@@ -25,14 +25,26 @@ loginForm.addEventListener("submit", async function (event) {
         });
 
         if (user) {
-            alert("Login successful!");
+            const authenticatedUser = {
+                ...user,
+                role: user.role === "Manager" ? "Manager" : "Employee",
+                projectIds: Array.isArray(user.projectIds) ? user.projectIds.map(String) : []
+            };
 
             localStorage.setItem(
                 "loggedInUser",
-                JSON.stringify(user)
+                JSON.stringify(authenticatedUser)
             );
+            localStorage.setItem("pmsSession", JSON.stringify({
+                sessionId: window.crypto && window.crypto.randomUUID
+                    ? window.crypto.randomUUID()
+                    : `session-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                startedAt: new Date().toISOString(),
+                userId: String(authenticatedUser.id),
+                role: authenticatedUser.role,
+                user: authenticatedUser
+            }));
 
-            // Opening  dashboard
             window.location.href = "dashboard.html";
         } else {
             alert("Invalid email or password.");
