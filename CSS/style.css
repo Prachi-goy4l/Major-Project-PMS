@@ -19,10 +19,7 @@ body {
     overflow-x: hidden;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
+    background: #faf8f4;
 
 
 /* =========================================
@@ -73,7 +70,7 @@ a {
 
     border-radius: 8px;
 
-    font-size: 17px;
+    background: #faf8f4;
 }
 
 .nav-links {

@@ -33,7 +33,7 @@ loginForm.addEventListener("submit", async function (event) {
             );
 
             // Opening  dashboard
-            window.location.href = "index.html";
+            window.location.href = "dashboard.html";
         } else {
             alert("Invalid email or password.");
         }
