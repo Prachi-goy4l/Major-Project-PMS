@@ -19,79 +19,41 @@
 
 <body>
 
-    <!-- Main Container -->
     <main class="container">
+        <section class="projects-page" aria-labelledby="projects-title">
+            <header class="projects-heading">
+                <div class="projects-heading-copy">
+                    <span class="projects-heading-icon" aria-hidden="true">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </span>
+                    <div>
+                        <h1 id="projects-title">Projects</h1>
+                        <p>Manage and track all your projects in one place.</p>
+                    </div>
+                </div>
+                <button class="add-project-btn" id="openProjectModal" type="button">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    New Project
+                </button>
+            </header>
 
-        <!-- Project Heading -->
-        <div class="page-heading">
-            <h2>
-                <i class="fa-solid fa-folder-open"></i>
-                Project Management
-            </h2>
+            <section class="projects-toolbar" aria-label="Project filters">
+                <div class="project-filters" role="group" aria-label="Filter projects by status">
+                    <button class="project-filter active" type="button" data-status="all" aria-pressed="true">
+                        All Projects <span id="allProjectCount">0</span>
+                    </button>
+                    <button class="project-filter" type="button" data-status="In Progress" aria-pressed="false">In Progress</button>
+                    <button class="project-filter" type="button" data-status="Not Started" aria-pressed="false">Not Started</button>
+                    <button class="project-filter" type="button" data-status="Completed" aria-pressed="false">Completed</button>
+                </div>
+                <label class="project-search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="projectSearch" type="search" placeholder="Search projects..." autocomplete="off">
+                </label>
+            </section>
 
-            <!-- ADD NEW PROJECT BUTTON -->
-            <button class="add-project-btn" id="openProjectModal">
-                <i class="fa-solid fa-plus"></i>
-                Add New Project
-            </button>
-        </div>
-
-
-        <!-- Project List -->
-        <div class="table-box">
-
-            <h3>Project List</h3>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Description</th>
-                        <th>Start Date</th>
-                        <th>Deadline</th>
-                        <th>Status</th>
-                        <th>Members</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody id="projectTableBody">
-
-                    <!-- Example Project -->
-                    <tr>
-                        <td>Project Alpha</td>
-                        <td>Website Development</td>
-                        <td>2026-08-10</td>
-                        <td>2026-08-30</td>
-
-                        <td>
-                            <span class="status in-progress">
-                                In Progress
-                            </span>
-                        </td>
-
-                        <td>John, Sarah</td>
-
-                        <td>
-                            <button class="edit-btn">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit
-                            </button>
-
-                            <button class="delete-btn">
-                                <i class="fa-solid fa-trash"></i>
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+            <section class="project-grid" id="projectGrid" aria-label="Projects" aria-live="polite"></section>
+        </section>
     </main>
 
 
@@ -106,13 +68,13 @@
             <!-- Modal Header -->
             <div class="modal-header">
 
-                <h2>
-                    <i class="fa-solid fa-plus"></i>
+                <h2 id="projectModalTitle">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
                     Add New Project
                 </h2>
 
-                <button class="close-btn" id="closeProjectModal">
-                    <i class="fa-solid fa-xmark"></i>
+                <button class="close-btn" id="closeProjectModal" type="button" aria-label="Close dialog">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
 
             </div>
@@ -227,10 +189,8 @@
 
                 <!-- Submit -->
                 <button type="submit" class="submit-project-btn">
-
-                    <i class="fa-solid fa-plus"></i>
-                    Add Project
-
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span>Add Project</span>
                 </button>
 
             </form>
