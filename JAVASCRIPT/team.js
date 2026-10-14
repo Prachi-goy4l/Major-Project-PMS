@@ -1,127 +1,70 @@
 // DOM ELEMENTS
 const teamForm =document.getElementById("teamForm");
-
-const nameInput =
-    document.getElementById("name");
-
-const emailInput =
-    document.getElementById("email");
-
-const roleInput =
-    document.getElementById("role");
-
-const departmentInput =
-    document.getElementById("department");
-
-const projectNameInput =
-    document.getElementById("projectName");
-
-const projectsList =
-    document.getElementById("projectsList");
-
-const projectDetails =
-    document.getElementById("projectDetails");
-
-const projectList =
-    document.getElementById("projectList");
-
-const memberFormBox =
-    document.getElementById("memberFormBox");
-
-const addTeamMemberBtn =
-    document.getElementById("addTeamMemberBtn");
-
-const closeFormBtn =
-    document.getElementById("closeFormBtn");
-
-const cancelBtn =
-    document.getElementById("cancelBtn");
-
-const searchInput =
-    document.getElementById("searchInput");
-
+const nameInput =document.getElementById("name");
+const emailInput =document.getElementById("email");
+const roleInput =document.getElementById("role");
+const departmentInput =document.getElementById("department");
+const projectNameInput =document.getElementById("projectName");
+const projectsList =document.getElementById("projectsList");
+const projectDetails =document.getElementById("projectDetails");
+const projectList =document.getElementById("projectList");
+const memberFormBox =document.getElementById("memberFormBox");
+const addTeamMemberBtn =document.getElementById("addTeamMemberBtn");
+const closeFormBtn =document.getElementById("closeFormBtn");
+const cancelBtn =document.getElementById("cancelBtn");
+const searchInput =document.getElementById("searchInput");
 
 // JSON SERVER URLS
-
-const PROJECTS_API =
-    "http://localhost:3000/projects";
-
-const TEAM_MEMBERS_API =
-    "http://localhost:3000/teamMembers";
-
+const PROJECTS_API ="http://localhost:3000/projects";
+const TEAM_MEMBERS_API ="http://localhost:3000/teamMembers";
 
 // TEAM DATA
-
 let teamMembers = [];
 let editMemberId = null;
 let projects = [];
 let selectedProjectId = null;
 
-
 // OPEN ADD FORM
-
 if (addTeamMemberBtn) {
-
     addTeamMemberBtn.addEventListener(
         "click",
         function () {
-
             memberFormBox.classList.add("show");
-
             teamForm.reset();
-
             editMemberId = null;
-
             changeButtonToAdd();
-
             nameInput.focus();
-
         }
     );
-
 }
 
 
 // CLOSE FORM
-
 if (closeFormBtn) {
-
     closeFormBtn.addEventListener(
         "click",
         function () {
-
             closeForm();
-
         }
     );
-
 }
 
 
 if (cancelBtn) {
-
     cancelBtn.addEventListener(
         "click",
         function () {
-
             closeForm();
-
         }
     );
-
 }
 
 
 function closeForm() {
-
     memberFormBox.classList.remove("show");
-
     teamForm.reset();
-
     editMemberId = null;
-
     changeButtonToAdd();
-
 }
 
 
@@ -130,81 +73,48 @@ function closeForm() {
 // =====================================================
 
 async function loadTeamMembers() {
-
     try {
-
         // LOAD PROJECTS
-
         const projectsResponse =
             await fetch(PROJECTS_API);
-
         if (!projectsResponse.ok) {
-
             throw new Error(
                 "Unable to load projects"
             );
-
         }
-
-        projects =
-            await projectsResponse.json();
-
-
+        projects =await projectsResponse.json();
         // LOAD TEAM MEMBERS
-
-        const membersResponse =
-            await fetch(TEAM_MEMBERS_API);
-
+        const membersResponse =await fetch(TEAM_MEMBERS_API);
         if (!membersResponse.ok) {
-
             throw new Error(
                 "Unable to load team members"
             );
-
         }
-
-        teamMembers =
-            await membersResponse.json();
-
-
+        teamMembers =await membersResponse.json();
         console.log("Projects:", projects);
-
         console.log(
             "Team Members:",
             teamMembers
         );
-
-
         // SELECT FIRST PROJECT
-
         if (
             selectedProjectId === null &&
             projects.length > 0
         ) {
-
             selectedProjectId =
                 projects[0].id;
 
         }
-
-
         // DISPLAY
-
         displayProjects();
-
         populateProjectList();
-
         displayTeamMembers();
-
     }
-
     catch (error) {
-
         console.error(
             "Error loading data:",
             error
         );
-
 
         if (projectsList) {
 
@@ -1489,7 +1399,6 @@ function changeButtonToAdd() {
     `;
 
 }
-
 
 // =====================================================
 // SEARCH
