@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     const API_URL = "http://localhost:3000/projects";
+    const USERS_API_URL = "http://localhost:3000/users";
+    const TEAM_MEMBERS_API_URL = "http://localhost:3000/teamMembers";
+    const currentUser = PMS.requireUser();
+    if (!currentUser) {
+        return;
+    }
+    const manager = PMS.isManager(currentUser);
     const modal = document.getElementById("projectModal");
     const openBtn = document.getElementById("openProjectModal");
     const closeBtn = document.getElementById("closeProjectModal");
@@ -10,8 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalTitle = document.getElementById("projectModalTitle");
     const submitLabel = projectForm.querySelector(".submit-project-btn span");
     const filters = Array.from(document.querySelectorAll(".project-filter"));
+    const assignedEmployees = document.getElementById("assignedEmployees");
+    const employeeAccessField = document.querySelector(".manager-project-access");
 
     let projects = [];
+    let users = [];
+    let teamMembers = [];
     let activeStatus = "all";
     let editProjectId = null;
 
@@ -74,6 +85,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function openModal(project) {
+        if (!manager) {
+            return;
+        }
         projectForm.reset();
         editProjectId = project ? project.id : null;
 
@@ -84,9 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("startDate").value = project.startDate || "";
             document.getElementById("deadline").value = project.deadline || "";
             document.getElementById("status").value = project.status || "";
+            populateEmployeeOptions(getAssignedEmployeeIds(project));
             modalTitle.innerHTML = '<i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Project';
             submitLabel.textContent = "Save Changes";
         } else {
+            populateEmployeeOptions([]);
             modalTitle.innerHTML = '<i class="fa-solid fa-plus" aria-hidden="true"></i> Add New Project';
             submitLabel.textContent = "Add Project";
         }
@@ -94,6 +110,30 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = "flex";
         document.body.style.overflow = "hidden";
         document.getElementById("projectName").focus();
+    }
+
+    function getAssignedEmployeeIds(project) {
+        const projectId = String(project.id);
+        return users
+            .filter((user) => user.role === "Employee" &&
+                Array.isArray(user.projectIds) &&
+                user.projectIds.map(String).includes(projectId))
+            .map((user) => String(user.id));
+    }
+
+    function populateEmployeeOptions(selectedIds) {
+        assignedEmployees.replaceChildren();
+        users.filter((user) => user.role === "Employee").forEach((user) => {
+            const option = new Option(`${user.name} (${user.email})`, String(user.id));
+            option.selected = selectedIds.includes(String(user.id));
+            assignedEmployees.add(option);
+        });
+        if (assignedEmployees.options.length === 0) {
+            assignedEmployees.add(new Option("No employee accounts found", ""));
+            assignedEmployees.disabled = true;
+        } else {
+            assignedEmployees.disabled = false;
+        }
     }
 
     function closeModal() {
@@ -118,14 +158,16 @@ document.addEventListener("DOMContentLoaded", function () {
         top.appendChild(status);
 
         const actions = createElement("div", "project-card-actions");
-        actions.append(
-            createActionButton("fa-pen", `Edit ${project.projectName}`, "", function () {
-                openModal(project);
-            }),
-            createActionButton("fa-trash", `Delete ${project.projectName}`, "delete", async function () {
-                await deleteProject(project);
-            })
-        );
+        if (manager) {
+            actions.append(
+                createActionButton("fa-pen", `Edit ${project.projectName}`, "", function () {
+                    openModal(project);
+                }),
+                createActionButton("fa-trash", `Delete ${project.projectName}`, "delete", async function () {
+                    await deleteProject(project);
+                })
+            );
+        }
         top.appendChild(actions);
 
         const titleRow = createElement("div", "project-card-title-row");
@@ -142,18 +184,33 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         const divider = createElement("hr", "project-card-divider");
         const footer = createElement("div", "project-card-footer");
+        const assignedMemberCount = teamMembers.filter((member) =>
+            Array.isArray(member.projectIds)
+                ? member.projectIds.map(String).includes(String(project.id))
+                : String(member.projectId || "") === String(project.id)
+        ).length;
+        const teamLabel = assignedMemberCount
+            ? `${assignedMemberCount} member${assignedMemberCount === 1 ? "" : "s"}`
+            : project.members || "Not assigned";
         footer.append(
             createMetaItem("fa-calendar", "Timeline", `${formatDate(project.startDate)} – ${formatDate(project.deadline)}`),
-            createMetaItem("fa-users", "Team", project.members ? project.members : "Not assigned")
+            createMetaItem("fa-users", "Team", teamLabel)
         );
 
-        card.append(top, titleRow, description, divider, footer);
+        const openWorkspace = createElement("a", "project-open-workspace", "Open project workspace");
+        openWorkspace.href = PMS.urlForPage("project-dashboard.html", project.id);
+        const openIcon = createElement("i", "fa-solid fa-arrow-right");
+        openIcon.setAttribute("aria-hidden", "true");
+        openWorkspace.appendChild(openIcon);
+
+        card.append(top, titleRow, description, divider, footer, openWorkspace);
         return card;
     }
 
     function renderProjects() {
         const searchTerm = projectSearch.value.trim().toLocaleLowerCase();
-        const visibleProjects = projects.filter(function (project) {
+        const accessibleProjects = PMS.accessibleProjects(projects, currentUser);
+        const visibleProjects = accessibleProjects.filter(function (project) {
             const matchesStatus = activeStatus === "all" || project.status === activeStatus;
             const searchableText = [
                 project.projectName,
@@ -167,17 +224,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return matchesStatus && searchableText.includes(searchTerm);
         });
 
-        projectCount.textContent = String(projects.length);
+        projectCount.textContent = String(accessibleProjects.length);
         projectGrid.replaceChildren();
 
         if (visibleProjects.length === 0) {
             const empty = createElement("div", "project-empty-state");
             const icon = createElement("i", `fa-regular ${projects.length ? "fa-folder-open" : "fa-folder-open"}`);
             icon.setAttribute("aria-hidden", "true");
-            const title = projects.length ? "No matching projects" : "No projects yet";
-            const message = projects.length
+            const title = accessibleProjects.length ? "No matching projects" : "No projects assigned";
+            const message = accessibleProjects.length
                 ? "Try another search or choose a different status filter."
-                : "Add a project to start organizing your team's work.";
+                : manager
+                    ? "Add a project to start organizing your team's work."
+                    : "Ask your Manager to assign you to a project.";
             empty.append(icon, createElement("strong", "", title), createElement("p", "", message));
             projectGrid.appendChild(empty);
             return;
@@ -211,17 +270,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function loadProjects() {
         try {
-            const response = await fetch(API_URL);
-            if (!response.ok) {
-                throw new Error(`Unable to load projects (${response.status})`);
+            const refreshedUser = await PMS.refreshCurrentUser();
+            if (refreshedUser) {
+                Object.assign(currentUser, refreshedUser);
             }
-
-            const records = await response.json();
-            if (!Array.isArray(records)) {
-                throw new Error("The projects response was not a list.");
-            }
-
-            projects = records;
+            const [projectRecords, userRecords, memberRecords] = await Promise.all([
+                PMS.fetchCollection("projects"),
+                manager ? PMS.fetchCollection("users") : Promise.resolve([]),
+                PMS.fetchCollection("teamMembers")
+            ]);
+            projects = projectRecords;
+            users = userRecords;
+            teamMembers = memberRecords;
             renderProjects();
         } catch (error) {
             console.error("Unable to load projects:", error);
@@ -238,9 +298,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    openBtn.addEventListener("click", function () {
-        openModal(null);
-    });
+    if (manager) {
+        openBtn.addEventListener("click", function () {
+            openModal(null);
+        });
+    } else {
+        openBtn.hidden = true;
+        openBtn.style.display = "none";
+        employeeAccessField.hidden = true;
+        document.querySelector(".projects-heading p").textContent =
+            "Projects assigned to you. Open a project to view its workspace.";
+    }
 
     closeBtn.addEventListener("click", closeModal);
 
@@ -272,6 +340,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     projectForm.addEventListener("submit", async function (event) {
         event.preventDefault();
+        if (!manager) {
+            return;
+        }
 
         const project = {
             projectName: document.getElementById("projectName").value.trim(),
@@ -279,7 +350,10 @@ document.addEventListener("DOMContentLoaded", function () {
             description: document.getElementById("description").value.trim(),
             startDate: document.getElementById("startDate").value,
             deadline: document.getElementById("deadline").value,
-            status: document.getElementById("status").value
+            status: document.getElementById("status").value,
+            assignedUserIds: Array.from(assignedEmployees.selectedOptions)
+                .map((option) => option.value)
+                .filter(Boolean)
         };
 
         if (project.deadline < project.startDate) {
@@ -293,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const isEditing = editProjectId !== null;
             const response = await fetch(
-                isEditing ? `${API_URL}/${editProjectId}` : API_URL,
+                isEditing ? `${API_URL}/${encodeURIComponent(editProjectId)}` : API_URL,
                 {
                     method: isEditing ? "PUT" : "POST",
                     headers: { "Content-Type": "application/json" },
@@ -312,10 +386,100 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const newProject = await response.json();
                 projects.push(newProject);
+                editProjectId = newProject.id;
+            }
+
+            const savedProjectId = String(editProjectId);
+            const selectedEmployeeIds = new Set(project.assignedUserIds);
+            const teamMembers = await PMS.fetchCollection("teamMembers");
+            const assignmentResults = await Promise.allSettled(
+                users.filter((user) => user.role === "Employee").map(async function (user) {
+                    const existingIds = Array.isArray(user.projectIds)
+                        ? user.projectIds.map(String)
+                        : [];
+                    const nextIds = selectedEmployeeIds.has(String(user.id))
+                        ? Array.from(new Set([...existingIds, savedProjectId]))
+                        : existingIds.filter((id) => id !== savedProjectId);
+                    if (JSON.stringify(existingIds) !== JSON.stringify(nextIds)) {
+                        const updateResponse = await fetch(
+                            `${USERS_API_URL}/${encodeURIComponent(user.id)}`,
+                            {
+                                method: "PATCH",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ projectIds: nextIds })
+                            }
+                        );
+                        if (!updateResponse.ok) {
+                            throw new Error(`Unable to update project access for ${user.email}`);
+                        }
+                    }
+                    user.projectIds = nextIds;
+
+                    const existingMember = teamMembers.find((member) =>
+                        String(member.userId || "") === String(user.id) ||
+                        String(member.email || "").toLowerCase() === String(user.email || "").toLowerCase()
+                    );
+                    if (existingMember) {
+                        const memberIds = new Set(
+                            Array.isArray(existingMember.projectIds)
+                                ? existingMember.projectIds.map(String)
+                                : existingMember.projectId
+                                    ? [String(existingMember.projectId)]
+                                    : []
+                        );
+                        if (selectedEmployeeIds.has(String(user.id))) {
+                            memberIds.add(savedProjectId);
+                        } else {
+                            memberIds.delete(savedProjectId);
+                        }
+                        const memberResponse = await fetch(
+                            `${TEAM_MEMBERS_API_URL}/${encodeURIComponent(existingMember.id)}`,
+                            {
+                                method: "PATCH",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    userId: String(user.id),
+                                    projectIds: Array.from(memberIds),
+                                    projectId: memberIds.has(savedProjectId)
+                                        ? savedProjectId
+                                        : Array.from(memberIds)[0] || ""
+                                })
+                            }
+                        );
+                        if (!memberResponse.ok) {
+                            throw new Error(`Unable to update team membership for ${user.email}`);
+                        }
+                        existingMember.projectIds = Array.from(memberIds);
+                    } else if (selectedEmployeeIds.has(String(user.id))) {
+                        const memberResponse = await fetch(TEAM_MEMBERS_API_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                userId: String(user.id),
+                                name: user.name || user.email,
+                                email: user.email || "",
+                                role: "Employee",
+                                department: "",
+                                projectName: project.projectName,
+                                project: project.projectName,
+                                projectId: savedProjectId,
+                                projectIds: [savedProjectId]
+                            })
+                        });
+                        if (!memberResponse.ok) {
+                            throw new Error(`Unable to add ${user.email} to the project team`);
+                        }
+                    }
+                })
+            );
+            const failedAssignments = assignmentResults.filter((result) => result.status === "rejected");
+            if (failedAssignments.length) {
+                console.error("Some employee project assignments were not saved:", failedAssignments);
+                window.alert("Project details were saved, but some employee access assignments failed. Reopen the project and try again.");
             }
 
             closeModal();
-            renderProjects();
+            await loadProjects();
         } catch (error) {
             console.error("Unable to save project:", error);
             window.alert("Unable to save project. Please make sure JSON Server is running.");

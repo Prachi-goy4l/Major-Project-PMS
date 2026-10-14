@@ -47,7 +47,9 @@ signupForm.addEventListener("submit", async function (event) {
         const newUser = {
             name: name,
             email: email,
-            password: password
+            password: password,
+            role: "Employee",
+            projectIds: []
         };
 
         // Add user to JSON Server

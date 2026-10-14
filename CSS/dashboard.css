@@ -77,11 +77,11 @@ nav ul li a.active {
 .dashboard-content {
     width: 100%;
 
-    max-width: 1100px;
+    max-width: 1280px;
 
     margin: 0 auto;
 
-    padding: 28px 30px 40px;
+    padding: 24px 30px 40px;
 }
 
 
@@ -127,6 +127,15 @@ nav ul li a.active {
 
 .dashboard-box p {
     margin-bottom: 0;
+}
+
+.dashboard-eyebrow {
+    display: inline-block;
+    margin-bottom: 5px;
+    color: #a34833;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.2px;
 }
 
 .user-info {
@@ -475,6 +484,99 @@ nav ul li a.active {
     margin-top: auto;
 }
 
+/* The overall dashboard keeps its unique styling inside the shared layout shell. */
+.layout-overall-dashboard .dashboard-content {
+    max-width: 1280px;
+    padding-top: 20px;
+}
+
+.layout-overall-dashboard .dashboard-heading {
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.layout-overall-dashboard .dashboard-box {
+    position: relative;
+    overflow: hidden;
+    padding: 22px 24px;
+    border: 1px solid #f0e2de;
+    border-radius: 14px;
+    background: linear-gradient(110deg, #ffffff 60%, #fff8f6);
+    box-shadow: 0 8px 24px rgb(37 41 50 / 5%);
+}
+
+.layout-overall-dashboard .dashboard-box::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: #d96c54;
+    content: "";
+}
+
+.layout-overall-dashboard .user-info {
+    align-self: center;
+    padding: 12px 16px;
+    border: 1px solid #e9eaed;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.layout-overall-dashboard .user-info i {
+    color: #d96c54;
+}
+
+.layout-overall-dashboard .stats-container {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.layout-overall-dashboard .stat-card {
+    gap: 2px;
+    min-height: 104px;
+    padding: 18px;
+    border-color: #e9eaed;
+    border-radius: 13px;
+    box-shadow: 0 5px 18px rgb(37 41 50 / 4%);
+}
+
+.layout-overall-dashboard .stat-icon {
+    flex: 0 0 44px;
+    border-radius: 12px;
+    background: #fbece8;
+    color: #be5944;
+}
+
+.layout-overall-dashboard .dashboard-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr);
+    gap: 16px;
+}
+
+.layout-overall-dashboard .dashboard-card {
+    border-color: #e9eaed;
+    border-radius: 13px;
+    box-shadow: 0 5px 18px rgb(37 41 50 / 4%);
+}
+
+.layout-overall-dashboard .card-header h2 i,
+.layout-overall-dashboard .card-header a {
+    color: #be5944;
+}
+
+.layout-overall-dashboard .project-item {
+    gap: 12px;
+    padding: 13px 2px;
+}
+
+.layout-overall-dashboard .project-item:hover .project-name {
+    color: #a34833;
+}
+
+.layout-overall-dashboard .project-status {
+    flex: 0 0 auto;
+}
+
 main,
 .container,
 .login-container,
@@ -647,8 +749,8 @@ nav ul {
     flex-direction: column;
 }
 
-nav a,
-nav ul li a {
+.layout-main nav a,
+.layout-main nav ul li a {
     display: block;
     color: #dddddd;
     text-decoration: none;
@@ -658,10 +760,10 @@ nav ul li a {
     transition: all 0.25s ease;
 }
 
-nav a:hover,
-nav ul li a:hover,
-nav a.active,
-nav ul li a.active {
+.layout-main nav a:hover,
+.layout-main nav ul li a:hover,
+.layout-main nav a.active,
+.layout-main nav ul li a.active {
     background: #2eaa70;
     color: white;
 }
@@ -729,7 +831,7 @@ nav ul li a.active {
     align-items: center;
 }
 
-button,
+.layout-main button,
 .add-project-btn,
 .submit-project-btn,
 #eventForm button,
@@ -742,7 +844,7 @@ button,
     transition: 0.25s;
 }
 
-button:hover,
+.layout-main button:hover,
 .add-project-btn:hover,
 .submit-project-btn:hover,
 #eventForm button:hover,

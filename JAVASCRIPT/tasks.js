@@ -1,6 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
   const API_URL = "http://localhost:3000/tasks";
-  const TEAM_MEMBERS_API_URL = "http://localhost:3000/teamMembers";
+  const user = PMS.requireUser();
+  if (!user) {
+    return;
+  }
+  const manager = PMS.isManager(user);
+  const workspaceProjectId = PMS.projectIdFromUrl();
+  let projects = [];
+  let projectById = new Map();
+  let activeProjectId = workspaceProjectId || "";
+  const taskProjectSelect = document.getElementById("taskProject");
+  const taskProjectField = document.getElementById("taskProjectField");
+  const lockedTaskProject = document.getElementById("lockedTaskProject");
 
   const taskForm = document.getElementById("taskForm");
   const assignedToSelect = document.getElementById("assignedTo");
@@ -70,10 +81,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderTeamMemberOptions(selectedName = "") {
-    const memberOptions = teamMembers.map((member) => `
+    const projectMembers = activeProjectId
+      ? teamMembers.filter((member) =>
+        Array.isArray(member.projectIds) && member.projectIds.map(String).includes(activeProjectId))
+      : [];
+    const memberOptions = projectMembers.map((member) => `
       <option value="${escapeHTML(member.name)}">${escapeHTML(member.name)}</option>
     `);
-    const selectedMemberExists = teamMembers.some((member) => member.name === selectedName);
+    const selectedMemberExists = projectMembers.some((member) => member.name === selectedName);
 
     if (selectedName && !selectedMemberExists) {
       memberOptions.unshift(`
@@ -85,12 +100,12 @@ document.addEventListener("DOMContentLoaded", function () {
       <option value="">Select a team member</option>
       ${memberOptions.join("")}
     `;
-    assignedToSelect.disabled = teamMembers.length === 0;
+    assignedToSelect.disabled = projectMembers.length === 0;
     assignedToSelect.value = selectedName;
-    assignedToHelp.textContent = teamMembers.length
-      ? "Choose a member from your team."
-      : "No team members are available. Add a team member before assigning tasks.";
-    assignedToHelp.classList.toggle("assignee-help-error", teamMembers.length === 0);
+    assignedToHelp.textContent = projectMembers.length
+      ? "Choose a member assigned to this project."
+      : "No team members are assigned to this project.";
+    assignedToHelp.classList.toggle("assignee-help-error", projectMembers.length === 0);
   }
 
   function taskSearchText(task) {
@@ -106,7 +121,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function getVisibleTasks() {
     const searchValue = searchTask.value.trim().toLocaleLowerCase();
-    return tasks.filter((task) => !searchValue || taskSearchText(task).includes(searchValue));
+    return tasks.filter((task) =>
+      (!searchValue || taskSearchText(task).includes(searchValue)) &&
+      (!workspaceProjectId || String(task.projectId) === workspaceProjectId)
+    );
+  }
+
+  function canUpdateTask(task) {
+    if (manager) {
+      return false;
+    }
+    const assignedMember = teamMembers.find((member) =>
+      String(member.userId) === String(user.id) &&
+      Array.isArray(member.projectIds) &&
+      member.projectIds.map(String).includes(String(task.projectId)) &&
+      member.name === task.assignedTo
+    );
+    return String(task.assignedToUserId || assignedMember?.userId || "") === String(user.id) ||
+      (!task.assignedToUserId && !assignedMember && task.assignedTo === user.name);
   }
 
   function renderTaskRow(task) {
@@ -116,24 +148,37 @@ document.addEventListener("DOMContentLoaded", function () {
       day: "numeric",
       year: "numeric",
     });
+    const projectName = projectById.get(String(task.projectId))?.projectName || "Unknown project";
+    const actions = manager
+      ? `
+          <button type="button" class="task-action-button" data-task-action="edit" data-task-id="${taskId}" aria-label="Edit ${escapeHTML(task.taskName)}">
+            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="task-action-button task-delete-button" data-task-action="delete" data-task-id="${taskId}" aria-label="Delete ${escapeHTML(task.taskName)}">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          </button>
+        `
+      : canUpdateTask(task)
+        ? `<select class="task-status-select" data-task-action="status" data-task-id="${taskId}" aria-label="Update status for ${escapeHTML(task.taskName)}">
+            ${["To Do", "In Progress", "Completed"].map((status) =>
+              `<option value="${status}"${task.status === status ? " selected" : ""}>${status}</option>`
+            ).join("")}
+          </select>`
+        : '<span class="task-readonly-label">View only</span>';
     return `
       <tr>
         <td>
           <span class="task-name">${escapeHTML(task.taskName || "Untitled task")}</span>
           <span class="task-description">${escapeHTML(task.description || "")}</span>
         </td>
+        <td>${escapeHTML(projectName)}</td>
         <td>${escapeHTML(task.assignedTo || "Unassigned")}</td>
         <td><span class="task-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i>${deadline}</span></td>
         <td><span class="task-badge ${priorityClass(task.priority)}">${escapeHTML(task.priority || "—")}</span></td>
         <td><span class="task-badge ${statusClass(task.status)}">${escapeHTML(task.status || "Unknown")}</span></td>
         <td>
           <div class="task-row-actions">
-            <button type="button" class="task-action-button" data-task-action="edit" data-task-id="${taskId}" aria-label="Edit ${escapeHTML(task.taskName)}">
-              <i class="fa-solid fa-pen" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="task-action-button task-delete-button" data-task-action="delete" data-task-id="${taskId}" aria-label="Delete ${escapeHTML(task.taskName)}">
-              <i class="fa-solid fa-trash" aria-hidden="true"></i>
-            </button>
+            ${actions}
           </div>
         </td>
       </tr>
@@ -144,10 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("taskCount").textContent = String(taskList.length);
 
     if (taskList.length === 0) {
+      const scopeTasks = workspaceProjectId
+        ? tasks.filter((task) => String(task.projectId) === workspaceProjectId)
+        : tasks;
       taskTableBody.innerHTML = `
-        <tr><td colspan="6" class="tasks-empty-cell">
+        <tr><td colspan="7" class="tasks-empty-cell">
           <i class="fa-regular fa-folder-open" aria-hidden="true"></i>
-          <span>${tasks.length ? "No tasks match your search." : "No tasks yet. Add a task to get started."}</span>
+          <span>${scopeTasks.length ? "No tasks match your search." : "No tasks yet. Add a task to get started."}</span>
         </td></tr>
       `;
       return;
@@ -251,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
       completedTaskGroups.innerHTML = `
         <div class="completed-empty">
           <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
-          <span>${tasks.some((task) => task.status === "Completed")
+          <span>${taskList.some((task) => task.status === "Completed")
             ? "No completed tasks match your search."
             : "Completed tasks will appear here."}</span>
         </div>
@@ -285,6 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <thead>
               <tr>
                 <th scope="col">Task</th>
+                <th scope="col">Project</th>
                 <th scope="col">Assigned to</th>
                 <th scope="col">Due date</th>
                 <th scope="col">Priority</th>
@@ -319,11 +368,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function openEditModal(id) {
+    if (!manager) {
+      return;
+    }
     const task = tasks.find((item) => String(item.id) === String(id));
     if (!task) {
       return;
     }
 
+    activeProjectId = String(task.projectId);
+    taskProjectSelect.value = activeProjectId;
     document.getElementById("taskName").value = task.taskName || "";
     document.getElementById("taskDescription").value = task.description || "";
     renderTeamMemberOptions(task.assignedTo || "");
@@ -338,6 +392,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function deleteTask(id) {
+    if (!manager) {
+      return;
+    }
     if (!confirm("Are you sure you want to delete this task?")) {
       return;
     }
@@ -363,16 +420,55 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    if (button.dataset.taskAction === "edit") {
+    if (button.dataset.taskAction === "edit" && manager) {
       openEditModal(button.dataset.taskId);
-    } else if (button.dataset.taskAction === "delete") {
+    } else if (button.dataset.taskAction === "delete" && manager) {
       deleteTask(button.dataset.taskId);
     }
   }
 
+  async function updateTaskStatus(event) {
+    const select = event.target.closest('[data-task-action="status"]');
+    if (!select || manager) {
+      return;
+    }
+    const task = tasks.find((item) => String(item.id) === select.dataset.taskId);
+    if (!task || !canUpdateTask(task)) {
+      return;
+    }
+    const previousStatus = task.status;
+    select.disabled = true;
+    try {
+      const response = await fetch(`${API_URL}/${encodeURIComponent(task.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: select.value })
+      });
+      if (!response.ok) {
+        throw new Error(`Unable to update task status (${response.status})`);
+      }
+      const updatedTask = await response.json();
+      tasks = tasks.map((item) => String(item.id) === String(task.id) ? updatedTask : item);
+      renderTaskViews();
+    } catch (error) {
+      console.error("Unable to update task status:", error);
+      select.value = previousStatus;
+      select.disabled = false;
+      window.alert("Unable to update task status. Please try again.");
+    }
+  }
+
   openTaskModal.addEventListener("click", function () {
+    if (!manager) {
+      return;
+    }
     editTaskId = null;
     taskForm.reset();
+    if (workspaceProjectId) {
+      activeProjectId = workspaceProjectId;
+    } else {
+      activeProjectId = taskProjectSelect.value;
+    }
     renderTeamMemberOptions();
     modalHeading.textContent = "Add New Task";
     setSubmitButton("fa-plus", "Add Task");
@@ -394,7 +490,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   taskTableBody.addEventListener("click", handleTaskAction);
   completedTaskGroups.addEventListener("click", handleTaskAction);
+  taskTableBody.addEventListener("change", updateTaskStatus);
+  completedTaskGroups.addEventListener("change", updateTaskStatus);
   searchTask.addEventListener("input", renderTaskViews);
+  taskProjectSelect.addEventListener("change", function () {
+    activeProjectId = taskProjectSelect.value;
+    renderTeamMemberOptions();
+  });
 
   document.getElementById("previousMonth").addEventListener("click", function () {
     calendarDate.setMonth(calendarDate.getMonth() - 1);
@@ -412,10 +514,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   taskForm.addEventListener("submit", async function (event) {
     event.preventDefault();
+    if (!manager) {
+      return;
+    }
+    const taskProjectId = workspaceProjectId || taskProjectSelect.value;
+    const assignedMember = teamMembers.find((member) =>
+      member.name === assignedToSelect.value &&
+      Array.isArray(member.projectIds) &&
+      member.projectIds.map(String).includes(String(taskProjectId))
+    );
     const taskData = {
       taskName: document.getElementById("taskName").value.trim(),
       description: document.getElementById("taskDescription").value.trim(),
       assignedTo: assignedToSelect.value,
+      assignedToUserId: assignedMember?.userId || "",
+      projectId: String(taskProjectId),
       priority: document.getElementById("priority").value,
       deadline: document.getElementById("deadline").value,
       status: document.getElementById("status").value,
@@ -456,15 +569,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadTasks() {
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error("Unable to load tasks");
+      const refreshedUser = await PMS.refreshCurrentUser();
+      if (refreshedUser) {
+        Object.assign(user, refreshedUser);
       }
-      tasks = await response.json();
+      const [projectRecords, taskRecords, memberRecords] = await Promise.all([
+        PMS.fetchCollection("projects"),
+        PMS.fetchCollection("tasks"),
+        PMS.fetchCollection("teamMembers")
+      ]);
+      projects = PMS.accessibleProjects(projectRecords, user);
+      projectById = new Map(projects.map((project) => [String(project.id), project]));
+      const allowedProjectIds = new Set(projects.map((project) => String(project.id)));
+      if (workspaceProjectId && !allowedProjectIds.has(workspaceProjectId)) {
+        window.location.replace("projects.html");
+        return;
+      }
+      tasks = taskRecords.filter((task) => allowedProjectIds.has(String(task.projectId)));
+      teamMembers = memberRecords.filter((member) =>
+        Array.isArray(member.projectIds) &&
+        member.projectIds.some((id) => allowedProjectIds.has(String(id))) &&
+        typeof member.name === "string" && member.name.trim()
+      );
+      taskProjectSelect.replaceChildren(
+        new Option("Select a project", ""),
+        ...projects.map((project) => new Option(project.projectName || "Untitled project", String(project.id)))
+      );
+      if (workspaceProjectId) {
+        taskProjectField.hidden = true;
+        taskProjectSelect.disabled = true;
+        lockedTaskProject.hidden = false;
+        lockedTaskProject.textContent = `Project: ${projectById.get(workspaceProjectId)?.projectName || "Selected project"}`;
+        document.getElementById("taskScopeDescription").textContent =
+          `Tasks and deadlines for ${projectById.get(workspaceProjectId)?.projectName || "this project"}.`;
+      } else {
+        taskProjectSelect.disabled = false;
+      }
+      if (!manager) {
+        openTaskModal.hidden = true;
+        openTaskModal.style.display = "none";
+        document.getElementById("taskForm").querySelectorAll("label, input, textarea, select, small, button").forEach((element) => {
+          element.disabled = true;
+        });
+      } else if (projects.length === 0) {
+        openTaskModal.disabled = true;
+      }
       renderTaskViews();
     } catch (error) {
+      console.error("Unable to load tasks:", error);
       taskTableBody.innerHTML = `
-        <tr><td colspan="6" class="tasks-empty-cell">
+        <tr><td colspan="7" class="tasks-empty-cell">
           Unable to load tasks. Start JSON Server on port 3000.
         </td></tr>
       `;
@@ -473,25 +627,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  async function loadTeamMembers() {
-    try {
-      const response = await fetch(TEAM_MEMBERS_API_URL);
-      if (!response.ok) {
-        throw new Error("Unable to load team members");
-      }
-      const members = await response.json();
-      teamMembers = members.filter((member) => member && typeof member.name === "string" && member.name.trim());
-      renderTeamMemberOptions();
-    } catch (error) {
-      assignedToSelect.innerHTML = '<option value="">Unable to load team members</option>';
-      assignedToSelect.disabled = true;
-      assignedToHelp.textContent = "Could not load team members. Start JSON Server and try again.";
-      assignedToHelp.classList.add("assignee-help-error");
-      console.error("Unable to load team members:", error);
-    }
-  }
-
   renderTaskViews();
   loadTasks();
-  loadTeamMembers();
 });

@@ -272,6 +272,20 @@
     margin-top: auto;
 }
 
+.project-open-workspace {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    color: var(--projects-accent);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.project-open-workspace:hover {
+    color: var(--projects-accent-hover);
+}
+
 .project-meta-item {
     min-width: 0;
     align-items: flex-start;
@@ -459,6 +473,16 @@
     background: #ffffff;
     font: inherit;
     font-size: 13px;
+}
+
+.form-group select[multiple] {
+    min-height: 112px;
+    padding: 5px;
+}
+
+.manager-project-access small {
+    color: var(--projects-muted);
+    font-size: 11px;
 }
 
 .form-group input:focus,

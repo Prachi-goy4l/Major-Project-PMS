@@ -303,6 +303,23 @@ body {
   gap: 5px;
 }
 
+.task-status-select {
+  max-width: 125px;
+  min-height: 30px;
+  padding: 4px 7px;
+  border: 1px solid var(--tasks-border);
+  border-radius: 6px;
+  color: var(--tasks-text);
+  background: #fff;
+  font: inherit;
+  font-size: 11px;
+}
+
+.task-readonly-label {
+  color: var(--tasks-muted);
+  font-size: 10px;
+}
+
 .task-action-button {
   display: grid;
   width: 30px;
