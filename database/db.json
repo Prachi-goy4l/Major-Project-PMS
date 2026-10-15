@@ -40,6 +40,14 @@
         "1"
       ],
       "teamMemberId": "7wqy0izaD8M"
+    },
+    {
+      "name": "prachi",
+      "email": "prachii2713@gmail.com",
+      "password": "123456",
+      "role": "Employee",
+      "projectIds": [],
+      "id": "MfZUvJhC9ms"
     }
   ],
   "projects": [

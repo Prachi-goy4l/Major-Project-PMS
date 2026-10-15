@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inProgress = tasks.filter((task) => task.status === "In Progress").length;
 
         document.getElementById("userName").textContent = user.name || "User";
-        document.querySelector(".dashboard-heading h2").textContent =
+        document.querySelector(".dashboard-heading h1").textContent =
             PMS.isManager(user) ? "Overall Dashboard" : "My Dashboard";
         document.querySelector(".dashboard-box p").textContent =
             PMS.isManager(user)
