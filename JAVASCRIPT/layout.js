@@ -1,4 +1,3 @@
-const SEARCH_API = "http://localhost:3000";
 let searchableRecordsPromise;
 
 async function searchEverything(query) {
@@ -9,22 +8,48 @@ async function searchEverything(query) {
     }
 
     if (!searchableRecordsPromise) {
-        const collections = [
-            { type: "Project", endpoint: "projects", href: "projects.html", icon: "fa-folder" },
-            { type: "Task", endpoint: "tasks", href: "tasks.html", icon: "fa-square-check" },
-            { type: "Team Member", endpoint: "teamMembers", href: "team.html", icon: "fa-users" },
-            { type: "Dashboard", endpoint: "dashboard", href: "dashbooard.html", icon: "fa-house" }
-        ];
-
-        searchableRecordsPromise = Promise.all(collections.map(async function (collection) {
-            const response = await fetch(`${SEARCH_API}/${collection.endpoint}`);
-
-            if (!response.ok) {
-                throw new Error(`Unable to search ${collection.endpoint}`);
+        searchableRecordsPromise = Promise.all([
+            PMS.fetchCollection("projects"),
+            PMS.fetchCollection("tasks"),
+            PMS.fetchCollection("teamMembers")
+        ]).then(function (collections) {
+            const [allProjects, allTasks, allMembers] = collections;
+            const user = PMS.getUser();
+            const allowedProjects = PMS.accessibleProjects(allProjects, user);
+            const allowedIds = new Set(allowedProjects.map((project) => String(project.id)));
+            const records = [];
+            allowedProjects.forEach(function (project) {
+                records.push({
+                    type: "Project",
+                    href: PMS.urlForPage("project-dashboard.html", project.id),
+                    icon: "fa-folder",
+                    record: project
+                });
+            });
+            if (!document.body.classList.contains("layout-overall-dashboard")) {
+                allTasks.filter((task) => allowedIds.has(String(task.projectId))).forEach(function (task) {
+                    records.push({
+                        type: "Task",
+                        href: PMS.urlForPage("tasks.html", task.projectId),
+                        icon: "fa-square-check",
+                        record: task
+                    });
+                });
+                allMembers.filter((member) =>
+                    Array.isArray(member.projectIds) &&
+                    member.projectIds.some((id) => allowedIds.has(String(id)))
+                ).forEach(function (member) {
+                    const projectId = (member.projectIds || []).map(String).find((id) => allowedIds.has(id));
+                    records.push({
+                        type: "Team Member",
+                        href: PMS.urlForPage("team.html", projectId),
+                        icon: "fa-users",
+                        record: member
+                    });
+                });
             }
-
-            const records = await response.json();
-            return records.map(function (record) {
+            return records.map(function (entry) {
+                const record = entry.record;
                 const fields = Object.values(record)
                     .filter(function (value) {
                         return typeof value === "string" || typeof value === "number";
@@ -32,16 +57,14 @@ async function searchEverything(query) {
                     .map(String);
 
                 return {
-                    type: collection.type,
-                    href: collection.href,
-                    icon: collection.icon,
+                    type: entry.type,
+                    href: entry.href,
+                    icon: entry.icon,
                     title: record.projectName || record.taskName || record.name || record.title || "Untitled",
                     detail: record.description || record.email || record.status || record.role || "",
                     searchText: fields.join(" ").toLocaleLowerCase()
                 };
             });
-        })).then(function (results) {
-            return results.flat();
         }).catch(function (error) {
             searchableRecordsPromise = null;
             throw error;
@@ -55,52 +78,98 @@ async function searchEverything(query) {
 }
 
 function initLayout(activePage) {
-    const links = [
-        { page: "dashboard", label: "Dashboard", href: "dashboard.html", icon: "fa-house" },
-        { page: "projects", label: "Projects", href: "projects.html", icon: "fa-folder" },
-        { page: "tasks", label: "Tasks", href: "tasks.html", icon: "fa-square-check" },
-        { page: "team", label: "Team", href: "team.html", icon: "fa-users" }
-    ];
+    const projectId = window.PMS ? PMS.projectIdFromUrl() : null;
+    const isOverallDashboard = activePage === "dashboard";
+    const isProjectsPage = activePage === "projects" && !projectId;
+    const isOverallNavigation = isOverallDashboard || isProjectsPage;
+    const isProjectDashboard = activePage === "project-dashboard";
+    const isProjectWorkspace = Boolean(projectId);
+    const links = isOverallNavigation
+        ? [
+            { page: "dashboard", label: "Overall Dashboard", href: "dashboard.html", icon: "fa-house" },
+            { page: "projects", label: "Projects", href: "projects.html", icon: "fa-folder" }
+        ]
+        : isProjectWorkspace
+            ? [
+                { page: "home", label: "Home", href: "dashboard.html", icon: "fa-house" },
+                { page: "project-dashboard", label: "Project Dashboard", href: PMS.urlForPage("project-dashboard.html", projectId), icon: "fa-house" },
+                { page: "tasks", label: "Tasks", href: PMS.urlForPage("tasks.html", projectId), icon: "fa-square-check" },
+                { page: "team", label: "Team", href: PMS.urlForPage("team.html", projectId), icon: "fa-users" }
+            ]
+            : [
+                { page: "dashboard", label: "Dashboard", href: "dashboard.html", icon: "fa-house" },
+                { page: "projects", label: "Projects", href: "projects.html", icon: "fa-folder" },
+            ];
 
-    const sidebar = document.createElement("aside");
-    sidebar.className = "layout-sidebar";
-    sidebar.setAttribute("aria-label", "Main sidebar");
-    sidebar.innerHTML = `
-        <a class="layout-brand" href="index.html">
-            <span class="layout-brand-icon" aria-hidden="true">
-                <i class="fa-solid fa-layer-group"></i>
-            </span>
-            <span>WorkSphere</span>
-        </a>
-        <nav class="layout-navigation" aria-label="Main navigation">
-            <ul>
-                ${links.map(function (link) {
-                    const current = link.page === activePage;
-                    return `
-                        <li>
-                            <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
-                                <i class="fa-solid ${link.icon}" aria-hidden="true"></i>
-                                <span>${link.label}</span>
-                            </a>
-                        </li>
-                    `;
-                }).join("")}
-            </ul>
-        </nav>
-        <div class="layout-tagline">Plan <span>|</span> Organize <span>|</span> Achieve</div>
-    `;
+    document.body.classList.toggle("layout-portfolio", isOverallNavigation);
+    document.body.classList.toggle("layout-overall-dashboard", isOverallDashboard);
+    document.body.classList.toggle("layout-project-dashboard", isProjectDashboard);
+
+    let sidebar = null;
+    if (!isOverallNavigation) {
+        sidebar = document.createElement("aside");
+        sidebar.className = "layout-sidebar";
+        sidebar.setAttribute("aria-label", "Main sidebar");
+        sidebar.innerHTML = `
+            <a class="layout-brand" href="index.html">
+                <span class="layout-brand-icon" aria-hidden="true">
+                    <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <span>WorkSphere</span>
+            </a>
+            <nav class="layout-navigation" aria-label="Main navigation">
+                <ul>
+                    ${links.map(function (link) {
+                        const current = link.page === activePage;
+                        return `
+                            <li>
+                                <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
+                                    <i class="fa-solid ${link.icon}" aria-hidden="true"></i>
+                                    <span>${link.label}</span>
+                                </a>
+                            </li>
+                        `;
+                    }).join("")}
+                </ul>
+            </nav>
+            <div class="layout-tagline">Plan <span>|</span> Organize <span>|</span> Achieve</div>
+        `;
+    }
 
     const topbar = document.createElement("div");
     topbar.className = "layout-topbar";
     topbar.setAttribute("role", "banner");
     topbar.innerHTML = `
-        <button class="layout-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
-            <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
+        ${isOverallNavigation ? `
+            <a class="layout-brand" href="index.html">
+                <span class="layout-brand-icon" aria-hidden="true">
+                    <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <span>WorkSphere</span>
+            </a>
+            <nav class="layout-portfolio-navigation" aria-label="Portfolio navigation">
+                <ul>
+                    ${links.map(function (link) {
+                        const current = link.page === activePage;
+                        return `
+                            <li>
+                                <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
+                                    ${link.label}
+                                </a>
+                            </li>
+                        `;
+                    }).join("")}
+                </ul>
+            </nav>
+        ` : `
+            <button class="layout-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+        `}
         <div class="layout-search-wrapper">
             <label class="layout-search">
                 <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                <input type="search" placeholder="Search projects, tasks, or team members..." aria-label="Search" autocomplete="off">
+                <input type="search" placeholder="${isOverallDashboard ? "Search your projects..." : "Search projects, tasks, or team members..."}" aria-label="Search" autocomplete="off">
             </label>
             <div class="layout-search-results" role="listbox" aria-label="Search results" hidden></div>
         </div>
@@ -125,12 +194,7 @@ function initLayout(activePage) {
         </div>
     `;
 
-    let signedInUser = null;
-    try {
-        signedInUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
-    } catch (error) {
-        console.error("Unable to read signed-in user:", error);
-    }
+    const signedInUser = window.PMS ? PMS.getUser() : null;
 
     const displayName = signedInUser && signedInUser.name ? signedInUser.name : "Admin";
     topbar.querySelector(".layout-avatar").textContent = displayName.charAt(0).toUpperCase();
@@ -149,25 +213,34 @@ function initLayout(activePage) {
         }
     });
 
-    document.body.append(sidebar, topbar, pageContent);
+    if (sidebar) {
+        document.body.appendChild(sidebar);
+    }
+    document.body.append(topbar, pageContent);
     pageScripts.forEach(function (script) {
         document.body.appendChild(script);
     });
 
     const menuToggle = topbar.querySelector(".layout-menu-toggle");
-    menuToggle.addEventListener("click", function () {
-        const isOpen = document.body.classList.toggle("layout-menu-open");
-        menuToggle.setAttribute("aria-expanded", String(isOpen));
-        menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
-    });
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener("click", function () {
+            const isOpen = document.body.classList.toggle("layout-menu-open");
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+        });
+    }
 
-    sidebar.querySelectorAll("a").forEach(function (link) {
+    if (sidebar) {
+        sidebar.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
             document.body.classList.remove("layout-menu-open");
-            menuToggle.setAttribute("aria-expanded", "false");
-            menuToggle.setAttribute("aria-label", "Open navigation menu");
+            if (menuToggle) {
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", "Open navigation menu");
+            }
         });
-    });
+        });
+    }
 
     const searchInput = topbar.querySelector(".layout-search input");
     const searchResults = topbar.querySelector(".layout-search-results");
@@ -183,6 +256,7 @@ function initLayout(activePage) {
 
     topbar.querySelector(".layout-signout").addEventListener("click", function () {
         localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("pmsSession");
         window.location.href = "login.html";
     });
 

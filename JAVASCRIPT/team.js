@@ -1,5 +1,9 @@
 const PROJECTS_API = "http://localhost:3000/projects";
 const TEAM_MEMBERS_API = "http://localhost:3000/teamMembers";
+const USERS_API = "http://localhost:3000/users";
+const currentUser = PMS.requireUser();
+const isManager = PMS.isManager(currentUser);
+const workspaceProjectId = PMS.projectIdFromUrl();
 
 // DOM ELEMENTS
 const teamForm = document.getElementById("teamForm");
@@ -31,8 +35,25 @@ const formHeading = document.getElementById("formHeading");
 // DATA
 let projects = [];
 let teamMembers = [];
+let users = [];
 let selectedProjectId = "";
 let editMemberId = null;
+
+if (!isManager) {
+    addTeamMemberBtn.hidden = true;
+    addTeamMemberBtn.style.display = "none";
+    memberFormBox.hidden = true;
+}
+
+if (workspaceProjectId) {
+    document.getElementById("teamScopeDescription").textContent =
+        "Team members assigned to this project.";
+    document.querySelector(".team-toolbar").hidden = true;
+    document.querySelector(".team-toolbar").style.display = "none";
+    document.querySelector('[for="projectName"]').parentElement.hidden = true;
+    document.querySelector('[for="projectName"]').parentElement.style.display = "none";
+    projectNameInput.disabled = true;
+}
 
 // INITIALIZE PAGE
 document.addEventListener("DOMContentLoaded", loadTeamMembers);
@@ -40,6 +61,7 @@ document.addEventListener("DOMContentLoaded", loadTeamMembers);
 // EVENT LISTENERS
 // Open add-member form
 addTeamMemberBtn.addEventListener("click", () => {
+    if (!isManager) return;
     editMemberId = null;
     teamForm.reset();
     changeButtonToAdd();
@@ -68,6 +90,7 @@ cancelBtn.addEventListener("click", closeForm);
 
 // Project dropdown
 projectSelect.addEventListener("change", () => {
+    if (workspaceProjectId) return;
     selectedProjectId = projectSelect.value;
     renderSelectedProject();
 });
@@ -80,7 +103,12 @@ teamForm.addEventListener("submit", saveMember);
 // =====================================================
 
 async function loadTeamMembers() {
+    if (!currentUser) return;
     try {
+        const refreshedUser = await PMS.refreshCurrentUser();
+        if (refreshedUser) {
+            Object.assign(currentUser, refreshedUser);
+        }
         const [projectsResponse, membersResponse] = await Promise.all([
             fetch(PROJECTS_API),
             fetch(TEAM_MEMBERS_API)
@@ -100,6 +128,7 @@ async function loadTeamMembers() {
 
         const projectsData = await projectsResponse.json();
         const membersData = await membersResponse.json();
+        const usersData = isManager ? await PMS.fetchCollection("users") : [];
 
         if (!Array.isArray(projectsData)) {
             throw new Error("Projects API did not return an array.");
@@ -108,9 +137,18 @@ async function loadTeamMembers() {
         if (!Array.isArray(membersData)) {
             throw new Error("Team Members API did not return an array.");
         }
-
-        projects = projectsData;
+        projects = PMS.accessibleProjects(projectsData, currentUser);
         teamMembers = membersData;
+        users = usersData;
+
+        if (workspaceProjectId && !projects.some(project => String(project.id) === workspaceProjectId)) {
+            window.location.replace("projects.html");
+            return;
+        }
+        if (workspaceProjectId) {
+            selectedProjectId = workspaceProjectId;
+            projectSelect.disabled = true;
+        }
 
         // Keep the selected project if it still exists.
         if (
@@ -131,6 +169,9 @@ async function loadTeamMembers() {
         populateProjectDatalist();
 
         projectSelect.value = selectedProjectId;
+        if (workspaceProjectId) {
+            projectSelect.disabled = true;
+        }
 
         renderSelectedProject();
 
@@ -203,35 +244,13 @@ function getMembersForProject(project) {
     if (!project) return [];
 
     const projectId = String(project.id);
-    const projectName = getProjectName(project).toLowerCase();
-
     return teamMembers.filter(member => {
-        // Match a single project ID.
-        const matchesProjectId =
-            member.projectId !== undefined &&
+        if (Array.isArray(member.projectIds)) {
+            return member.projectIds.some(id => String(id) === projectId);
+        }
+        return member.projectId !== undefined &&
             member.projectId !== null &&
             String(member.projectId) === projectId;
-
-        // Match an array of project IDs.
-        const matchesProjectIds =
-            Array.isArray(member.projectIds) &&
-            member.projectIds.some(
-                id => String(id) === projectId
-            );
-
-        // Match the project name in your existing database.
-        const memberProjectName =
-            getMemberProjectName(member).toLowerCase();
-
-        const matchesProjectName =
-            memberProjectName !== "" &&
-            memberProjectName === projectName;
-
-        return (
-            matchesProjectId ||
-            matchesProjectIds ||
-            matchesProjectName
-        );
     });
 }
 
@@ -406,7 +425,7 @@ function renderMembers() {
                 ${escapeHtml(role)}
             </span>
 
-            <div class="member-actions">
+            ${isManager ? `<div class="member-actions">
                 <button type="button"
                     class="edit-member-btn"
                     title="Edit member"
@@ -420,17 +439,19 @@ function renderMembers() {
                     aria-label="Remove member">
                     <i class="fa-solid fa-trash"></i>
                 </button>
-            </div>`;
+            </div>` : ""}`;
 
-        card.querySelector(".edit-member-btn").addEventListener(
-            "click",
-            () => editMember(member.id)
-        );
+        if (isManager) {
+            card.querySelector(".edit-member-btn").addEventListener(
+                "click",
+                () => editMember(member.id)
+            );
 
-        card.querySelector(".delete-member-btn").addEventListener(
-            "click",
-            () => deleteMember(member.id)
-        );
+            card.querySelector(".delete-member-btn").addEventListener(
+                "click",
+                () => deleteMember(member.id)
+            );
+        }
 
         membersContainer.appendChild(card);
     });
@@ -442,6 +463,7 @@ function renderMembers() {
 
 async function saveMember(event) {
     event.preventDefault();
+    if (!isManager) return;
 
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
@@ -468,10 +490,11 @@ async function saveMember(event) {
     }
 
     // Only allow an existing project.
-    const project = projects.find(item =>
-        getProjectName(item).toLowerCase() ===
-        enteredProjectName.toLowerCase()
-    );
+    const project = workspaceProjectId
+        ? findProject(workspaceProjectId)
+        : projects.find(item =>
+            getProjectName(item).toLowerCase() === enteredProjectName.toLowerCase()
+        );
 
     if (!project) {
         alert("Please select an existing project from the suggestions.");
@@ -494,6 +517,21 @@ async function saveMember(event) {
     try {
         const projectName = getProjectName(project);
 
+        const existingMember = teamMembers.find(
+            member => String(member.id) === String(editMemberId)
+        );
+        const account = users.find(
+            item => String(item.email || "").toLowerCase() === email.toLowerCase()
+        );
+        const memberProjectIds = new Set(
+            Array.isArray(existingMember?.projectIds)
+                ? existingMember.projectIds.map(String)
+                : existingMember?.projectId
+                    ? [String(existingMember.projectId)]
+                    : []
+        );
+        memberProjectIds.add(String(project.id));
+        const userId = existingMember?.userId || account?.id || "";
         const memberData = {
             name,
             email,
@@ -502,15 +540,11 @@ async function saveMember(event) {
             project: projectName,
             projectName,
             projectId: String(project.id),
-            projectIds: [String(project.id)]
+            projectIds: Array.from(memberProjectIds),
+            ...(userId ? { userId: String(userId) } : {})
         };
 
         if (editMemberId !== null) {
-            const existingMember = teamMembers.find(
-                member =>
-                    String(member.id) === String(editMemberId)
-            );
-
             if (!existingMember) {
                 throw new Error("Team member not found.");
             }
@@ -531,6 +565,42 @@ async function saveMember(event) {
                 "POST",
                 memberData
             );
+        }
+
+        if (account && !Array.isArray(account.projectIds)) {
+            account.projectIds = [];
+        }
+        if (account) {
+            const projectIds = new Set(account.projectIds.map(String));
+            projectIds.add(String(project.id));
+            const userResponse = await fetch(
+                `${USERS_API}/${encodeURIComponent(account.id)}`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ projectIds: Array.from(projectIds) })
+                }
+            );
+            if (!userResponse.ok) {
+                throw new Error(`Unable to update project access for ${account.email}`);
+            }
+            const assignedUserIds = new Set(
+                Array.isArray(project.assignedUserIds)
+                    ? project.assignedUserIds.map(String)
+                    : []
+            );
+            assignedUserIds.add(String(account.id));
+            const projectResponse = await fetch(
+                `${PROJECTS_API}/${encodeURIComponent(project.id)}`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ assignedUserIds: Array.from(assignedUserIds) })
+                }
+            );
+            if (!projectResponse.ok) {
+                throw new Error(`Unable to update project assignment for ${account.email}`);
+            }
         }
 
         selectedProjectId = String(project.id);
@@ -573,6 +643,7 @@ async function sendMember(url, method, data) {
 // =====================================================
 
 function editMember(memberId) {
+    if (!isManager) return;
     const member = teamMembers.find(
         item => String(item.id) === String(memberId)
     );
@@ -586,7 +657,9 @@ function editMember(memberId) {
 
     let assignedProject = null;
 
-    if (member.projectId !== undefined) {
+    if (workspaceProjectId) {
+        assignedProject = findProject(workspaceProjectId);
+    } else if (member.projectId !== undefined) {
         assignedProject = findProject(member.projectId);
     }
 
@@ -622,6 +695,7 @@ function editMember(memberId) {
 // =====================================================
 
 async function deleteMember(memberId) {
+    if (!isManager) return;
     const member = teamMembers.find(
         item => String(item.id) === String(memberId)
     );

@@ -1,4 +1,13 @@
 :root {
+    --navy: #292929;
+    --navy-dark: #202020;
+    --green: #b9573f;
+    --green-dark: #a34833;
+    --background: #f7f7f6;
+    --text: #343434;
+    --muted: #777777;
+    --border: #e5e3e1;
+    --white: #ffffff;
     --layout-canvas: #ffffff;
     --layout-surface: #ffffff;
     --layout-sidebar: rgba(255, 255, 255, 0.2);
@@ -12,6 +21,17 @@
     --layout-danger: #b94c4c;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 95px;
+}
+
 body {
     display: grid;
     grid-template-areas:
@@ -20,8 +40,37 @@ body {
     grid-template-columns: 240px minmax(0, 1fr);
     grid-template-rows: 64px minmax(0, 1fr);
     min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
     background: var(--layout-canvas);
     color: var(--layout-ink);
+    line-height: 1.6;
+}
+
+body.layout-portfolio {
+    grid-template-areas:
+        "topbar"
+        "content";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 64px minmax(0, 1fr);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+section {
+    scroll-margin-top: 90px;
 }
 
 .layout-sidebar {
@@ -52,7 +101,6 @@ body {
     margin: 0 0 30px;
     padding: 0 4px;
     color: var(--layout-ink);
-    font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.15;
     text-decoration: none;
     font-size: 23px;
@@ -149,6 +197,84 @@ body {
     box-shadow: 0 8px 24px rgb(37 41 50 / 20%);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(10px);
+}
+
+.layout-topbar nav {
+    width: auto;
+    background: transparent;
+    box-shadow: none;
+}
+
+body.layout-portfolio .layout-topbar {
+    gap: 22px;
+    padding: 0 20px;
+}
+
+body.layout-portfolio .layout-brand {
+    flex: 0 0 auto;
+    gap: 9px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 19px;
+}
+
+body.layout-portfolio .layout-brand-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 21px;
+}
+
+.layout-portfolio-navigation {
+    flex: 0 0 auto;
+}
+
+.layout-portfolio-navigation ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+}
+
+.layout-portfolio-navigation a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: var(--layout-muted);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 160ms ease, background-color 160ms ease;
+}
+
+.layout-portfolio-navigation a:hover,
+.layout-portfolio-navigation a:focus-visible {
+    color: var(--layout-accent-hover);
+    background: var(--layout-accent-soft);
+}
+
+.layout-portfolio-navigation a.active {
+    color: var(--layout-accent-hover);
+    background: var(--layout-accent-soft);
+}
+
+.layout-portfolio-navigation a:focus-visible {
+    outline: 2px solid var(--layout-accent);
+    outline-offset: 2px;
+}
+
+body.layout-portfolio .layout-search-wrapper {
+    flex: 1 1 180px;
+    width: auto;
+    max-width: 420px;
+    margin-left: auto;
+}
+
+body.layout-portfolio .layout-user {
+    flex: 0 0 auto;
 }
 
 .layout-menu-toggle {
@@ -476,6 +602,30 @@ body {
         padding: 0 14px;
     }
 
+    body.layout-portfolio {
+        grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    body.layout-portfolio .layout-topbar {
+        position: sticky;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        min-height: 60px;
+        padding: 8px 14px;
+    }
+
+    body.layout-portfolio .layout-search-wrapper {
+        flex-basis: 100%;
+        order: 3;
+        max-width: none;
+        margin-left: 0;
+    }
+
+    body.layout-portfolio .layout-user {
+        margin-left: auto;
+        order: 4;
+    }
+
     .layout-menu-toggle {
         display: inline-grid;
         flex: 0 0 auto;
@@ -508,6 +658,27 @@ body {
     .layout-topbar {
         gap: 6px;
         padding: 0 10px;
+    }
+
+    body.layout-portfolio .layout-topbar {
+        gap: 6px 8px;
+        padding: 8px 10px;
+    }
+
+    body.layout-portfolio .layout-brand {
+        font-size: 16px;
+    }
+
+    body.layout-portfolio .layout-brand-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+
+    body.layout-portfolio .layout-portfolio-navigation a {
+        min-height: 34px;
+        padding: 0 8px;
+        font-size: 12px;
     }
 
     .layout-search {

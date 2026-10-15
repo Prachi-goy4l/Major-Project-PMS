@@ -1,229 +1,73 @@
-// Dashboard JavaScript
-
-// Get dashboard elements
-const totalProjects = document.getElementById("totalProjects");
-const totalTasks = document.getElementById("totalTasks");
-const completedTasks = document.getElementById("completedTasks");
-const totalMembers = document.getElementById("totalMembers");
-
-const todoTasks = document.getElementById("todoTasks");
-const progressTasks = document.getElementById("progressTasks");
-const doneTasks = document.getElementById("doneTasks");
-
-const recentProjects = document.getElementById("recentProjects");
-
-// Dashboard data
-let projects = [];
-let tasks = [];
-let teamMembers = [];
-
-
-// Load data from JSON Server
-async function refreshDashboard() {
+document.addEventListener("DOMContentLoaded", async function () {
+    const user = PMS.requireUser();
+    if (!user) {
+        return;
+    }
 
     try {
-
-        const projectsResponse = await fetch(
-            "http://localhost:3000/projects"
-        );
-
-        const tasksResponse = await fetch(
-            "http://localhost:3000/tasks"
-        );
-
-        const teamMembersResponse = await fetch(
-            "http://localhost:3000/teamMembers"
-        );
-
-
-        // Check server responses
-        if (
-            !projectsResponse.ok ||
-            !tasksResponse.ok ||
-            !teamMembersResponse.ok
-        ) {
-            throw new Error("Unable to load dashboard data");
+        const refreshedUser = await PMS.refreshCurrentUser();
+        if (refreshedUser) {
+            Object.assign(user, refreshedUser);
         }
 
+        const [allProjects, allTasks, allMembers] = await Promise.all([
+            PMS.fetchCollection("projects"),
+            PMS.fetchCollection("tasks"),
+            PMS.fetchCollection("teamMembers")
+        ]);
+        const projects = PMS.accessibleProjects(allProjects, user);
+        const projectIds = new Set(projects.map((project) => String(project.id)));
+        const tasks = allTasks.filter((task) => projectIds.has(String(task.projectId)));
+        const members = allMembers.filter((member) =>
+            Array.isArray(member.projectIds) &&
+            member.projectIds.some((id) => projectIds.has(String(id)))
+        );
+        const completed = tasks.filter((task) => task.status === "Completed").length;
+        const todo = tasks.filter((task) => task.status === "To Do" || task.status === "Pending").length;
+        const inProgress = tasks.filter((task) => task.status === "In Progress").length;
 
-        // Convert response to JSON
-        projects = await projectsResponse.json();
+        document.getElementById("userName").textContent = user.name || "User";
+        document.querySelector(".dashboard-heading h1").textContent =
+            PMS.isManager(user) ? "Overall Dashboard" : "My Dashboard";
+        document.querySelector(".dashboard-box p").textContent =
+            PMS.isManager(user)
+                ? "Overview across all projects."
+                : "Overview across projects assigned to you.";
+        document.getElementById("totalProjects").textContent = String(projects.length);
+        document.getElementById("totalTasks").textContent = String(tasks.length);
+        document.getElementById("completedTasks").textContent = String(completed);
+        document.getElementById("totalMembers").textContent =
+            String(new Set(members.map((member) => String(member.id))).size);
+        document.getElementById("todoTasks").textContent = String(todo);
+        document.getElementById("progressTasks").textContent = String(inProgress);
+        document.getElementById("doneTasks").textContent = String(completed);
 
-        tasks = await tasksResponse.json();
-
-        teamMembers = await teamMembersResponse.json();
-
-
-        // Update dashboard
-        updateStatistics();
-
-        displayRecentProjects();
-
+        const recentProjects = document.getElementById("recentProjects");
+        recentProjects.replaceChildren();
+        const latestProjects = [...projects].slice(-5).reverse();
+        if (latestProjects.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "empty-message";
+            emptyMessage.textContent = "No assigned projects available.";
+            recentProjects.appendChild(emptyMessage);
+        } else {
+            latestProjects.forEach((project) => {
+                const item = document.createElement("a");
+                item.className = "project-item";
+                item.href = PMS.urlForPage("project-dashboard.html", project.id);
+                const name = document.createElement("span");
+                name.className = "project-name";
+                name.textContent = project.projectName || "Untitled project";
+                const status = document.createElement("span");
+                status.className = "project-status";
+                status.textContent = project.status || "Not Started";
+                item.append(name, status);
+                recentProjects.appendChild(item);
+            });
+        }
 
     } catch (error) {
-
         console.error("Dashboard error:", error);
-
-        alert(
-            "Unable to load dashboard data. " +
-            "Please make sure JSON Server is running."
-        );
+        window.alert("Unable to load dashboard data. Please make sure JSON Server is running.");
     }
-}
-
-
-// Update dashboard statistics
-function updateStatistics() {
-
-    // Total projects
-    if (totalProjects) {
-
-        totalProjects.textContent =
-            projects.length;
-    }
-
-
-    // Total tasks
-    if (totalTasks) {
-
-        totalTasks.textContent =
-            tasks.length;
-    }
-
-
-    // Total team members
-    if (totalMembers) {
-
-        totalMembers.textContent =
-            teamMembers.length;
-    }
-
-
-    // Count completed tasks
-    const completed =
-        tasks.filter(function(task) {
-
-            return task.status === "Completed";
-
-        }).length;
-
-
-    if (completedTasks) {
-
-        completedTasks.textContent =
-            completed;
-    }
-
-
-    // Count To Do tasks
-    const todo =
-        tasks.filter(function(task) {
-
-            return task.status === "To Do" ||
-                   task.status === "Pending";
-
-        }).length;
-
-
-    if (todoTasks) {
-
-        todoTasks.textContent =
-            todo;
-    }
-
-
-    // Count In Progress tasks
-    const inProgress =
-        tasks.filter(function(task) {
-
-            return task.status === "In Progress";
-
-        }).length;
-
-
-    if (progressTasks) {
-
-        progressTasks.textContent =
-            inProgress;
-    }
-
-
-    // Display completed task count
-    if (doneTasks) {
-
-        doneTasks.textContent =
-            completed;
-    }
-}
-
-
-// Display recent projects
-function displayRecentProjects() {
-
-    if (!recentProjects) {
-        return;
-    }
-
-
-    recentProjects.innerHTML = "";
-
-
-    // Show message when there are no projects
-    if (projects.length === 0) {
-
-        recentProjects.innerHTML = `
-            <p class="empty-message">
-                No projects available.
-            </p>
-        `;
-
-        return;
-    }
-
-
-    // Get latest five projects
-    const latestProjects =
-        projects.slice(-5).reverse();
-
-
-    latestProjects.forEach(function(project) {
-
-        const projectItem =
-            document.createElement("div");
-
-
-        projectItem.classList.add(
-            "project-item"
-        );
-
-
-        projectItem.innerHTML = `
-            <div>
-                <span class="project-name">
-                    ${project.projectName}
-                </span>
-            </div>
-
-            <span class="project-status">
-                ${project.status || "Not Started"}
-            </span>
-        `;
-
-
-        recentProjects.appendChild(
-            projectItem
-        );
-
-    });
-}
-
-
-// Load dashboard
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        refreshDashboard();
-
-    }
-);
+});

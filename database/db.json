@@ -4,25 +4,50 @@
       "id": "1",
       "name": "Admin User",
       "email": "admin@example.com",
-      "password": "admin123"
+      "password": "admin123",
+      "role": "Manager",
+      "projectIds": []
     },
     {
       "name": "Saumya Singla",
       "email": "saumya.singla26@gmail.com",
       "password": "Saumya123",
-      "id": "wVeeDDODQfA"
+      "id": "wVeeDDODQfA",
+      "role": "Employee",
+      "projectIds": [
+        "2"
+      ],
+      "teamMemberId": "5kvAMFaeV2c"
     },
     {
       "name": "Prachi",
       "email": "prachi12@gmail.com",
       "password": "password12",
-      "id": "BfuaW-YwWqA"
+      "id": "BfuaW-YwWqA",
+      "role": "Employee",
+      "projectIds": [
+        "2"
+      ],
+      "teamMemberId": "3hiK1qU81Qo"
     },
     {
       "name": "Prachi Bhardwaj",
       "email": "prachi@gmail.com",
       "password": "prachi123",
-      "id": "Ov8NM3_1Alw"
+      "id": "Ov8NM3_1Alw",
+      "role": "Employee",
+      "projectIds": [
+        "1"
+      ],
+      "teamMemberId": "7wqy0izaD8M"
+    },
+    {
+      "name": "prachi",
+      "email": "prachii2713@gmail.com",
+      "password": "123456",
+      "role": "Employee",
+      "projectIds": [],
+      "id": "MfZUvJhC9ms"
     }
   ],
   "projects": [
@@ -32,7 +57,10 @@
       "description": "Develop a web-based project management system using HTML, CSS and JavaScript.",
       "startDate": "2026-08-20",
       "deadline": "2026-09-20",
-      "status": "In Progress"
+      "status": "In Progress",
+      "assignedUserIds": [
+        "Ov8NM3_1Alw"
+      ]
     },
     {
       "id": "2",
@@ -40,7 +68,12 @@
       "description": "Design and develop a responsive company website.",
       "startDate": "2026-09-01",
       "deadline": "2026-10-01",
-      "status": "Not Started"
+      "status": "Not Started",
+      "assignedUserIds": [
+        "wVeeDDODQfA",
+        "BfuaW-YwWqA",
+        "Ov8NM3_1Alw"
+      ]
     },
     {
       "projectName": "alpha",
@@ -49,6 +82,7 @@
       "startDate": "2026-10-14",
       "deadline": "2026-10-29",
       "status": "In Progress",
+      "assignedUserIds": [],
       "id": "6Gex8KTcIH8"
     }
   ],
@@ -60,7 +94,8 @@
       "assignedTo": "Diya Patel",
       "priority": "High",
       "deadline": "2026-09-08",
-      "status": "To Do"
+      "status": "To Do",
+      "projectId": "1"
     },
     {
       "id": "3",
@@ -69,7 +104,8 @@
       "assignedTo": "Kabir Mehta",
       "priority": "Low",
       "deadline": "2026-09-01",
-      "status": "Completed"
+      "status": "Completed",
+      "projectId": "1"
     },
     {
       "taskName": "task2",
@@ -78,6 +114,7 @@
       "priority": "High",
       "deadline": "2026-10-30",
       "status": "To Do",
+      "projectId": "1",
       "id": "vNNntTwzdmY"
     }
   ],
@@ -88,7 +125,10 @@
       "email": "diya@example.com",
       "role": "Frontend Developer",
       "department": "Development",
-      "project": "Project Management System"
+      "project": "Project Management System",
+      "projectIds": [
+        "1"
+      ]
     },
     {
       "id": "2",
@@ -96,7 +136,10 @@
       "email": "kabir@example.com",
       "role": "Backend Developer",
       "department": "Development",
-      "project": "Project Management System"
+      "project": "Project Management System",
+      "projectIds": [
+        "1"
+      ]
     },
     {
       "name": "Prachi",
@@ -104,7 +147,11 @@
       "role": "Data Analyst",
       "department": "Analysis",
       "id": "3hiK1qU81Qo",
-      "project": "Website Development"
+      "project": "Website Development",
+      "projectIds": [
+        "2"
+      ],
+      "userId": "BfuaW-YwWqA"
     },
     {
       "name": "prachi",
@@ -112,7 +159,12 @@
       "role": "developer",
       "department": "ca",
       "id": "7wqy0izaD8M",
-      "project": "Website Development"
+      "project": "Website Development",
+      "projectIds": [
+        "1",
+        "2"
+      ],
+      "userId": "Ov8NM3_1Alw"
     },
     {
       "name": "Saumya",
@@ -122,7 +174,11 @@
       "project": "Website Development",
       "projectId": "2",
       "projectName": "Website Development",
-      "id": "5kvAMFaeV2c"
+      "id": "5kvAMFaeV2c",
+      "projectIds": [
+        "2"
+      ],
+      "userId": "wVeeDDODQfA"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
