@@ -477,6 +477,7 @@ body.layout-portfolio .layout-user {
 }
 
 .layout-account-toggle:focus-visible,
+.layout-profile-link:focus-visible,
 .layout-signout:focus-visible,
 .layout-menu-toggle:focus-visible,
 .layout-notifications:focus-visible {
@@ -497,19 +498,29 @@ body.layout-portfolio .layout-user {
     box-shadow: 0 10px 26px rgb(37 41 50 / 12%);
 }
 
+.layout-profile-link,
 .layout-signout {
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
     padding: 10px;
-    border: 0;
     border-radius: 5px;
     color: var(--layout-ink);
     background: transparent;
     text-align: left;
     font: inherit;
+}
+
+.layout-signout {
+    border: 0;
     cursor: pointer;
+}
+
+.layout-profile-link:hover,
+.layout-profile-link:focus-visible {
+    color: var(--layout-accent-hover);
+    background: var(--layout-accent-soft);
 }
 
 .layout-signout:hover {
