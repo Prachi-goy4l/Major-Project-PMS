@@ -1,3 +1,4 @@
+
 "use strict";
 
 // ==========================================
@@ -17,14 +18,13 @@ const ENDPOINTS = {
 
 const $ = id => document.getElementById(id);
 
-let currentUser = null;
+let currentUser = getCurrentUser();
 let projects = [];
 let members = [];
 let users = [];
 let meetings = [];
 let requests = [];
 let calendarDate = new Date();
-let pageInitialized = false;
 
 
 // ==========================================
@@ -37,27 +37,27 @@ function getCurrentUser() {
         if (user) return user;
     }
 
-    const keys = [
+    for (const key of [
         "pmsSession",
         "loggedInUser",
         "currentUser",
         "loggedInUserData",
         "user"
-    ];
-
-    for (const key of keys) {
+    ]) {
         try {
             const value = localStorage.getItem(key);
             if (!value) continue;
 
             const parsed = JSON.parse(value);
+
+            // Some applications store the user inside a session object.
             const user = parsed?.user || parsed;
 
             if (user && (user.id != null || user.email)) {
                 return user;
             }
         } catch (_) {
-            // Check the next storage key.
+            // Continue checking other storage keys.
         }
     }
 
@@ -108,23 +108,20 @@ function isManager() {
 function sameUser(a, b) {
     if (!a || !b) return false;
 
-    const sameId = idOf(a) && idOf(b) &&
-        idOf(a) === idOf(b);
-
-    const sameEmail = emailOf(a) && emailOf(b) &&
-        emailOf(a) === emailOf(b);
-
-    return Boolean(sameId || sameEmail);
+    return (
+        (idOf(a) && idOf(b) && idOf(a) === idOf(b)) ||
+        (emailOf(a) && emailOf(b) && emailOf(a) === emailOf(b))
+    );
 }
 
 function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, character => ({
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
         "'": "&#039;"
-    })[character]);
+    })[ch]);
 }
 
 function projectName(project) {
@@ -153,8 +150,6 @@ function projectKeys(project) {
 // ==========================================
 
 function isProjectMember(member, project) {
-    if (!member || !project) return false;
-
     const keys = projectKeys(project);
 
     const directValues = [
@@ -174,14 +169,10 @@ function isProjectMember(member, project) {
     if (Array.isArray(many)) {
         return many.some(value => {
             const key = typeof value === "object"
-                ? value.id ??
-                  value.projectId ??
-                  value.projectName ??
-                  value.name
+                ? value.id ?? value.projectId ?? value.projectName ?? value.name
                 : value;
 
-            return key != null &&
-                keys.includes(String(key).toLowerCase());
+            return key != null && keys.includes(String(key).toLowerCase());
         });
     }
 
@@ -189,8 +180,6 @@ function isProjectMember(member, project) {
 }
 
 function findUserForMember(member) {
-    if (!member) return null;
-
     return users.find(user =>
         emailOf(user) && emailOf(user) === emailOf(member)
     ) || users.find(user =>
@@ -201,10 +190,10 @@ function findUserForMember(member) {
 
 function projectForMeeting(meeting) {
     const keys = [
-        meeting?.projectId,
-        meeting?.project_id,
-        meeting?.projectName,
-        meeting?.project
+        meeting.projectId,
+        meeting.project_id,
+        meeting.projectName,
+        meeting.project
     ].filter(value => value != null)
         .map(value => String(value).toLowerCase());
 
@@ -223,7 +212,8 @@ function isAssignedToUser(record) {
         record.recipientId,
         record.userId,
         record.employeeId,
-        record.requesterId
+        record.requesterId,
+        record.reviewedById
     ].filter(value => value != null).map(String);
 
     const emails = [
@@ -248,25 +238,22 @@ function meetingVisibleToUser(meeting) {
 
     if (isAssignedToUser(meeting)) return true;
 
-    const attendeeIds = Array.isArray(meeting.attendeeIds)
-        ? meeting.attendeeIds.map(String)
-        : [];
-
-    const attendeeEmails = Array.isArray(meeting.attendeeEmails)
-        ? meeting.attendeeEmails.map(value => String(value).toLowerCase())
-        : [];
+    const attendeeIds = (meeting.attendeeIds || []).map(String);
+    const attendeeEmails = (meeting.attendeeEmails || [])
+        .map(value => String(value).toLowerCase());
 
     if (attendeeIds.includes(idOf(currentUser))) return true;
     if (attendeeEmails.includes(emailOf(currentUser))) return true;
 
-    const attendees = Array.isArray(meeting.attendees)
-        ? meeting.attendees
-        : [];
+    // Also support attendee objects if stored in db.json.
+    const attendees = meeting.attendees || [];
 
-    if (attendees.some(attendee => {
+    if (Array.isArray(attendees) && attendees.some(attendee => {
         if (typeof attendee !== "object") {
-            return String(attendee) === idOf(currentUser) ||
-                String(attendee).toLowerCase() === emailOf(currentUser);
+            return (
+                String(attendee) === idOf(currentUser) ||
+                String(attendee).toLowerCase() === emailOf(currentUser)
+            );
         }
 
         return sameUser(attendee, currentUser);
@@ -276,10 +263,10 @@ function meetingVisibleToUser(meeting) {
 
     const project = projectForMeeting(meeting);
 
-    return Boolean(project && members.some(member =>
+    return !!project && members.some(member =>
         isProjectMember(member, project) &&
         sameUser(findUserForMember(member), currentUser)
-    ));
+    );
 }
 
 function userCanAccessProject(project) {
@@ -352,11 +339,11 @@ async function apiPatch(url, data) {
 
 
 // ==========================================
-// MESSAGES AND MODALS
+// PAGE AND FORM MESSAGES
 // ==========================================
 
 function showMessage(message, error = false) {
-    const element = $("meetingMessage") || $("pageMessage");
+    const element = $("meetingMessage");
     if (!element) return;
 
     element.hidden = false;
@@ -375,86 +362,45 @@ function setFormMessage(id, message, error = false) {
 
 function openModal(id) {
     const modal = $(id);
-    if (!modal) {
-        console.error(`Modal not found: ${id}`);
-        return;
-    }
-
-    modal.hidden = false;
-    modal.removeAttribute("aria-hidden");
-    modal.classList.add("is-open");
-
-    document.body.classList.add("modal-open");
+    if (modal) modal.hidden = false;
 }
 
 function closeModal(id) {
     const modal = $(id);
-    if (!modal) return;
-
-    modal.hidden = true;
-    modal.setAttribute("aria-hidden", "true");
-    modal.classList.remove("is-open");
-
-    if (!document.querySelector(".modal.is-open")) {
-        document.body.classList.remove("modal-open");
-    }
-}
-
-function closeAllModals() {
-    document.querySelectorAll(".modal").forEach(modal => {
-        modal.hidden = true;
-        modal.setAttribute("aria-hidden", "true");
-        modal.classList.remove("is-open");
-    });
-
-    document.body.classList.remove("modal-open");
+    if (modal) modal.hidden = true;
 }
 
 
 // ==========================================
-// HEADER AND BUTTON PERMISSIONS
+// INITIALIZE HEADER AND PERMISSIONS
 // ==========================================
 
 function setUserHeader() {
-    // The shared layout.js creates the topbar and sidebar.
-    // Do not create a second header here.
+    // The shared layout.js creates the user header.
+    // Do not access topUserName, topAvatar, or similar IDs here.
 
     const scheduleButton = $("scheduleMeetingBtn");
-    const quickScheduleButton = $("quickScheduleBtn");
-    const requestButton = $("requestMeetingBtn");
 
     if (scheduleButton) {
-        scheduleButton.hidden = !currentUser || !isManager();
+        scheduleButton.hidden = !isManager();
     }
-
-    if (quickScheduleButton) {
-        quickScheduleButton.hidden = !currentUser || !isManager();
-    }
-
-    if (requestButton) {
-        requestButton.hidden = !currentUser;
-    }
-
-    document.querySelectorAll(".manager-only").forEach(element => {
-        element.hidden = !currentUser || !isManager();
-    });
 }
 
 
 // ==========================================
-// PROJECT DROPDOWNS
+// POPULATE PROJECT DROPDOWNS
 // ==========================================
 
 function populateProjectSelects() {
     const permitted = permittedProjects();
 
-    const configs = [
+    const selectConfigs = [
         ["projectFilter", "All Projects"],
         ["meetingProject", "Choose a project"],
         ["requestProject", "Choose a project"]
     ];
 
-    configs.forEach(([id, placeholder]) => {
+    selectConfigs.forEach(([id, placeholder]) => {
         const select = $(id);
         if (!select) return;
 
@@ -497,6 +443,84 @@ function getRequestProject() {
 
 
 // ==========================================
+// POPULATE MEETING ATTENDEES
+// ==========================================
+
+function getProjectCandidates(project) {
+    if (!project) return [];
+
+    const projectMembers = members.filter(member =>
+        isProjectMember(member, project)
+    );
+
+    const candidates = projectMembers.map(member => {
+        const user = findUserForMember(member);
+
+        if (user) return user;
+
+        if (member.email || member.userId != null) {
+            return {
+                id: member.userId ?? member.id,
+                email: member.email || "",
+                name: nameOf(member),
+                role: member.role || ""
+            };
+        }
+
+        return null;
+    }).filter(Boolean);
+
+    // Include the project manager if the manager has a user account
+    // but is not listed in teamMembers.
+    const manager = managerForProject(project);
+
+    if (manager && !candidates.some(user => sameUser(user, manager))) {
+        candidates.push(manager);
+    }
+
+    // Avoid duplicate recipients.
+    return candidates.filter((user, index, all) =>
+        all.findIndex(other => sameUser(other, user)) === index
+    );
+}
+
+function populateAttendees() {
+    const select = $("meetingAttendees");
+    if (!select) return;
+
+    const project = getSelectedProject();
+    const candidates = getProjectCandidates(project);
+
+    select.innerHTML = candidates.map(user => {
+        const value = emailOf(user) || idOf(user);
+
+        return `<option value="${escapeHTML(value)}">` +
+            `${escapeHTML(nameOf(user))}` +
+            `${user.email ? ` (${escapeHTML(user.email)})` : ""}` +
+            `</option>`;
+    }).join("");
+
+    if (!candidates.length) {
+        select.innerHTML = "";
+    }
+}
+
+function resolveSelectedRecipients(project) {
+    const select = $("meetingAttendees");
+    if (!select) return [];
+
+    const selectedValues = [...select.selectedOptions]
+        .map(option => option.value);
+
+    const candidates = getProjectCandidates(project);
+
+    return candidates.filter(user =>
+        selectedValues.includes(emailOf(user) || idOf(user))
+    );
+}
+
+
+// ==========================================
 // FIND PROJECT MANAGER
 // ==========================================
 
@@ -514,7 +538,6 @@ function managerForProject(project) {
         "hr"
     ];
 
-    // Prefer a manager who is explicitly assigned to this project.
     const assignedManager = members
         .filter(member => isProjectMember(member, project))
         .map(findUserForMember)
@@ -523,11 +546,11 @@ function managerForProject(project) {
 
     if (assignedManager) return assignedManager;
 
+    // Check common manager ID/email fields on the project.
     const managerId = String(
         project.managerId ??
         project.projectManagerId ??
         project.teamLeaderId ??
-        project.departmentHeadId ??
         ""
     );
 
@@ -545,7 +568,8 @@ function managerForProject(project) {
 
     if (directManager) return directManager;
 
-    // Fallback for projects without explicit manager assignment.
+    // If there is no project-specific assignment, use a manager account.
+    // HR/Admin may review requests from any project.
     return users.find(user =>
         managerRoles.includes(roleOf(user))
     ) || null;
@@ -556,14 +580,13 @@ function updateRequestManager() {
     if (!select) return;
 
     const project = getRequestProject();
+    const previousValue = select.value;
+    const manager = managerForProject(project);
 
     if (!project) {
-        select.innerHTML =
-            `<option value="">Select a project first</option>`;
+        select.innerHTML = `<option value="">Select a project first</option>`;
         return;
     }
-
-    const manager = managerForProject(project);
 
     if (!manager) {
         select.innerHTML =
@@ -571,114 +594,15 @@ function updateRequestManager() {
         return;
     }
 
-    const value = idOf(manager) || emailOf(manager);
+    const managerValue = idOf(manager) || emailOf(manager);
 
     select.innerHTML =
-        `<option value="${escapeHTML(value)}">` +
+        `<option value="${escapeHTML(managerValue)}">` +
         `${escapeHTML(nameOf(manager))}</option>`;
-}
 
-
-// ==========================================
-// ATTENDEE SELECTION
-// ==========================================
-
-function getProjectCandidates(project) {
-    if (!project) return [];
-
-    const candidates = members
-        .filter(member => isProjectMember(member, project))
-        .map(member => {
-            const user = findUserForMember(member);
-
-            if (user) return user;
-
-            if (member.email || member.userId != null) {
-                return {
-                    id: member.userId ?? member.id,
-                    email: member.email || "",
-                    name: nameOf(member),
-                    role: member.role || ""
-                };
-            }
-
-            return null;
-        })
-        .filter(Boolean);
-
-    // Include the project manager when they have a user account.
-    const manager = managerForProject(project);
-
-    if (manager && !candidates.some(user => sameUser(user, manager))) {
-        candidates.push(manager);
+    if (previousValue === managerValue) {
+        select.value = previousValue;
     }
-
-    return candidates.filter((user, index, all) =>
-        all.findIndex(other => sameUser(other, user)) === index
-    );
-}
-
-function updateAttendeeVisibility() {
-    const mode = document.querySelector(
-        'input[name="inviteMode"]:checked'
-    )?.value;
-
-    const field = $("attendeesField");
-    const select = $("meetingAttendees");
-
-    if (field) {
-        field.hidden = mode === "project";
-    }
-
-    if (select) {
-        select.required = mode !== "project";
-    }
-}
-
-function populateAttendees() {
-    const select = $("meetingAttendees");
-    if (!select) return;
-
-    const previousValues = [...select.selectedOptions].map(option => option.value);
-    const project = getSelectedProject();
-    const candidates = getProjectCandidates(project);
-
-    select.innerHTML = candidates.map(user => {
-        const value = emailOf(user) || idOf(user);
-
-        return `<option value="${escapeHTML(value)}">` +
-            `${escapeHTML(nameOf(user))}` +
-            `${user.email ? ` (${escapeHTML(user.email)})` : ""}` +
-            `</option>`;
-    }).join("");
-
-    [...select.options].forEach(option => {
-        option.selected = previousValues.includes(option.value);
-    });
-
-    updateAttendeeVisibility();
-}
-
-function resolveSelectedRecipients(project) {
-    const mode = document.querySelector(
-        'input[name="inviteMode"]:checked'
-    )?.value;
-
-    const candidates = getProjectCandidates(project);
-
-    if (mode === "project") {
-        return candidates;
-    }
-
-    const select = $("meetingAttendees");
-    if (!select) return [];
-
-    const selectedValues = [...select.selectedOptions]
-        .map(option => option.value);
-
-    return candidates.filter(user =>
-        selectedValues.includes(emailOf(user) || idOf(user))
-    );
 }
 
 
@@ -693,8 +617,11 @@ async function createNotification(
     type,
     relatedId
 ) {
-    if (!recipient || (!idOf(recipient) && !emailOf(recipient))) {
-        throw new Error("Notification recipient must have a user ID or email.");
+    if (!recipient ||
+        (!idOf(recipient) && !emailOf(recipient))) {
+        throw new Error(
+            "Notification recipient must have a user ID or email."
+        );
     }
 
     return apiPost(ENDPOINTS.notifications, {
@@ -722,7 +649,13 @@ async function notifyRecipients(
 
     const results = await Promise.allSettled(
         uniqueRecipients.map(recipient =>
-            createNotification(recipient, title, message, type, relatedId)
+            createNotification(
+                recipient,
+                title,
+                message,
+                type,
+                relatedId
+            )
         )
     );
 
@@ -731,16 +664,17 @@ async function notifyRecipients(
     );
 
     if (failed) {
-        console.error("Some notifications failed:", results);
-
+        console.error("Some notifications could not be created.", results);
         showMessage(
-            "Saved, but some notifications could not be sent.",
+            "The meeting was saved, but some notifications could not be sent.",
             true
         );
     }
 
+    // Allows notifications.js to refresh the shared notification bell
+    // if that file listens for this event.
     document.dispatchEvent(
-        new Event("workSphereNotificationCreated")
+        new CustomEvent("workSphereNotificationCreated")
     );
 
     return !failed;
@@ -748,24 +682,24 @@ async function notifyRecipients(
 
 
 // ==========================================
-// MEETING STATUS
+// MEETING STATUS HELPERS
 // ==========================================
 
 function meetingDateTime(meeting) {
-    if (!meeting?.date) return null;
+    if (!meeting.date) return null;
 
-    const dateTime = new Date(
+    const value = new Date(
         `${meeting.date}T${meeting.time || "00:00"}`
     );
 
-    return Number.isNaN(dateTime.getTime()) ? null : dateTime;
+    return Number.isNaN(value.getTime()) ? null : value;
 }
 
 function effectiveMeetingStatus(meeting) {
-    const status = String(meeting.status || "").toLowerCase();
+    const savedStatus = String(meeting.status || "").toLowerCase();
 
-    if (status === "cancelled") return "cancelled";
-    if (status === "completed") return "completed";
+    if (savedStatus === "cancelled") return "cancelled";
+    if (savedStatus === "completed") return "completed";
 
     const dateTime = meetingDateTime(meeting);
 
@@ -778,112 +712,115 @@ function effectiveMeetingStatus(meeting) {
 
 
 // ==========================================
-// RENDER MEETINGS
+// RENDER MEETING LIST AND STATISTICS
 // ==========================================
 
 function renderMeetings() {
-    const list = $("meetingList");
-    if (!list) return;
+    const meetingList = $("meetingList");
+    if (!meetingList) return;
 
     const statusFilter = $("statusFilter")?.value || "";
     const projectFilter = $("projectFilter")?.value || "";
-    const search = $("meetingSearch")?.value.trim().toLowerCase() || "";
 
-    const visible = meetings.filter(meeting => {
-        if (!meetingVisibleToUser(meeting)) return false;
+    const visible = meetings
+        .filter(meeting => {
+            if (!meetingVisibleToUser(meeting)) return false;
 
-        const project = projectForMeeting(meeting);
-        const meetingProjectId = project
-            ? projectId(project)
-            : String(meeting.projectId ?? "");
+            const project = projectForMeeting(meeting);
 
-        if (projectFilter && meetingProjectId !== projectFilter) {
-            return false;
-        }
+            const meetingProjectId = project
+                ? projectId(project)
+                : String(meeting.projectId ?? "");
 
-        const status = effectiveMeetingStatus(meeting);
+            if (projectFilter &&
+                meetingProjectId !== projectFilter) {
+                return false;
+            }
 
-        if (statusFilter && statusFilter !== "all" &&
-            status !== statusFilter) {
-            return false;
-        }
+            const status = effectiveMeetingStatus(meeting);
 
-        const searchable = [
-            meeting.title,
-            meeting.agenda,
-            meeting.projectName,
-            meeting.project,
-            project ? projectName(project) : ""
-        ].join(" ").toLowerCase();
+            if (statusFilter && status !== statusFilter) {
+                return false;
+            }
 
-        return searchable.includes(search);
-    }).sort((a, b) =>
-        (meetingDateTime(a)?.getTime() || 0) -
-        (meetingDateTime(b)?.getTime() || 0)
-    );
+            return true;
+        })
+        .sort((a, b) => {
+            const dateA = meetingDateTime(a)?.getTime() || 0;
+            const dateB = meetingDateTime(b)?.getTime() || 0;
+            return dateA - dateB;
+        });
 
-    list.innerHTML = visible.length ? visible.map(meeting => {
-        const project = projectForMeeting(meeting);
-        const status = effectiveMeetingStatus(meeting);
+    if (!visible.length) {
+        meetingList.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-regular fa-calendar"></i>
+                <p>No meetings found.</p>
+            </div>`;
+    } else {
+        meetingList.innerHTML = visible.map(meeting => {
+            const project = projectForMeeting(meeting);
+            const status = effectiveMeetingStatus(meeting);
+            const date = meeting.date || "Date not set";
+            const time = meeting.time || "";
 
-        return `
-            <article class="meeting-card">
-                <div class="meeting-icon">
-                    <i class="fa-regular fa-calendar-check"></i>
-                </div>
+            const duration = Number(meeting.duration || 30);
 
-                <div class="meeting-info">
-                    <h3>${escapeHTML(meeting.title || "Meeting")}</h3>
+            const link = meeting.link
+                ? `<p><a href="${escapeHTML(meeting.link)}"
+                    target="_blank" rel="noopener noreferrer">
+                    Join Meeting</a></p>`
+                : "";
 
-                    <p>${escapeHTML(
-                        project
-                            ? projectName(project)
-                            : meeting.projectName || meeting.project || "Project"
-                    )}</p>
+            return `
+                <article class="meeting-card">
+                    <div class="meeting-icon">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
 
-                    <p>
-                        <i class="fa-regular fa-clock"></i>
-                        ${escapeHTML(meeting.date || "Date not set")}
-                        ${escapeHTML(meeting.time || "")}
-                        · ${Number(meeting.duration || 30)} minutes
-                    </p>
+                    <div class="meeting-info">
+                        <h3>${escapeHTML(meeting.title || "Meeting")}</h3>
 
-                    <p>${escapeHTML(meeting.agenda || "")}</p>
+                        <p>
+                            ${escapeHTML(
+                                project
+                                    ? projectName(project)
+                                    : meeting.projectName || "Project"
+                            )}
+                        </p>
 
-                    ${meeting.link
-                        ? `<p><a href="${escapeHTML(meeting.link)}"
-                            target="_blank" rel="noopener noreferrer">
-                            Join Meeting</a></p>`
-                        : ""}
+                        <p>
+                            <i class="fa-regular fa-clock"></i>
+                            ${escapeHTML(date)}
+                            ${escapeHTML(time)}
+                            · ${duration} minutes
+                        </p>
 
-                    <span class="meeting-status ${escapeHTML(status)}">
-                        ${escapeHTML(status)}
-                    </span>
-                </div>
-            </article>`;
-    }).join("") : `
-        <div class="empty-state">
-            <i class="fa-regular fa-calendar"></i>
-            <p>No meetings found.</p>
-        </div>`;
+                        <p>${escapeHTML(meeting.agenda || "")}</p>
+
+                        ${link}
+
+                        <span class="meeting-status ${escapeHTML(status)}">
+                            ${escapeHTML(status)}
+                        </span>
+                    </div>
+                </article>`;
+        }).join("");
+    }
 
     const visibleMeetings = meetings.filter(meetingVisibleToUser);
 
-    if ($("totalMeetings")) {
-        $("totalMeetings").textContent = visibleMeetings.length;
-    }
+    $("totalMeetings").textContent = visibleMeetings.length;
 
-    if ($("upcomingMeetings")) {
-        $("upcomingMeetings").textContent = visibleMeetings.filter(meeting =>
+    $("upcomingMeetings").textContent =
+        visibleMeetings.filter(meeting =>
             effectiveMeetingStatus(meeting) === "upcoming"
         ).length;
-    }
 
-    if ($("completedMeetings")) {
-        $("completedMeetings").textContent = visibleMeetings.filter(meeting =>
+    $("completedMeetings").textContent =
+        visibleMeetings.filter(meeting =>
             effectiveMeetingStatus(meeting) === "completed"
         ).length;
-    }
 
     renderCalendar();
 }
@@ -904,7 +841,10 @@ function renderCalendar() {
 
     monthElement.textContent = calendarDate.toLocaleDateString(
         undefined,
-        { month: "long", year: "numeric" }
+        {
+            month: "long",
+            year: "numeric"
+        }
     );
 
     const firstDay = new Date(year, month, 1).getDay();
@@ -912,7 +852,8 @@ function renderCalendar() {
     const today = new Date();
 
     const eventDates = new Set(
-        meetings.filter(meetingVisibleToUser)
+        meetings
+            .filter(meetingVisibleToUser)
             .map(meeting => meeting.date)
             .filter(Boolean)
     );
@@ -933,9 +874,11 @@ function renderCalendar() {
             month === today.getMonth() &&
             year === today.getFullYear();
 
+        const hasMeeting = eventDates.has(date);
+
         html += `
             <button type="button"
-                class="calendar-day ${isToday ? "today" : ""} ${eventDates.has(date) ? "has-meeting" : ""}"
+                class="calendar-day ${isToday ? "today" : ""} ${hasMeeting ? "has-meeting" : ""}"
                 data-date="${date}"
                 aria-label="${date}">
                 ${day}
@@ -946,29 +889,34 @@ function renderCalendar() {
 }
 
 function showMeetingsForDate(date) {
-    const list = $("meetingList");
-    if (!list) return;
+    const meetingList = $("meetingList");
+    if (!meetingList) return;
 
     const dateMeetings = meetings.filter(meeting =>
-        meetingVisibleToUser(meeting) && meeting.date === date
+        meetingVisibleToUser(meeting) &&
+        meeting.date === date
     );
 
-    list.innerHTML = dateMeetings.length
-        ? dateMeetings.map(meeting => `
-            <article class="meeting-card">
-                <div class="meeting-icon">
-                    <i class="fa-regular fa-calendar-check"></i>
-                </div>
-                <div class="meeting-info">
-                    <h3>${escapeHTML(meeting.title || "Meeting")}</h3>
-                    <p>${escapeHTML(meeting.date)} ${escapeHTML(meeting.time || "")}</p>
-                    <p>${escapeHTML(meeting.agenda || "")}</p>
-                </div>
-            </article>
-        `).join("")
-        : `<div class="empty-state">
-            <p>No meetings scheduled for ${escapeHTML(date)}.</p>
-        </div>`;
+    if (!dateMeetings.length) {
+        meetingList.innerHTML = `
+            <div class="empty-state">
+                <p>No meetings scheduled for ${escapeHTML(date)}.</p>
+            </div>`;
+        return;
+    }
+
+    meetingList.innerHTML = dateMeetings.map(meeting => `
+        <article class="meeting-card">
+            <div class="meeting-icon">
+                <i class="fa-regular fa-calendar-check"></i>
+            </div>
+            <div class="meeting-info">
+                <h3>${escapeHTML(meeting.title || "Meeting")}</h3>
+                <p>${escapeHTML(meeting.date)} ${escapeHTML(meeting.time || "")}</p>
+                <p>${escapeHTML(meeting.agenda || "")}</p>
+            </div>
+        </article>
+    `).join("");
 }
 
 
@@ -977,52 +925,56 @@ function showMeetingsForDate(date) {
 // ==========================================
 
 function requestBelongsToUser(request) {
-    return sameUser({
-        id: request.requesterId,
-        email: request.requesterEmail
-    }, currentUser) || sameUser({
-        id: request.managerId,
-        email: request.managerEmail
-    }, currentUser) || sameUser({
-        id: request.recipientId,
-        email: request.recipientEmail
-    }, currentUser);
+    return (
+        sameUser(
+            {
+                id: request.requesterId,
+                email: request.requesterEmail
+            },
+            currentUser
+        ) ||
+        sameUser(
+            {
+                id: request.managerId,
+                email: request.managerEmail
+            },
+            currentUser
+        ) ||
+        sameUser(
+            {
+                id: request.recipientId,
+                email: request.recipientEmail
+            },
+            currentUser
+        )
+    );
 }
 
 function canReviewRequest(request) {
     if (!isManager()) return false;
+
     if (isAdmin()) return true;
 
-    return sameUser({
-        id: request.managerId,
-        email: request.managerEmail
-    }, currentUser);
+    return sameUser(
+        {
+            id: request.managerId,
+            email: request.managerEmail
+        },
+        currentUser
+    );
 }
 
 function renderRequests() {
-    const list = $("meetingRequestsList") || $("requestList");
+    const list = $("meetingRequestsList");
     if (!list) return;
 
     const relevant = requests.filter(request =>
         isAdmin() || requestBelongsToUser(request)
     );
 
-    const pendingCount = relevant.filter(request =>
+    $("pendingRequests").textContent = relevant.filter(request =>
         String(request.status || "pending").toLowerCase() === "pending"
     ).length;
-
-    if ($("pendingRequests")) {
-        $("pendingRequests").textContent = pendingCount;
-    }
-
-    if ($("myRequests")) {
-        $("myRequests").textContent = relevant.filter(request =>
-            sameUser({
-                id: request.requesterId,
-                email: request.requesterEmail
-            }, currentUser)
-        ).length;
-    }
 
     if (!relevant.length) {
         list.innerHTML = `
@@ -1037,51 +989,54 @@ function renderRequests() {
         const status = String(request.status || "pending").toLowerCase();
         const canReview = canReviewRequest(request) && status === "pending";
 
+        const reviewButtons = canReview
+            ? `<div class="request-actions">
+                <button type="button" class="btn btn-primary"
+                    data-review="${escapeHTML(request.id)}"
+                    data-decision="approved">
+                    Approve
+                </button>
+
+                <button type="button" class="btn btn-secondary"
+                    data-review="${escapeHTML(request.id)}"
+                    data-decision="rejected">
+                    Reject
+                </button>
+            </div>`
+            : "";
+
         return `
             <article class="request-card">
                 <h3>${escapeHTML(request.title || "Meeting Request")}</h3>
 
-                <p><strong>From:</strong>
+                <p>
+                    <strong>From:</strong>
                     ${escapeHTML(request.requesterName || request.requesterEmail || "Employee")}
                 </p>
 
-                <p><strong>Project:</strong>
+                <p>
+                    <strong>Project:</strong>
                     ${escapeHTML(request.projectName || request.project || "Project")}
                 </p>
 
                 <p>${escapeHTML(request.agenda || request.reason || "")}</p>
 
                 ${request.preferredDate
-                    ? `<p><strong>Preferred date:</strong>
-                        ${escapeHTML(request.preferredDate)}</p>`
+                    ? `<p><strong>Preferred date:</strong> ${escapeHTML(request.preferredDate)}</p>`
                     : ""}
 
                 ${request.preferredTime
-                    ? `<p><strong>Preferred time:</strong>
-                        ${escapeHTML(request.preferredTime)}</p>`
+                    ? `<p><strong>Preferred time:</strong> ${escapeHTML(request.preferredTime)}</p>`
                     : ""}
 
-                <p><strong>Status:</strong>
+                <p>
+                    <strong>Status:</strong>
                     <span class="meeting-status ${escapeHTML(status)}">
                         ${escapeHTML(status)}
                     </span>
                 </p>
 
-                ${canReview ? `
-                    <div class="request-actions">
-                        <button type="button" class="btn btn-primary"
-                            data-review="${escapeHTML(request.id)}"
-                            data-decision="approved">
-                            Approve
-                        </button>
-
-                        <button type="button" class="btn btn-secondary"
-                            data-review="${escapeHTML(request.id)}"
-                            data-decision="rejected">
-                            Reject
-                        </button>
-                    </div>
-                ` : ""}
+                ${reviewButtons}
             </article>`;
     }).join("");
 }
@@ -1100,10 +1055,6 @@ async function loadPage() {
 
         if ($("scheduleMeetingBtn")) {
             $("scheduleMeetingBtn").hidden = true;
-        }
-
-        if ($("quickScheduleBtn")) {
-            $("quickScheduleBtn").hidden = true;
         }
 
         if ($("requestMeetingBtn")) {
@@ -1138,13 +1089,14 @@ async function loadPage() {
         populateAttendees();
         renderMeetings();
         renderRequests();
-        setUserHeader();
 
+        setFormMessage("scheduleFormMessage", "");
+        setFormMessage("requestFormMessage", "");
     } catch (error) {
         console.error("Meetings loading error:", error);
 
         showMessage(
-            "Could not load meeting data. Check JSON Server and make sure db.json contains projects, teamMembers, users, meetings, and meetingRequests.",
+            "Could not load meeting data. Check that JSON Server is running and db.json contains projects, teamMembers, users, meetings, and meetingRequests.",
             true
         );
     }
@@ -1152,15 +1104,12 @@ async function loadPage() {
 
 
 // ==========================================
-// OPEN SCHEDULE AND REQUEST MODALS
+// OPEN AND CLOSE MODALS
 // ==========================================
 
-function openScheduleModal() {
+$("scheduleMeetingBtn")?.addEventListener("click", () => {
     if (!isManager()) {
-        showMessage(
-            "Only managers and administrators can schedule meetings.",
-            true
-        );
+        showMessage("Only managers and administrators can schedule meetings.", true);
         return;
     }
 
@@ -1169,12 +1118,11 @@ function openScheduleModal() {
 
     populateProjectSelects();
     populateAttendees();
-    updateAttendeeVisibility();
 
     openModal("scheduleModal");
-}
+});
 
-function openRequestModal() {
+$("requestMeetingBtn")?.addEventListener("click", () => {
     $("requestForm")?.reset();
     setFormMessage("requestFormMessage", "");
 
@@ -1182,64 +1130,68 @@ function openRequestModal() {
     updateRequestManager();
 
     openModal("requestModal");
-}
+});
 
-function initializeModalControls() {
-    // Use the data-close-modal attribute on the close/cancel buttons.
-    document.querySelectorAll("[data-close-modal]").forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
+// This handles both the cross and Cancel buttons because both use
+// data-close-modal="scheduleModal" or data-close-modal="requestModal".
+document.querySelectorAll("[data-close-modal]").forEach(button => {
+    button.addEventListener("click", () => {
+        closeModal(button.getAttribute("data-close-modal"));
+    });
+});
 
-            const target = button.getAttribute("data-close-modal");
+// Also close a modal when its backdrop is clicked.
+document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+    backdrop.addEventListener("click", () => {
+        const modal = backdrop.closest(".modal");
+        if (modal) modal.hidden = true;
+    });
+});
 
-            if (target) {
-                closeModal(target);
-            } else {
-                const modal = button.closest(".modal");
-                if (modal?.id) closeModal(modal.id);
-            }
+// Escape closes any open modal.
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        document.querySelectorAll(".modal:not([hidden])").forEach(modal => {
+            modal.hidden = true;
         });
-    });
+    }
+});
 
-    // Support common close-button classes even if the HTML lacks
-    // data-close-modal on the cross button.
-    document.querySelectorAll(
-        ".modal-close, .modal-close-btn, .close-modal, .close-btn, [aria-label='Close']"
-    ).forEach(button => {
-        button.addEventListener("click", event => {
-            event.preventDefault();
 
-            const modal = button.closest(".modal");
+// ==========================================
+// FILTERS AND CALENDAR CONTROLS
+// ==========================================
 
-            if (modal?.id) {
-                closeModal(modal.id);
-            }
-        });
-    });
+$("meetingProject")?.addEventListener("change", populateAttendees);
 
-    // Clicking the backdrop closes the modal, but clicking the form
-    // itself does not.
-    document.querySelectorAll(".modal").forEach(modal => {
-        modal.addEventListener("click", event => {
-            if (event.target === modal) {
-                closeModal(modal.id);
-            }
-        });
-    });
+$("requestProject")?.addEventListener("change", updateRequestManager);
 
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape") {
-            closeAllModals();
-        }
-    });
-}
+$("statusFilter")?.addEventListener("change", renderMeetings);
+$("projectFilter")?.addEventListener("change", renderMeetings);
+
+$("previousMonth")?.addEventListener("click", () => {
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    renderCalendar();
+});
+
+$("nextMonth")?.addEventListener("click", () => {
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    renderCalendar();
+});
+
+$("calendarDays")?.addEventListener("click", event => {
+    const button = event.target.closest("[data-date]");
+    if (!button) return;
+
+    showMeetingsForDate(button.dataset.date);
+});
 
 
 // ==========================================
 // SCHEDULE MEETING
 // ==========================================
 
-async function handleScheduleSubmit(event) {
+$("scheduleForm")?.addEventListener("submit", async event => {
     event.preventDefault();
 
     if (!isManager()) {
@@ -1262,9 +1214,20 @@ async function handleScheduleSubmit(event) {
         return;
     }
 
-    const title = $("meetingTitle")?.value.trim() || "";
-    const date = $("meetingDate")?.value || "";
-    const time = $("meetingTime")?.value || "";
+    const recipients = resolveSelectedRecipients(project);
+
+    if (!recipients.length) {
+        setFormMessage(
+            "scheduleFormMessage",
+            "Please select at least one attendee.",
+            true
+        );
+        return;
+    }
+
+    const title = $("meetingTitle").value.trim();
+    const date = $("meetingDate").value;
+    const time = $("meetingTime").value;
 
     if (!title || !date || !time) {
         setFormMessage(
@@ -1287,26 +1250,15 @@ async function handleScheduleSubmit(event) {
         return;
     }
 
-    const recipients = resolveSelectedRecipients(project);
-
-    if (!recipients.length) {
-        setFormMessage(
-            "scheduleFormMessage",
-            "No attendees were found. Choose specific attendees or select the project-wide invitation option.",
-            true
-        );
-        return;
-    }
-
     const meeting = {
         title,
         projectId: projectId(project),
         projectName: projectName(project),
         date,
         time,
-        duration: Number($("meetingDuration")?.value || 30),
-        agenda: $("meetingAgenda")?.value.trim() || "",
-        link: $("meetingLink")?.value.trim() || "",
+        duration: Number($("meetingDuration").value || 30),
+        agenda: $("meetingAgenda").value.trim(),
+        link: $("meetingLink").value.trim(),
         organizerId: idOf(currentUser),
         organizerEmail: emailOf(currentUser),
         organizerName: nameOf(currentUser),
@@ -1323,7 +1275,10 @@ async function handleScheduleSubmit(event) {
     if (submitButton) submitButton.disabled = true;
 
     try {
-        const savedMeeting = await apiPost(ENDPOINTS.meetings, meeting);
+        const savedMeeting = await apiPost(
+            ENDPOINTS.meetings,
+            meeting
+        );
 
         await notifyRecipients(
             recipients,
@@ -1334,11 +1289,10 @@ async function handleScheduleSubmit(event) {
         );
 
         closeModal("scheduleModal");
-        $("scheduleForm")?.reset();
+        $("scheduleForm").reset();
 
         showMessage("Meeting scheduled successfully.");
         await loadPage();
-
     } catch (error) {
         console.error("Schedule meeting error:", error);
 
@@ -1350,24 +1304,15 @@ async function handleScheduleSubmit(event) {
     } finally {
         if (submitButton) submitButton.disabled = false;
     }
-}
+});
 
 
 // ==========================================
 // REQUEST A MEETING
 // ==========================================
 
-async function handleRequestSubmit(event) {
+$("requestForm")?.addEventListener("submit", async event => {
     event.preventDefault();
-
-    if (!currentUser) {
-        setFormMessage(
-            "requestFormMessage",
-            "Please log in before requesting a meeting.",
-            true
-        );
-        return;
-    }
 
     const project = getRequestProject();
     const managerValue = $("requestManager")?.value || "";
@@ -1395,8 +1340,8 @@ async function handleRequestSubmit(event) {
         return;
     }
 
-    const title = $("requestTitle")?.value.trim() || "";
-    const agenda = $("requestAgenda")?.value.trim() || "";
+    const title = $("requestTitle").value.trim();
+    const agenda = $("requestAgenda").value.trim();
 
     if (!title || !agenda) {
         setFormMessage(
@@ -1417,8 +1362,8 @@ async function handleRequestSubmit(event) {
         requesterName: nameOf(currentUser),
         managerId: idOf(manager),
         managerEmail: emailOf(manager),
-        preferredDate: $("requestDate")?.value || "",
-        preferredTime: $("requestTime")?.value || "",
+        preferredDate: $("requestDate").value,
+        preferredTime: $("requestTime").value,
         status: "pending",
         createdAt: new Date().toISOString()
     };
@@ -1444,15 +1389,14 @@ async function handleRequestSubmit(event) {
         );
 
         document.dispatchEvent(
-            new Event("workSphereNotificationCreated")
+            new CustomEvent("workSphereNotificationCreated")
         );
 
         closeModal("requestModal");
-        $("requestForm")?.reset();
+        $("requestForm").reset();
 
         showMessage("Meeting request sent to your manager.");
         await loadPage();
-
     } catch (error) {
         console.error("Request meeting error:", error);
 
@@ -1464,14 +1408,14 @@ async function handleRequestSubmit(event) {
     } finally {
         if (submitButton) submitButton.disabled = false;
     }
-}
+});
 
 
 // ==========================================
-// APPROVE OR REJECT REQUEST
+// APPROVE OR REJECT MEETING REQUESTS
 // ==========================================
 
-async function handleRequestReview(event) {
+$("meetingRequestsList")?.addEventListener("click", async event => {
     const button = event.target.closest("[data-review]");
     if (!button) return;
 
@@ -1480,7 +1424,10 @@ async function handleRequestReview(event) {
     );
 
     if (!request || !canReviewRequest(request)) {
-        showMessage("You are not authorized to review this request.", true);
+        showMessage(
+            "You are not authorized to review this request.",
+            true
+        );
         return;
     }
 
@@ -1501,10 +1448,13 @@ async function handleRequestReview(event) {
         );
 
         const requester = users.find(user =>
-            sameUser({
-                id: request.requesterId,
-                email: request.requesterEmail
-            }, user)
+            sameUser(
+                {
+                    id: request.requesterId,
+                    email: request.requesterEmail
+                },
+                user
+            )
         );
 
         if (requester) {
@@ -1517,13 +1467,12 @@ async function handleRequestReview(event) {
             );
 
             document.dispatchEvent(
-                new Event("workSphereNotificationCreated")
+                new CustomEvent("workSphereNotificationCreated")
             );
         }
 
         showMessage(`Meeting request ${decision}.`);
         await loadPage();
-
     } catch (error) {
         console.error("Review request error:", error);
 
@@ -1534,80 +1483,16 @@ async function handleRequestReview(event) {
 
         button.disabled = false;
     }
-}
+});
 
 
 // ==========================================
-// INITIALIZE EVENT LISTENERS
+// START THE PAGE
 // ==========================================
 
-function initializeMeetingsPage() {
-    if (pageInitialized) return;
-    pageInitialized = true;
+document.addEventListener("DOMContentLoaded", loadPage);
 
-    $("scheduleMeetingBtn")?.addEventListener("click", openScheduleModal);
-    $("quickScheduleBtn")?.addEventListener("click", openScheduleModal);
-    $("requestMeetingBtn")?.addEventListener("click", openRequestModal);
-
-    $("viewRequestsBtn")?.addEventListener("click", () => {
-        const panel = $("requestsPanel");
-        if (!panel) return;
-
-        panel.hidden = false;
-        panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    $("closeRequestsBtn")?.addEventListener("click", () => {
-        const panel = $("requestsPanel");
-        if (panel) panel.hidden = true;
-    });
-
-    initializeModalControls();
-
-    $("meetingProject")?.addEventListener("change", populateAttendees);
-    $("requestProject")?.addEventListener("change", updateRequestManager);
-
-    document.querySelectorAll('input[name="inviteMode"]').forEach(input => {
-        input.addEventListener("change", updateAttendeeVisibility);
-    });
-
-    $("statusFilter")?.addEventListener("change", renderMeetings);
-    $("projectFilter")?.addEventListener("change", renderMeetings);
-    $("meetingSearch")?.addEventListener("input", renderMeetings);
-
-    $("previousMonth")?.addEventListener("click", () => {
-        calendarDate.setMonth(calendarDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    $("nextMonth")?.addEventListener("click", () => {
-        calendarDate.setMonth(calendarDate.getMonth() + 1);
-        renderCalendar();
-    });
-
-    $("calendarDays")?.addEventListener("click", event => {
-        const button = event.target.closest("[data-date]");
-        if (button) showMeetingsForDate(button.dataset.date);
-    });
-
-    $("scheduleForm")?.addEventListener("submit", handleScheduleSubmit);
-    $("requestForm")?.addEventListener("submit", handleRequestSubmit);
-
-    const requestList = $("meetingRequestsList") || $("requestList");
-    requestList?.addEventListener("click", handleRequestReview);
-
+// If this script is loaded after DOMContentLoaded, initialize immediately.
+if (document.readyState !== "loading") {
     loadPage();
-}
-
-
-// Initialize only once, whether this script loads before or after
-// DOMContentLoaded. This avoids loading the page twice.
-if (document.readyState === "loading") {
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeMeetingsPage,
-        { once: true }
-    );
-} else {
-    initializeMeetingsPage();
 }
