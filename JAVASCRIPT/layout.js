@@ -101,44 +101,71 @@ function initLayout(activePage) {
                 { page: "projects", label: "Projects", href: "projects.html", icon: "fa-folder" },
             ];
 
+    document.body.classList.toggle("layout-portfolio", isOverallNavigation);
     document.body.classList.toggle("layout-overall-dashboard", isOverallDashboard);
     document.body.classList.toggle("layout-project-dashboard", isProjectDashboard);
 
-    const sidebar = document.createElement("aside");
-    sidebar.className = "layout-sidebar";
-    sidebar.setAttribute("aria-label", "Main sidebar");
-    sidebar.innerHTML = `
-        <a class="layout-brand" href="index.html">
-            <span class="layout-brand-icon" aria-hidden="true">
-                <i class="fa-solid fa-layer-group"></i>
-            </span>
-            <span>WorkSphere</span>
-        </a>
-        <nav class="layout-navigation" aria-label="Main navigation">
-            <ul>
-                ${links.map(function (link) {
-                    const current = link.page === activePage;
-                    return `
-                        <li>
-                            <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
-                                <i class="fa-solid ${link.icon}" aria-hidden="true"></i>
-                                <span>${link.label}</span>
-                            </a>
-                        </li>
-                    `;
-                }).join("")}
-            </ul>
-        </nav>
-        <div class="layout-tagline">Plan <span>|</span> Organize <span>|</span> Achieve</div>
-    `;
+    let sidebar = null;
+    if (!isOverallNavigation) {
+        sidebar = document.createElement("aside");
+        sidebar.className = "layout-sidebar";
+        sidebar.setAttribute("aria-label", "Main sidebar");
+        sidebar.innerHTML = `
+            <a class="layout-brand" href="index.html">
+                <span class="layout-brand-icon" aria-hidden="true">
+                    <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <span>WorkSphere</span>
+            </a>
+            <nav class="layout-navigation" aria-label="Main navigation">
+                <ul>
+                    ${links.map(function (link) {
+                        const current = link.page === activePage;
+                        return `
+                            <li>
+                                <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
+                                    <i class="fa-solid ${link.icon}" aria-hidden="true"></i>
+                                    <span>${link.label}</span>
+                                </a>
+                            </li>
+                        `;
+                    }).join("")}
+                </ul>
+            </nav>
+            <div class="layout-tagline">Plan <span>|</span> Organize <span>|</span> Achieve</div>
+        `;
+    }
 
     const topbar = document.createElement("div");
     topbar.className = "layout-topbar";
     topbar.setAttribute("role", "banner");
     topbar.innerHTML = `
-        <button class="layout-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
-            <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
+        ${isOverallNavigation ? `
+            <a class="layout-brand" href="index.html">
+                <span class="layout-brand-icon" aria-hidden="true">
+                    <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <span>WorkSphere</span>
+            </a>
+            <nav class="layout-portfolio-navigation" aria-label="Portfolio navigation">
+                <ul>
+                    ${links.map(function (link) {
+                        const current = link.page === activePage;
+                        return `
+                            <li>
+                                <a href="${link.href}"${current ? ' class="active" aria-current="page"' : ""}>
+                                    ${link.label}
+                                </a>
+                            </li>
+                        `;
+                    }).join("")}
+                </ul>
+            </nav>
+        ` : `
+            <button class="layout-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+        `}
         <div class="layout-search-wrapper">
             <label class="layout-search">
                 <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
@@ -186,25 +213,34 @@ function initLayout(activePage) {
         }
     });
 
-    document.body.append(sidebar, topbar, pageContent);
+    if (sidebar) {
+        document.body.appendChild(sidebar);
+    }
+    document.body.append(topbar, pageContent);
     pageScripts.forEach(function (script) {
         document.body.appendChild(script);
     });
 
     const menuToggle = topbar.querySelector(".layout-menu-toggle");
-    menuToggle.addEventListener("click", function () {
-        const isOpen = document.body.classList.toggle("layout-menu-open");
-        menuToggle.setAttribute("aria-expanded", String(isOpen));
-        menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
-    });
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener("click", function () {
+            const isOpen = document.body.classList.toggle("layout-menu-open");
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+        });
+    }
 
-    sidebar.querySelectorAll("a").forEach(function (link) {
+    if (sidebar) {
+        sidebar.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
             document.body.classList.remove("layout-menu-open");
-            menuToggle.setAttribute("aria-expanded", "false");
-            menuToggle.setAttribute("aria-label", "Open navigation menu");
+            if (menuToggle) {
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", "Open navigation menu");
+            }
         });
-    });
+        });
+    }
 
     const searchInput = topbar.querySelector(".layout-search input");
     const searchResults = topbar.querySelector(".layout-search-results");
