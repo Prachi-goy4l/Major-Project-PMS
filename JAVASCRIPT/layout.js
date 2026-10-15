@@ -185,6 +185,10 @@ function initLayout(activePage) {
                     <i class="fa-solid fa-chevron-down layout-user-chevron" aria-hidden="true"></i>
                 </button>
                 <div class="layout-account-menu" role="menu" hidden>
+                    <a class="layout-profile-link" href="profile.html" role="menuitem">
+                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                        Profile
+                    </a>
                     <button class="layout-signout" type="button" role="menuitem">
                         <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                         Sign out

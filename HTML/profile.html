@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your WorkSphere profile and workspace shortcuts.">
+    <title>My Profile - WorkSphere</title>
+    <link rel="stylesheet" href="../CSS/layout.css">
+    <link rel="stylesheet" href="../CSS/profile.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <main class="profile-page">
+        <header class="profile-page-heading">
+            <span class="profile-eyebrow">ACCOUNT</span>
+            <h1 id="profile-title">My Profile</h1>
+            <p>View your WorkSphere account information and workspace shortcuts.</p>
+        </header>
+
+        <article class="profile-card" aria-labelledby="profile-title">
+            <section class="profile-identity" aria-label="Account identity">
+                <span class="profile-avatar" id="profileAvatar" aria-hidden="true">U</span>
+                <div class="profile-identity-copy">
+                    <h2 id="profileName">Loading profile...</h2>
+                    <p id="profileEmail"></p>
+                </div>
+                <span class="profile-status">
+                    <span aria-hidden="true"></span>
+                    Signed in
+                </span>
+            </section>
+
+            <section class="profile-details" aria-label="Profile information">
+                <div class="profile-detail">
+                    <span class="profile-detail-icon" aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <div>
+                        <span class="profile-detail-label">Full name</span>
+                        <p id="profileFullName">—</p>
+                    </div>
+                </div>
+                <div class="profile-detail">
+                    <span class="profile-detail-icon" aria-hidden="true">
+                        <i class="fa-solid fa-envelope"></i>
+                    </span>
+                    <div>
+                        <span class="profile-detail-label">Email address</span>
+                        <p id="profileDetailEmail">—</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="profile-workspace" aria-labelledby="profile-workspace-title">
+                <h2 id="profile-workspace-title">Workspace</h2>
+                <p>Jump back into the areas you use most.</p>
+
+                <nav class="profile-shortcuts" aria-label="Workspace shortcuts">
+                    <a class="profile-shortcut" href="projects.html">
+                        <span class="profile-shortcut-icon" aria-hidden="true">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </span>
+                        <span class="profile-shortcut-copy">
+                            <strong>Projects</strong>
+                            <small>Manage your projects</small>
+                        </span>
+                        <i class="fa-solid fa-arrow-right profile-shortcut-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a class="profile-shortcut" href="tasks.html">
+                        <span class="profile-shortcut-icon" aria-hidden="true">
+                            <i class="fa-solid fa-list-check"></i>
+                        </span>
+                        <span class="profile-shortcut-copy">
+                            <strong>Tasks</strong>
+                            <small>Review work and progress</small>
+                        </span>
+                        <i class="fa-solid fa-arrow-right profile-shortcut-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a class="profile-shortcut" href="team.html">
+                        <span class="profile-shortcut-icon" aria-hidden="true">
+                            <i class="fa-solid fa-users"></i>
+                        </span>
+                        <span class="profile-shortcut-copy">
+                            <strong>Team</strong>
+                            <small>View your team members</small>
+                        </span>
+                        <i class="fa-solid fa-arrow-right profile-shortcut-arrow" aria-hidden="true"></i>
+                    </a>
+                </nav>
+            </section>
+
+            <footer class="profile-actions">
+                <div>
+                    <h2>Done for now?</h2>
+                    <p>Sign out of your WorkSphere account on this device.</p>
+                </div>
+                <button class="profile-signout" id="profileSignout" type="button">
+                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                    Sign out
+                </button>
+            </footer>
+        </article>
+    </main>
+
+    <script src="../JAVASCRIPT/app-access.js"></script>
+    <script src="../JAVASCRIPT/layout.js"></script>
+    <script>initLayout("profile");</script>
+    <script src="../JAVASCRIPT/profile.js"></script>
+</body>
+</html>
