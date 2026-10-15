@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meetings - WorkSphere</title>
+
+    <link rel="stylesheet" href="../CSS/layout.css">
+    <link rel="stylesheet" href="../CSS/meetings.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <main class="main-content">
+            <div class="page-content">
+                <section class="meetings-page">
+
+                    <!-- PAGE HEADING -->
+                    <header class="page-heading">
+                        <div>
+                            <h1>Meetings</h1>
+                            <p>Schedule meetings and manage meeting requests.</p>
+                        </div>
+
+                        <div class="heading-actions">
+                            <button type="button"
+                                    id="requestMeetingBtn"
+                                    class="btn btn-secondary">
+                                <i class="fa-regular fa-message"></i>
+                                Request Meeting
+                            </button>
+
+                            <button type="button"
+                                    id="scheduleMeetingBtn"
+                                    class="btn btn-primary">
+                                <i class="fa-regular fa-calendar-plus"></i>
+                                Schedule Meeting
+                            </button>
+                        </div>
+                    </header>
+
+                    <div id="meetingMessage"
+                         class="page-message"
+                         role="status"
+                         aria-live="polite"
+                         hidden></div>
+
+                    <!-- STATISTICS -->
+                    <section class="stats-grid">
+                        <article class="stat-card">
+                            <span>Total Meetings</span>
+                            <strong id="totalMeetings">0</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span>Upcoming Meetings</span>
+                            <strong id="upcomingMeetings">0</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span>Completed Meetings</span>
+                            <strong id="completedMeetings">0</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span>Pending Requests</span>
+                            <strong id="pendingRequests">0</strong>
+                        </article>
+                    </section>
+
+                    <!-- MAIN CONTENT -->
+                    <div class="content-grid">
+
+                        <!-- MEETING LIST -->
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <h2>Meeting Schedule</h2>
+                            </div>
+
+                            <div class="meeting-filters">
+                                <select id="projectFilter"
+                                        aria-label="Filter by project">
+                                    <option value="">All Projects</option>
+                                </select>
+
+                                <select id="statusFilter"
+                                        aria-label="Filter by meeting status">
+                                    <option value="">All Statuses</option>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <div id="meetingList" class="meeting-list">
+                                <div class="empty-state">
+                                    Loading meetings...
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- RIGHT COLUMN -->
+                        <aside class="right-column">
+
+                            <!-- CALENDAR -->
+                            <section class="panel">
+                                <h2>Meeting Calendar</h2>
+
+                                <div class="calendar-navigation">
+                                    <button type="button"
+                                            id="previousMonth"
+                                            aria-label="Previous month">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                    </button>
+
+                                    <strong id="calendarMonth"></strong>
+
+                                    <button type="button"
+                                            id="nextMonth"
+                                            aria-label="Next month">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
+
+                                <div class="calendar-weekdays">
+                                    <span>Su</span>
+                                    <span>Mo</span>
+                                    <span>Tu</span>
+                                    <span>We</span>
+                                    <span>Th</span>
+                                    <span>Fr</span>
+                                    <span>Sa</span>
+                                </div>
+
+                                <div id="calendarDays" class="calendar-days"></div>
+
+                                <p class="calendar-help">
+                                    Dots indicate scheduled meetings. Select a date
+                                    to view its meetings.
+                                </p>
+                            </section>
+
+                        </aside>
+                    </div>
+
+                    <!-- MEETING REQUESTS -->
+                    <section class="panel requests-panel" id="requestsPanel">
+                        <div class="panel-heading">
+                            <div>
+                                <h2>Meeting Requests</h2>
+                                <p class="muted">
+                                    Review requests or check the status of your requests.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="meetingRequestsList">
+                            <div class="empty-state">
+                                Loading meeting requests...
+                            </div>
+                        </div>
+                    </section>
+
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- SCHEDULE MEETING MODAL -->
+    <div class="modal"
+         id="scheduleModal"
+         hidden
+         aria-hidden="true">
+
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-card"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="scheduleModalTitle">
+
+            <button type="button"
+                    class="modal-close"
+                    data-close-modal="scheduleModal"
+                    aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2 id="scheduleModalTitle">Schedule Meeting</h2>
+            <p class="muted">Enter the meeting details below.</p>
+
+            <form id="scheduleForm">
+                <label class="field-label" for="meetingTitle">
+                    Meeting Title
+                </label>
+                <input type="text"
+                       id="meetingTitle"
+                       required
+                       placeholder="Enter meeting title">
+
+                <label class="field-label" for="meetingProject">
+                    Project
+                </label>
+                <select id="meetingProject" required>
+                    <option value="">Choose a project</option>
+                </select>
+
+                <label class="field-label" for="meetingAttendees">
+                    Attendees
+                </label>
+                <select id="meetingAttendees"
+                        multiple
+                        required
+                        size="4"
+                        aria-describedby="attendeeHelp">
+                </select>
+
+                <small id="attendeeHelp">
+                    Hold Ctrl (Windows) or Command (Mac) to select multiple attendees.
+                </small>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label" for="meetingDate">
+                            Date
+                        </label>
+                        <input type="date" id="meetingDate" required>
+                    </div>
+
+                    <div>
+                        <label class="field-label" for="meetingTime">
+                            Time
+                        </label>
+                        <input type="time" id="meetingTime" required>
+                    </div>
+                </div>
+
+                <label class="field-label" for="meetingDuration">
+                    Duration
+                </label>
+                <select id="meetingDuration">
+                    <option value="15">15 minutes</option>
+                    <option value="30" selected>30 minutes</option>
+                    <option value="45">45 minutes</option>
+                    <option value="60">1 hour</option>
+                    <option value="90">1.5 hours</option>
+                    <option value="120">2 hours</option>
+                </select>
+
+                <label class="field-label" for="meetingAgenda">
+                    Agenda
+                </label>
+                <textarea id="meetingAgenda"
+                          rows="3"
+                          placeholder="Meeting agenda"></textarea>
+
+                <label class="field-label" for="meetingLink">
+                    Meeting Link (optional)
+                </label>
+                <input type="url"
+                       id="meetingLink"
+                       placeholder="https://...">
+
+                <p id="scheduleFormMessage"
+                   class="form-message"
+                   role="alert"
+                   hidden></p>
+
+                <div class="modal-actions">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-close-modal="scheduleModal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        Schedule Meeting
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- REQUEST MEETING MODAL -->
+    <div class="modal"
+         id="requestModal"
+         hidden
+         aria-hidden="true">
+
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-card"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="requestModalTitle">
+
+            <button type="button"
+                    class="modal-close"
+                    data-close-modal="requestModal"
+                    aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2 id="requestModalTitle">Request a Meeting</h2>
+            <p class="muted">Send a meeting request to your project manager.</p>
+
+            <form id="requestForm">
+                <label class="field-label" for="requestProject">
+                    Project
+                </label>
+                <select id="requestProject" required>
+                    <option value="">Choose a project</option>
+                </select>
+
+                <label class="field-label" for="requestManager">
+                    Manager
+                </label>
+                <select id="requestManager" required>
+                    <option value="">Select a project first</option>
+                </select>
+
+                <label class="field-label" for="requestTitle">
+                    Meeting Subject
+                </label>
+                <input type="text"
+                       id="requestTitle"
+                       required
+                       placeholder="Enter meeting subject">
+
+                <label class="field-label" for="requestAgenda">
+                    Reason for Meeting
+                </label>
+                <textarea id="requestAgenda"
+                          rows="4"
+                          required
+                          placeholder="Explain why you need the meeting"></textarea>
+
+                <div class="form-row">
+                    <div>
+                        <label class="field-label" for="requestDate">
+                            Preferred Date
+                        </label>
+                        <input type="date" id="requestDate">
+                    </div>
+
+                    <div>
+                        <label class="field-label" for="requestTime">
+                            Preferred Time
+                        </label>
+                        <input type="time" id="requestTime">
+                    </div>
+                </div>
+
+                <p id="requestFormMessage"
+                   class="form-message"
+                   role="alert"
+                   hidden></p>
+
+                <div class="modal-actions">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-close-modal="requestModal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SHARED LAYOUT -->
+    <script src="../JAVASCRIPT/app-access.js"></script>
+    <script src="../JAVASCRIPT/layout.js"></script>
+
+    <script>
+        if (typeof initLayout === "function") {
+            initLayout("meetings");
+        }
+    </script>
+
+    <script src="../JAVASCRIPT/notifications.js"></script>
+    <script src="../JAVASCRIPT/meetings.js"></script>
+</body>
+</html>
