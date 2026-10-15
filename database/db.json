@@ -173,5 +173,150 @@
       "userId": "wVeeDDODQfA"
     }
   ],
+  
+"meetings": [
+  {
+    "id": "meeting1",
+    "title": "Project Management System Review",
+    "projectId": "1",
+    "projectName": "Project Management System",
+    "organizerId": "1",
+    "organizerName": "Admin User",
+    "attendeeIds": ["Ov8NM3_1Alw"],
+    "attendees": ["Prachi Bhardwaj"],
+    "date": "2026-10-20",
+    "time": "10:00",
+    "duration": 60,
+    "agenda": "Review project progress, database integration, and pending tasks.",
+    "meetingLink": "https://meet.google.com/abc-defg-hij",
+    "status": "Scheduled",
+    "createdAt": "2026-10-15T09:00:00.000Z"
+  },
+  {
+    "id": "meeting2",
+    "title": "Website Development Planning",
+    "projectId": "2",
+    "projectName": "Website Development",
+    "organizerId": "1",
+    "organizerName": "Admin User",
+    "attendeeIds": ["wVeeDDODQfA", "BfuaW-YwWqA"],
+    "attendees": ["Saumya Singla", "Prachi"],
+    "date": "2026-10-22",
+    "time": "14:00",
+    "duration": 45,
+    "agenda": "Discuss website layout, development tasks, and project deadlines.",
+    "meetingLink": "https://meet.google.com/xyz-abcd-efg",
+    "status": "Scheduled",
+    "createdAt": "2026-10-15T09:30:00.000Z"
+  },
+  {
+    "id": "meeting3",
+    "title": "Task Progress Discussion",
+    "projectId": "1",
+    "projectName": "Project Management System",
+    "organizerId": "1",
+    "organizerName": "Admin User",
+    "attendeeIds": ["Ov8NM3_1Alw"],
+    "attendees": ["Prachi Bhardwaj"],
+    "date": "2026-10-10",
+    "time": "11:00",
+    "duration": 30,
+    "agenda": "Review completed tasks and discuss pending work.",
+    "meetingLink": "",
+    "status": "Completed",
+    "createdAt": "2026-10-08T08:00:00.000Z"
+  }
+],
+
+"meetingRequests": [
+  {
+    "id": "request1",
+    "title": "Website Design Discussion",
+    "projectId": "2",
+    "projectName": "Website Development",
+    "requesterId": "wVeeDDODQfA",
+    "requesterName": "Saumya Singla",
+    "managerId": "1",
+    "managerName": "Admin User",
+    "agenda": "Discuss homepage design and review the proposed color scheme.",
+    "date": "2026-10-24",
+    "time": "11:00",
+    "status": "Pending",
+    "createdAt": "2026-10-15T10:00:00.000Z"
+  },
+  {
+    "id": "request2",
+    "title": "Project Task Review",
+    "projectId": "1",
+    "projectName": "Project Management System",
+    "requesterId": "Ov8NM3_1Alw",
+    "requesterName": "Prachi Bhardwaj",
+    "managerId": "1",
+    "managerName": "Admin User",
+    "agenda": "Review the remaining development tasks and discuss blockers.",
+    "date": "2026-10-25",
+    "time": "15:00",
+    "status": "Pending",
+    "createdAt": "2026-10-15T10:30:00.000Z"
+  },
+  {
+    "id": "request3",
+    "title": "Website Progress Update",
+    "projectId": "2",
+    "projectName": "Website Development",
+    "requesterId": "BfuaW-YwWqA",
+    "requesterName": "Prachi",
+    "managerId": "1",
+    "managerName": "Admin User",
+    "agenda": "Share the current progress and confirm the next development milestones.",
+    "date": "2026-10-26",
+    "time": "12:00",
+    "status": "Approved",
+    "createdAt": "2026-10-14T09:00:00.000Z"
+  }
+],
+
+"notifications": [
+  {
+    "id": "notification1",
+    "userId": "1",
+    "title": "New Meeting Request",
+    "message": "Saumya Singla requested a meeting: Website Design Discussion.",
+    "type": "meeting_request",
+    "relatedId": "request1",
+    "read": false,
+    "createdAt": "2026-10-15T10:00:00.000Z"
+  },
+  {
+    "id": "notification2",
+    "userId": "1",
+    "title": "New Meeting Request",
+    "message": "Prachi Bhardwaj requested a meeting: Project Task Review.",
+    "type": "meeting_request",
+    "relatedId": "request2",
+    "read": false,
+    "createdAt": "2026-10-15T10:30:00.000Z"
+  },
+  {
+    "id": "notification3",
+    "userId": "wVeeDDODQfA",
+    "title": "Meeting Scheduled",
+    "message": "A meeting has been scheduled: Website Development Planning.",
+    "type": "meeting_scheduled",
+    "relatedId": "meeting2",
+    "read": false,
+    "createdAt": "2026-10-15T09:30:00.000Z"
+  },
+  {
+    "id": "notification4",
+    "userId": "Ov8NM3_1Alw",
+    "title": "Meeting Completed",
+    "message": "Task Progress Discussion is marked as completed.",
+    "type": "meeting_completed",
+    "relatedId": "meeting3",
+    "read": true,
+    "createdAt": "2026-10-10T12:00:00.000Z"
+  }
+],
   "$schema": "./node_modules/json-server/schema.json"
 }
