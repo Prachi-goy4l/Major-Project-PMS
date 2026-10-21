@@ -487,6 +487,10 @@
                 ? "99+"
                 : String(unreadCount);
 
+            countBadge.setAttribute(
+                "aria-label",
+                `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`
+            );
             countBadge.hidden = unreadCount === 0;
         }
 

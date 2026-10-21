@@ -77,6 +77,45 @@ async function searchEverything(query) {
     });
 }
 
+function initializeNotifications(topbar) {
+    const stylesheetSelector = 'link[data-work-sphere-notifications]';
+    if (!document.querySelector(stylesheetSelector)) {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.href = new URL("../CSS/notifications.css", document.baseURI).href;
+        stylesheet.dataset.workSphereNotifications = "true";
+        stylesheet.onerror = function () {
+            console.error("WorkSphere Notifications: failed to load notifications.css.");
+        };
+        document.head.appendChild(stylesheet);
+    }
+
+    if (window.WorkSphereNotifications) {
+        window.WorkSphereNotifications.init(topbar);
+        return;
+    }
+
+    const scriptSelector = 'script[data-work-sphere-notifications]';
+    if (document.querySelector(scriptSelector)) {
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src = new URL("../JAVASCRIPT/notifications.js", document.baseURI).href;
+    script.dataset.workSphereNotifications = "true";
+    script.onload = function () {
+        if (!window.WorkSphereNotifications) {
+            console.error("WorkSphere Notifications: notifications.js did not initialize.");
+            return;
+        }
+        window.WorkSphereNotifications.init(topbar);
+    };
+    script.onerror = function () {
+        console.error("WorkSphere Notifications: failed to load notifications.js.");
+    };
+    document.body.appendChild(script);
+}
+
 function initLayout(activePage) {
     const projectId = window.PMS ? PMS.projectIdFromUrl() : null;
     const isOverallDashboard = activePage === "dashboard";
@@ -178,7 +217,7 @@ function initLayout(activePage) {
         <div class="layout-user">
             <button class="layout-notifications" type="button" aria-label="Notifications">
                 <i class="fa-regular fa-bell" aria-hidden="true"></i>
-                <span class="layout-notification-count" aria-label="3 unread notifications">3</span>
+                <span class="layout-notification-count" aria-live="polite" hidden></span>
             </button>
             <div class="layout-account">
                 <button class="layout-account-toggle" type="button" aria-expanded="false" aria-haspopup="true">
@@ -226,6 +265,7 @@ function initLayout(activePage) {
     pageScripts.forEach(function (script) {
         document.body.appendChild(script);
     });
+    initializeNotifications(topbar);
 
     const menuToggle = topbar.querySelector(".layout-menu-toggle");
     if (menuToggle && sidebar) {
