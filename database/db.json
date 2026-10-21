@@ -116,6 +116,17 @@
       "status": "To Do",
       "projectId": "1",
       "id": "vNNntTwzdmY"
+    },
+    {
+      "taskName": "deployment",
+      "description": "deploy the project on time",
+      "assignedTo": "Prachi",
+      "assignedToUserId": "Ov8NM3_1Alw",
+      "projectId": "1",
+      "priority": "High",
+      "deadline": "2026-10-29",
+      "status": "To Do",
+      "id": "r1uXBQHJLQM"
     }
   ],
   "teamMembers": [
