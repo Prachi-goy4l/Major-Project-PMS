@@ -306,6 +306,22 @@
       "time": "12:00",
       "status": "Approved",
       "createdAt": "2026-10-14T09:00:00.000Z"
+    },
+    {
+      "title": "ljhnoihn",
+      "agenda": "kjhnin",
+      "projectId": "1",
+      "projectName": "Project Management System",
+      "requesterId": "Ov8NM3_1Alw",
+      "requesterEmail": "prachi@gmail.com",
+      "requesterName": "Prachi Bhardwaj",
+      "managerId": "1",
+      "managerEmail": "admin@example.com",
+      "preferredDate": "2026-10-31",
+      "preferredTime": "07:08",
+      "status": "pending",
+      "createdAt": "2026-10-21T06:03:09.759Z",
+      "id": "yHAUYOO23Ho"
     }
   ],
   "notifications": [
@@ -359,6 +375,17 @@
       "read": false,
       "createdAt": "2026-10-15T08:02:18.421Z",
       "id": "9S0onyyNnpw"
+    },
+    {
+      "recipientId": "1",
+      "recipientEmail": "admin@example.com",
+      "title": "Meeting request from Prachi Bhardwaj",
+      "message": "Prachi Bhardwaj requested a meeting about \"ljhnoihn\".",
+      "type": "meeting_request",
+      "relatedId": "yHAUYOO23Ho",
+      "read": false,
+      "createdAt": "2026-10-21T06:03:09.793Z",
+      "id": "--14RJ5iz0o"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
