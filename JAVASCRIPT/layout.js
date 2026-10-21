@@ -95,7 +95,8 @@ function initLayout(activePage) {
                 { page: "project-dashboard", label: "Project Dashboard", href: PMS.urlForPage("project-dashboard.html", projectId), icon: "fa-house" },
                 { page: "tasks", label: "Tasks", href: PMS.urlForPage("tasks.html", projectId), icon: "fa-square-check" },
                 { page: "team", label: "Team", href: PMS.urlForPage("team.html", projectId), icon: "fa-users" },
-                { page: "meetings", label: "Meetings", href: PMS.urlForPage("meetings.html", projectId), icon: "fa-calendar-days" }
+                { page: "meetings", label: "Meetings", href: PMS.urlForPage("meetings.html", projectId), icon: "fa-calendar-days" },
+                { page: "notes", label: "Notes", href: PMS.urlForPage("notes.html", projectId), icon: "fa-calendar-days" }
             ]
             : [
                 { page: "dashboard", label: "Dashboard", href: "dashboard.html", icon: "fa-house" },
