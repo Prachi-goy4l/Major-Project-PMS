@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Notes | WorkSphere</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/notes.css">
+    <link rel="stylesheet" href="../CSS/layout.css">
+</head>
+<body>
+
+    <main class="notes-page">
+        <section class="page-heading">
+            <div>
+                <h1>Project Notes</h1>
+                <p>Share ideas, document decisions, and keep project information organized.</p>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="addNoteBtn">
+                <i class="fa-solid fa-plus"></i>
+                Add Note
+            </button>
+        </section>
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Total Notes</span>
+                <h2 id="totalNotes">0</h2>
+            </article>
+
+            <article class="stat-card">
+                <span>Pinned Notes</span>
+                <h2 id="pinnedNotes">0</h2>
+            </article>
+
+            <article class="stat-card">
+                <span>Project Members</span>
+                <h2 id="projectMembers">0</h2>
+            </article>
+
+            <article class="stat-card">
+                <span>My Notes</span>
+                <h2 id="myNotes">0</h2>
+            </article>
+        </section>
+
+        <!-- Notes workspace -->
+        <section class="notes-workspace">
+
+            <div class="notes-toolbar">
+                <div>
+                    <h2>Shared Notes</h2>
+                    <p>Notes available to members of this project.</p>
+                </div>
+
+                <div class="toolbar-controls">
+                    <label class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input
+                            type="search"
+                            id="searchNotes"
+                            placeholder="Search notes..."
+                            aria-label="Search notes"
+                        >
+                    </label>
+
+                    <select id="sortNotes" aria-label="Sort notes">
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="title">Title A–Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <label for="projectFilter">Project</label>
+                <select id="projectFilter">
+                    <option value="">Loading projects...</option>
+                </select>
+
+                <label for="tagFilter">Category</label>
+                <select id="tagFilter">
+                    <option value="">All categories</option>
+                </select>
+            </div>
+
+            <div id="notesMessage" class="notes-message" role="status" hidden></div>
+
+            <div id="notesGrid" class="notes-grid"></div>
+
+            <div id="emptyState" class="empty-state" hidden>
+                <div class="empty-icon">
+                    <i class="fa-regular fa-note-sticky"></i>
+                </div>
+                <h3>No notes found</h3>
+                <p>Create a note to share important information with your project team.</p>
+                <button type="button" class="btn btn-primary" id="emptyAddNoteBtn">
+                    <i class="fa-solid fa-plus"></i>
+                    Create your first note
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Note Modal -->
+    <div class="modal-overlay" id="noteModal" hidden>
+        <section class="note-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle">Create Note</h2>
+                    <p>Share useful information with your project team.</p>
+                </div>
+
+                <button type="button" class="modal-close" id="closeNoteModal" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="noteForm">
+                <input type="hidden" id="noteId">
+
+                <div class="form-group">
+                    <label for="noteTitle">Note title <span>*</span></label>
+                    <input
+                        type="text"
+                        id="noteTitle"
+                        maxlength="120"
+                        placeholder="e.g. Homepage Design Decisions"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="noteProject">Project <span>*</span></label>
+                    <select id="noteProject" required>
+                        <option value="">Select a project</option>
+                    </select>
+                    <small>Only projects you can access are available.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteCategory">Category</label>
+                    <select id="noteCategory">
+                        <option value="General">General</option>
+                        <option value="Meeting">Meeting</option>
+                        <option value="Design">Design</option>
+                        <option value="Development">Development</option>
+                        <option value="Requirements">Requirements</option>
+                        <option value="Decisions">Decisions</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteContent">Note content <span>*</span></label>
+                    <textarea
+                        id="noteContent"
+                        rows="7"
+                        maxlength="15000"
+                        placeholder="Write project information, decisions, ideas, or updates..."
+                        required
+                    ></textarea>
+                </div>
+
+                <label class="pin-option">
+                    <input type="checkbox" id="notePinned">
+                    <span>
+                        <i class="fa-solid fa-thumbtack"></i>
+                        Pin this note
+                    </span>
+                </label>
+
+                <div id="formError" class="form-error" role="alert" hidden></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelNoteBtn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveNoteBtn">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Save Note
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="../JAVASCRIPT/app-access.js"></script>
+    <script src="../JAVASCRIPT/layout.js"></script>
+    <script src="../JAVASCRIPT/notes.js"></script>
+</body>
+</html>
