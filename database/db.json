@@ -272,8 +272,10 @@
       "agenda": "Discuss homepage design and review the proposed color scheme.",
       "date": "2026-10-24",
       "time": "11:00",
-      "status": "Pending",
-      "createdAt": "2026-10-15T10:00:00.000Z"
+      "status": "approved",
+      "createdAt": "2026-10-15T10:00:00.000Z",
+      "reviewedById": "1",
+      "reviewedAt": "2026-10-15T08:02:18.401Z"
     },
     {
       "id": "request2",
@@ -304,40 +306,6 @@
       "time": "12:00",
       "status": "Approved",
       "createdAt": "2026-10-14T09:00:00.000Z"
-    },
-    {
-      "title": "Query regarding database",
-      "agenda": "Resolve conflicts",
-      "projectId": "2",
-      "projectName": "Website Development",
-      "requesterId": "wVeeDDODQfA",
-      "requesterEmail": "saumya.singla26@gmail.com",
-      "requesterName": "Saumya Singla",
-      "managerId": "1",
-      "managerEmail": "admin@example.com",
-      "preferredDate": "2026-10-31",
-      "preferredTime": "14:00",
-      "status": "approved",
-      "createdAt": "2026-10-15T06:24:05.567Z",
-      "id": "vmQ-ouL7piw",
-      "reviewedById": "1",
-      "reviewedAt": "2026-10-15T06:28:12.698Z"
-    },
-    {
-      "title": "Query regarding backend",
-      "agenda": "backend",
-      "projectId": "2",
-      "projectName": "Website Development",
-      "requesterId": "wVeeDDODQfA",
-      "requesterEmail": "saumya.singla26@gmail.com",
-      "requesterName": "Saumya Singla",
-      "managerId": "1",
-      "managerEmail": "admin@example.com",
-      "preferredDate": "2026-10-28",
-      "preferredTime": "16:01",
-      "status": "pending",
-      "createdAt": "2026-10-15T06:31:59.940Z",
-      "id": "rzLBLUuvkMs"
     }
   ],
   "notifications": [
@@ -382,26 +350,15 @@
       "createdAt": "2026-10-10T12:00:00.000Z"
     },
     {
-      "recipientId": "1",
-      "recipientEmail": "admin@example.com",
-      "title": "Meeting request from Saumya Singla",
-      "message": "Saumya Singla requested a meeting about \"Query regarding database\".",
-      "type": "meeting_request",
-      "relatedId": "vmQ-ouL7piw",
+      "recipientId": "wVeeDDODQfA",
+      "recipientEmail": "saumya.singla26@gmail.com",
+      "title": "Meeting request approved",
+      "message": "Your meeting request \"Website Design Discussion\" was approved.",
+      "type": "meeting_request_update",
+      "relatedId": "request1",
       "read": false,
-      "createdAt": "2026-10-15T06:24:05.601Z",
-      "id": "pJA4Ar8ewtk"
-    },
-    {
-      "recipientId": "1",
-      "recipientEmail": "admin@example.com",
-      "title": "Meeting request from Saumya Singla",
-      "message": "Saumya Singla requested a meeting about \"Query regarding backend\".",
-      "type": "meeting_request",
-      "relatedId": "rzLBLUuvkMs",
-      "read": false,
-      "createdAt": "2026-10-15T06:31:59.959Z",
-      "id": "tRHBJ7H5quA"
+      "createdAt": "2026-10-15T08:02:18.421Z",
+      "id": "9S0onyyNnpw"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
