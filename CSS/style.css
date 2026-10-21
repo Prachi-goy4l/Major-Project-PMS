@@ -65,28 +65,51 @@ section {
     backdrop-filter: blur(14px);
 }
 
+/* WorkSphere Logo */
+
 .logo {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex-shrink: 0;
-    color: var(--navy);
-    font-size: 23px;
+    color: #292929;
+    text-decoration: none;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 29px;
     font-weight: 750;
-    letter-spacing: -0.7px;
+    letter-spacing: -1.2px;
 }
 
-/* Logo shape and design kept the same */
 .logo-icon {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 11px;
-    background: var(--green);
-    color: var(--white);
-    font-size: 26px;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: #b9573f;
+    color: #ffffff;
+    font-size: 29px;
     line-height: 1;
+}
+
+.logo-text {
+    color: #292929;
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .logo {
+        gap: 9px;
+        font-size: 23px;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        font-size: 25px;
+    }
 }
 
 .nav-links {
